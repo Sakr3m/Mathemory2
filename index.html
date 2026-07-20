@@ -89,6 +89,26 @@
     display:flex;
     flex-direction:column;
   }
+  .game-slot:first-child{ position: relative; }
+
+  /* === EFFETTO A COMPARSA DELLE CARD (facoltativo, isolato apposta) =========
+     Per toglierlo: cancella questo blocco e rimuovi la classe "entrance-anim"
+     dalle 2 righe in gameCardHtml()/leaderboardCardHtml() più sotto. Nient'altro
+     dipende da questo blocco, è sicuro da rimuovere in qualunque momento. */
+  @keyframes card-entrance{
+    from{ opacity: 0; transform: translateY(16px); }
+    to{ opacity: 1; transform: translateY(0); }
+  }
+  .game-slot.entrance-anim{
+    opacity: 0;
+    animation: card-entrance 0.6s ease forwards;
+  }
+  .game-slot.entrance-anim:nth-child(1){ animation-delay: 0.1s; }
+  .game-slot.entrance-anim:nth-child(2){ animation-delay: 0.3s; }
+  @media (prefers-reduced-motion: reduce){
+    .game-slot.entrance-anim{ animation: none; opacity: 1; }
+  }
+  /* === FINE EFFETTO A COMPARSA =============================================== */
 
   .game-card{
     background: var(--bg-panel);
@@ -249,9 +269,12 @@
     border-radius: 6px;
     padding: 0 1rem;
   }
-  .lb-medal{ font-size: 1.32rem; line-height:1; }
+  .lb-medal{ font-size: 1.452rem; line-height:1; }
   .lb-label{ color: var(--ink-dim); font-size: 1rem; }
   .lb-value{ color: var(--yellow); font-weight:700; font-size: 1rem; }
+  .lb-row.rank-1{ border-color: #E8C468; }
+  .lb-row.rank-2{ border-color: #C7CDD6; }
+  .lb-row.rank-3{ border-color: #D08A52; }
   .lb-divider{
     flex-shrink: 0;
     height: 1px;
@@ -334,28 +357,27 @@
   }
 
   .mc.composite{ color: rgba(243,239,228,0.22); }
-  .mc.prime{ color: var(--ink); font-weight:700; }
-
-  .mc.prime svg{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; }
-  .mc.prime circle{
-    fill:none;
-    stroke: var(--yellow);
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-dasharray: 132;
-    stroke-dashoffset: 132;
-    animation: draw 0.8s ease forwards;
+  .mc.prime{
+    font-weight:700;
+    border-radius: 6px;
+    animation: mc-light-up 0.5s ease forwards;
     animation-delay: calc(var(--i) * 90ms + 0.3s);
   }
-
-  @keyframes draw{ to{ stroke-dashoffset: 0; } }
-
-  @media (min-width: 901px){
-    .lb-row{ background: var(--bg-table-desktop); }
+  @keyframes mc-light-up{
+    from{ color: var(--ink); background: transparent; box-shadow: none; }
+    to{
+      color: #1C1F16;
+      background: var(--yellow);
+      box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
+    }
   }
 
   @media (prefers-reduced-motion: reduce){
-    .mc.prime circle{ animation:none; stroke-dashoffset:0; }
+    .mc.prime{ animation:none; color:#1C1F16; background:var(--yellow); box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow); }
+  }
+
+  @media (min-width: 901px){
+    .lb-row{ background: var(--bg-table-desktop); }
   }
 
   /* --- carosello: contatore sopra, freccette ai lati dei giochi --- */
@@ -540,9 +562,29 @@
     display:flex;
     align-items:center;
     gap: 1rem;
+    position: relative;
   }
 
-  .carousel-row .games{ flex: 1; min-width: 0; }
+  .math-constellation{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  .math-constellation line{
+    stroke: var(--ink-dim);
+    stroke-width: 1;
+  }
+  .math-constellation text{
+    font-family:'Kalam', cursive;
+    font-size: 2.4rem;
+    fill: var(--ink-dim);
+  }
+
+  .carousel-row .games{ flex: 1; min-width: 0; position: relative; z-index: 1; }
 
   .nav-column{
     display:flex;
@@ -1114,6 +1156,21 @@
   </header>
 
   <div class="carousel-row">
+    <svg class="math-constellation" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <line x1="60" y1="70" x2="180" y2="150" />
+      <line x1="180" y1="150" x2="130" y2="280" />
+      <line x1="850" y1="60" x2="920" y2="180" />
+      <line x1="920" y1="180" x2="860" y2="330" />
+      <line x1="480" y1="380" x2="560" y2="330" />
+      <text x="55" y="80">π</text>
+      <text x="175" y="160">√</text>
+      <text x="125" y="300">Σ</text>
+      <text x="845" y="70">∞</text>
+      <text x="915" y="190">∫</text>
+      <text x="855" y="345">Δ</text>
+      <text x="475" y="395">θ</text>
+      <text x="555" y="340">×</text>
+    </svg>
     <div class="nav-column">
       <div class="nav-dots" id="prevDotsTop"></div>
       <div class="nav-arrow" id="prevBtn" aria-label="Previous games">
@@ -1199,7 +1256,7 @@
     values.forEach((v, i) => {
       const isPrime = primeIdx.includes(i);
       if (isPrime){
-        html += `<div class="mc prime" style="--i:${i}">${v}<svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="20"/></svg></div>`;
+        html += `<div class="mc prime" style="--i:${i}">${v}</div>`;
       } else {
         html += `<div class="mc composite">${v}</div>`;
       }
@@ -1347,13 +1404,56 @@
       });
   }
 
+  // === ESPANSIONE HOVER DELLA CARD ERATOSTENE (copre la leaderboard sotto, su desktop) ===
+  // Resta disattivata finché l'effetto a comparsa non ha finito, per non sovrapporre le due
+  // animazioni. Se un giorno l'effetto a comparsa viene tolto, questo timer va rimosso o
+  // azzerato: senza comparsa non serve più aspettare nulla.
+  function initEratoHoverExpand(grid){
+    if (window.innerWidth <= 900) return;
+    const slot = grid.querySelector('.game-slot:first-child');
+    if (!slot) return;
+    const card = slot.querySelector('.game-card:not(.locked):not(.leaderboard-card)');
+    if (!card) return;
+
+    let hoverReady = false;
+    setTimeout(() => { hoverReady = true; }, 950); // poco più della comparsa più lenta (0.3s ritardo + 0.6s durata)
+
+    slot.addEventListener('mouseenter', () => {
+      if (!hoverReady) return;
+      const startWidth = card.getBoundingClientRect().width;
+      card.style.transition = 'none';
+      card.style.position = 'absolute';
+      card.style.top = '0px';
+      card.style.left = '0px';
+      card.style.width = startWidth + 'px';
+      card.style.zIndex = '5';
+      void card.offsetWidth; // forzo il reflow prima di avviare la transizione, altrimenti parte già estesa
+      requestAnimationFrame(() => {
+        card.style.transition = 'width 1s ease, box-shadow 0.3s ease';
+        card.style.width = (startWidth * 2 + 17.6) + 'px'; // 17.6px = 1.1rem di gap tra le 2 card
+        card.style.boxShadow = '0 10px 34px rgba(0,0,0,0.45)';
+      });
+    });
+
+    slot.addEventListener('mouseleave', () => {
+      card.style.width = '';
+      card.style.position = '';
+      card.style.top = '';
+      card.style.left = '';
+      card.style.zIndex = '';
+      card.style.boxShadow = '';
+      card.style.transition = '';
+    });
+  }
+
   function podiumRowsHtml(podium){
     const medals = ['🥇', '🥈', '🥉'];
+    const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
     let html = '';
     for (let i = 0; i < 3; i++){
       const entry = podium && podium[i];
       const label = entry ? `${entry.nickname} — ${entry.time}s` : '—';
-      html += `<div class="lb-row"><span class="lb-medal">${medals[i]}</span><span class="lb-value">${label}</span></div>`;
+      html += `<div class="lb-row ${rankClasses[i]}"><span class="lb-medal">${medals[i]}</span><span class="lb-value">${label}</span></div>`;
     }
     return html;
   }
@@ -1363,7 +1463,7 @@
     if (state === 'open'){
       const href = resumeHref(g.hrefKey, g.hrefBase);
       return `
-        <div class="game-slot">
+        <div class="game-slot entrance-anim">
           <div class="game-card">
             <h2 class="game-title-centered">${g.title}</h2>
             <div class="play-preview-block">
@@ -1384,7 +1484,7 @@
     } else {
       const heightStyle = cachedEratoHeight ? `style="height:${cachedEratoHeight}px"` : '';
       return `
-        <div class="game-slot">
+        <div class="game-slot entrance-anim">
           <div class="game-card locked" ${heightStyle}>
             <h2>COMING SOON</h2>
             <p class="unlock-date">${g.unlockLabel}</p>
@@ -1399,7 +1499,7 @@
 
     if (state === 'open'){
       return `
-        <div class="game-slot">
+        <div class="game-slot entrance-anim">
           <div class="game-card leaderboard-card" ${heightStyle}>
             <div class="lb-half">
               <h2>The Sieve</h2>
@@ -1517,6 +1617,7 @@
     const number = currentIndex + 1;
 
     grid.innerHTML = gameCardHtml(g, number) + leaderboardCardHtml(g);
+    initEratoHoverExpand(grid);
     positionIndexSoundBtn();
 
     // etichetta centrale sopra la riga: Game X cliccabile (porta al regolamento, quando esisterà) + suggerimento
