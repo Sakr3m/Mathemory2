@@ -622,20 +622,14 @@
     height: 100%;
     z-index: 0;
     pointer-events: none;
-    animation: constellation-drift 7s ease-in-out infinite;
   }
   .math-constellation text{
     font-family:'Kalam', cursive;
     font-size: 1.5rem;
     fill: rgba(159, 176, 162, 0.20);
-    transition: opacity 1.2s ease;
-  }
-  @keyframes constellation-drift{
-    0%, 100%{ transform: translate(0, 0); }
-    50%{ transform: translate(4px, -4px); }
   }
   @media (prefers-reduced-motion: reduce){
-    .math-constellation{ animation: none; }
+    .math-constellation text{ transition: none !important; transform: none !important; }
   }
 
   .carousel-row .games{ flex: 1; min-width: 0; }
@@ -1955,15 +1949,26 @@
   measureEratoHeight();
   render();
 
-  // ogni simbolo della costellazione ha un suo ciclo di vita indipendente:
-  // compare, dopo un tempo casuale sfuma, riappare altrove con un simbolo diverso
+  // ogni simbolo si muove per conto suo, in linea retta, in una direzione casuale ampia;
+  // dopo 3 secondi di vita sfuma (in ordine sfalsato tra un simbolo e l'altro, non tutti insieme),
+  // e dopo mezzo secondo di pausa riappare altrove con un simbolo diverso
   function initConstellationLifecycle(){
     const svg = document.querySelector('.math-constellation');
     if (!svg) return;
     const symbolPool = ['π', '√', 'Σ', '∞', '∫', 'Δ', 'θ', '×', '÷'];
     const texts = Array.from(svg.querySelectorAll('text'));
 
+    function driftAway(el){
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 70 + Math.random() * 70; // tragitto ampio, in una sola direzione
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance;
+      el.style.transition = 'transform 5s linear';
+      el.style.transform = `translate(${dx}px, ${dy}px)`;
+    }
+
     function respawn(el){
+      el.style.transition = 'opacity 0.8s ease';
       el.style.opacity = '0';
       setTimeout(() => {
         const newX = 30 + Math.random() * 940;
@@ -1971,19 +1976,28 @@
         el.setAttribute('x', newX.toFixed(0));
         el.setAttribute('y', newY.toFixed(0));
         el.textContent = symbolPool[Math.floor(Math.random() * symbolPool.length)];
-        el.style.opacity = '';
-      }, 1200); // combacia con la transizione CSS di 1.2s
+        el.style.transition = 'none';
+        el.style.transform = 'translate(0, 0)';
+        void el.getBoundingClientRect(); // forzo il reflow prima di far ripartire la dissolvenza
+        setTimeout(() => {
+          el.style.transition = 'opacity 0.8s ease';
+          el.style.opacity = '';
+          driftAway(el);
+          lifeLoop(el);
+        }, 500); // ricompaiono dopo mezzo secondo
+      }, 800); // durata della dissolvenza
     }
 
-    texts.forEach(el => {
-      function scheduleNext(){
-        const delay = 4000 + Math.random() * 6000; // ogni 4-10 secondi, sfalsato per ognuno
-        setTimeout(() => {
-          respawn(el);
-          scheduleNext();
-        }, delay);
-      }
-      scheduleNext();
+    function lifeLoop(el){
+      setTimeout(() => { respawn(el); }, 3000); // vivono 3 secondi prima di sfumare
+    }
+
+    texts.forEach((el, i) => {
+      const initialStagger = i * 130; // partenza sfalsata, così non muoiono mai tutti insieme
+      setTimeout(() => {
+        driftAway(el);
+        lifeLoop(el);
+      }, initialStagger);
     });
   }
   initConstellationLifecycle();
