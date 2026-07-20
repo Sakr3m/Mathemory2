@@ -1033,12 +1033,7 @@
     }
     .index-sound-btn{
       position: absolute;
-      top: 50%;
-      right: calc(100% + 126px);
-      transform: translateY(-50%);
       flex-shrink: 0;
-      width: 84px;
-      height: 84px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1047,9 +1042,9 @@
       background: var(--bg-panel);
       color: var(--ink-dim);
       font-family:'Space Mono', monospace;
-      font-size: 2.24rem;
       cursor: pointer;
       transition: border-color 0.15s ease, color 0.15s ease;
+      z-index: 50;
     }
     .mobile-index-sound-btn{ display: none; }
   }
@@ -1062,9 +1057,9 @@
   }
   .audio-slider-row label{
     font-family:'Work Sans', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.99rem;
     color: var(--ink-dim);
-    min-width: 5.5rem;
+    min-width: 6.05rem;
   }
   .audio-slider-row input[type="range"]{
     flex: 1;
@@ -1072,9 +1067,9 @@
   }
   .audio-slider-row span{
     font-family:'Space Mono', monospace;
-    font-size: 0.85rem;
+    font-size: 0.935rem;
     color: var(--ink);
-    min-width: 2.8rem;
+    min-width: 3.08rem;
     text-align: right;
   }
   .audio-toggle-btn{ cursor: pointer; }
@@ -1112,7 +1107,7 @@
   <div class="wrap">
   <header>
     <div class="title-row">
-      <button type="button" class="index-sound-btn audio-toggle-btn" aria-label="Sound">🔊</button>
+      <button type="button" class="index-sound-btn audio-toggle-btn" id="indexSoundBtn" aria-label="Sound">🔊</button>
       <span class="mark">Mathemory</span>
     </div>
     <p class="subtitle">A collection of math games, unlocking one after another over time.<br>Each one runs its own ~12-day race with a leaderboard ranked by fastest completion time.<br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
@@ -1522,6 +1517,7 @@
     const number = currentIndex + 1;
 
     grid.innerHTML = gameCardHtml(g, number) + leaderboardCardHtml(g);
+    positionIndexSoundBtn();
 
     // etichetta centrale sopra la riga: Game X cliccabile (porta al regolamento, quando esisterà) + suggerimento
     document.getElementById('gameLabelRow').innerHTML = `
@@ -1580,6 +1576,37 @@
     if (card) cachedEratoHeight = card.offsetHeight;
     document.body.removeChild(probe);
   }
+
+  // pulsante audio di index (desktop): allineato in orizzontale con l'inizio delle card,
+  // centrato in verticale col titolo, diametro = 1.5x l'altezza del titolo. Spostato nel
+  // body e posizionato con coordinate reali di pagina, per scorrere insieme al contenuto
+  // (i due riferimenti — titolo e card — non condividono lo stesso genitore diretto)
+  let indexSoundBtnMovedToBody = false;
+  function positionIndexSoundBtn(){
+    if (window.innerWidth <= 900) return;
+    const btn = document.getElementById('indexSoundBtn');
+    const title = document.querySelector('.mark');
+    const card = document.querySelector('#gamesGrid .game-card');
+    if (!btn || !title || !card) return;
+
+    if (!indexSoundBtnMovedToBody){
+      document.body.appendChild(btn);
+      indexSoundBtnMovedToBody = true;
+    }
+
+    const titleRect = title.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+
+    const diameter = titleRect.height * 1.5;
+    btn.style.width = diameter + 'px';
+    btn.style.height = diameter + 'px';
+    btn.style.fontSize = (diameter * 0.4267) + 'px';
+
+    const titleCenterY = titleRect.top + window.scrollY + titleRect.height / 2;
+    btn.style.left = (cardRect.left + window.scrollX) + 'px';
+    btn.style.top = (titleCenterY - diameter / 2) + 'px';
+  }
+  window.addEventListener('resize', positionIndexSoundBtn);
 
   function renderDots(topId, bottomId){
     const top = document.getElementById(topId);
