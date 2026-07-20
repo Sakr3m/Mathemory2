@@ -1183,7 +1183,7 @@
 <div class="modal-overlay" id="rulesModal">
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="rulesCloseBtn" aria-label="Close">✕</button>
-    <h3>Rules — Eratostene</h3>
+    <h3>Rules — Eratosthenes</h3>
     <p><strong>How to play:</strong> find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</p>
     <p><strong>Modes:</strong> each mode has its own rules on time limits and leaderboards — check them when choosing your mode.</p>
     <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
@@ -1233,10 +1233,10 @@
     return `${baseUrl}?n=${last}`;
   }
 
-  // --- una sola card attiva: Eratostene ---
+  // --- una sola card attiva: Eratosthenes ---
   const games = [
     {
-      title: 'Eratostene',
+      title: 'Eratosthenes',
       descTitle: 'Prime Numbers Game',
       desc: 'Find the primes hidden in the grid and add them up. Simple rules, a growing memory challenge as the numbers climb higher and higher. Every level tests how many you can still remember.',
       mobileDesc: 'Find the primes hidden in the grid and add them up. Every level tests how many you can still remember.',
@@ -1287,7 +1287,7 @@
   });
 
   function gameState(g){
-    if (!g.start) return 'open'; // Eratostene: sempre aperto, nessun gating
+    if (!g.start) return 'open'; // Eratosthenes: sempre aperto, nessun gating
     return 'upcoming';
   }
 
@@ -1528,7 +1528,7 @@
       <button type="button" class="game-number-btn" onclick="openRulesModal()">Game ${number}</button>
       <span class="tap-hint">Tap Game ${number} to read the rules.</span>`;
 
-    // l'altezza di riferimento è sempre quella naturale di Eratostene (il gioco vero), non della leaderboard
+    // l'altezza di riferimento è sempre quella naturale di Eratosthenes (il gioco vero), non della leaderboard
     const cards = grid.querySelectorAll('.game-card');
     cards.forEach(c => { c.style.height = ''; });
     const openCard = grid.querySelector('.game-card:not(.locked):not(.leaderboard-card)');
@@ -1562,7 +1562,7 @@
     }
   }
 
-  // misura l'altezza vera di Eratostene una volta, fuori schermo, così ogni pagina (anche quelle
+  // misura l'altezza vera di Eratosthenes una volta, fuori schermo, così ogni pagina (anche quelle
   // con giochi ancora bloccati) parte già con l'altezza corretta, senza dover prima "passarci sopra"
   function measureEratoHeight(){
     const realGrid = document.getElementById('gamesGrid');
