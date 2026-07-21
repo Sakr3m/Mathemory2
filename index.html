@@ -1961,7 +1961,10 @@
             el.style.opacity = '1';
           });
         });
-      } else if (eratoOverlayEl){
+      } else if (eratoOverlayEl && eratoOverlayEl.dataset.eratoFinalized === 'true'){
+        // forzo opacità/display solo se la sequenza di comparsa è già del tutto
+        // conclusa: farlo mentre è ancora in corso (es. un resize a metà animazione)
+        // tronca di colpo il fade lasciando il movimento a proseguire per conto suo
         eratoOverlayEl.style.display = 'flex';
         eratoOverlayEl.style.opacity = '1';
       }
