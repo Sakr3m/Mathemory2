@@ -239,15 +239,6 @@
   }
   .game-card.locked p.desc{ color: var(--ink-faint); }
 
-  .game-x-slot{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.7rem;
-    text-align: center;
-  }
-
   .unlock-date{
     font-family:'Space Mono', monospace;
     font-size: 1.5rem;
@@ -449,6 +440,10 @@
     cursor: pointer;
   }
   .game-number-btn:hover{ color: var(--yellow); border-color: var(--yellow); }
+  .erato-gamex-row{
+    display: flex;
+    justify-content: center;
+  }
   /* --- overlay condiviso da tutti i popup (regole, scelta modalità, ecc.) --- */
   .modal-overlay{
     display:none;
@@ -1580,9 +1575,12 @@
   // contenuto vero della card di Eratosthenes (titolo, pulsanti, anteprima, descrizione):
   // non vive più come markup statico nella griglia, viene costruito solo quando serve
   // per popolare la card animata
-  function eratoContentHtml(g){
+  function eratoContentHtml(g, number){
     return `
       <h2 class="game-title-centered">${g.title}</h2>
+      <div class="erato-gamex-row">
+        <button type="button" class="game-number-btn" onclick="openRulesModal()">Game ${number}</button>
+      </div>
       <div class="play-preview-block">
         <div class="play-now-split">
           <button type="button" class="cta-inline cta-split" onclick="openModeModal(0, false)">Play now<span class="cta-split-sub">Normal (locked)</span></button>
@@ -1612,18 +1610,6 @@
         <h3>Prime Rush</h3>
         <div class="lb-section">
           ${dualPodiumRowsHtml(cachedPrimeRushPodium, null)}
-        </div>
-      </div>`;
-  }
-
-  // pannello "Game X" (etichetta + invito al regolamento) nel secondo slot della griglia,
-  // dove prima stava la card della leaderboard
-  function gameXSlotHtml(number){
-    const heightStyle = cachedEratoHeight ? `style="height:${cachedEratoHeight}px"` : '';
-    return `
-      <div class="game-slot entrance-anim">
-        <div class="game-x-slot" ${heightStyle}>
-          <button type="button" class="game-number-btn" onclick="openRulesModal()">Game ${number}</button>
         </div>
       </div>`;
   }
@@ -1758,10 +1744,10 @@
     const g = games[currentIndex];
     const number = currentIndex + 1;
 
-    grid.innerHTML = gameCardHtml(g, number) + gameXSlotHtml(number);
+    grid.innerHTML = gameCardHtml(g, number);
     positionIndexSoundBtn();
     centerEratoRightEdge();
-    handleEratoIntro(grid, g);
+    handleEratoIntro(grid, g, number);
 
     document.getElementById('prevBtn').classList.toggle('disabled', currentIndex === 0);
     document.getElementById('nextBtn').classList.toggle('disabled', currentIndex === NAV_LIMIT_INDEX);
@@ -1802,7 +1788,7 @@
     probe.style.flexDirection = 'row';
     probe.innerHTML = `
       <div class="erato-content-half" style="width:50%; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
-        ${eratoContentHtml(g)}
+        ${eratoContentHtml(g, 1)}
       </div>
       <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
         ${eratoLbPreviewHtml(g)}
@@ -1829,22 +1815,54 @@
   // non solo al centro della sua colonna. Misurato dal vero, non un valore fisso.
   // gestisce l'apertura automatica al caricamento: la card vera (statica, sempre corretta)
   // resta nascosta finché la copia animata indipendente non ha finito il suo lavoro
-  function handleEratoIntro(grid, g){
+  function handleEratoIntro(grid, g, number){
     if (window.innerWidth <= 900) return;
     if (grid.dataset.eratoIntroPlayed === 'true') return;
     const card = grid.querySelector('.erato-final-card');
     if (!card) return;
     grid.dataset.eratoIntroPlayed = 'true';
 
-    // il segnaposto è vuoto e invisibile (opacity:0 via CSS), riserva solo lo spazio
-    // nella griglia per sapere dove e quanto grande deve arrivare la card animata
+    // larghezza e posizione (orizzontale/verticale) dipendono solo dalla griglia CSS,
+    // non dal contenuto interno: il segnaposto vuoto le dà comunque giuste
     const targetRect = card.getBoundingClientRect();
     const targetTop = targetRect.top + window.scrollY;
     const targetLeft = targetRect.left + window.scrollX;
     const targetWidth = targetRect.width;
-    const targetHeight = targetRect.height;
 
-    playEratoIntroOverlay(targetTop, targetLeft, targetWidth, targetHeight, g);
+    // l'altezza invece la misuro qui, da zero, con una prova di contenuto vero, apposta
+    // per NON dipendere mai da cachedEratoHeight — quella variabile è condivisa con
+    // altri punti del codice ed è già stata causa di bug quando qualcosa la sporcava
+    // in un momento sbagliato
+    const targetHeight = measureEratoContentHeight(g, number, targetWidth);
+
+    playEratoIntroOverlay(targetTop, targetLeft, targetWidth, targetHeight, g, number);
+  }
+
+  // misura da zero l'altezza naturale del contenuto vero (titolo, Game X, pulsanti,
+  // anteprima, descrizione + classifica), indipendente da qualunque altra variabile
+  // condivisa nel resto del codice
+  function measureEratoContentHeight(g, number, totalWidth){
+    const halfWidth = totalWidth / 2;
+    const probe = document.createElement('div');
+    probe.style.position = 'absolute';
+    probe.style.visibility = 'hidden';
+    probe.style.pointerEvents = 'none';
+    probe.style.left = '-9999px';
+    probe.style.top = '0px';
+    probe.style.width = totalWidth + 'px';
+    probe.style.display = 'flex';
+    probe.style.flexDirection = 'row';
+    probe.innerHTML = `
+      <div class="erato-content-half" style="width:${halfWidth}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
+        ${eratoContentHtml(g, number)}
+      </div>
+      <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
+        ${eratoLbPreviewHtml(g)}
+      </div>`;
+    document.body.appendChild(probe);
+    const measuredHeight = probe.offsetHeight;
+    document.body.removeChild(probe);
+    return measuredHeight;
   }
 
   // card animata: unica card esistente per Eratosthenes, costruita direttamente in JS
@@ -1873,7 +1891,7 @@
     }, 30000);
   }
 
-  function playEratoIntroOverlay(targetTop, targetLeft, targetWidth, targetHeight, g){
+  function playEratoIntroOverlay(targetTop, targetLeft, targetWidth, targetHeight, g, number){
     const fadeInDuration = 1500;   // comparsa: un secondo e mezzo
     const pauseDuration = 250;    // pausa ferma al centro: un quarto di secondo
     const expandDuration = 1250;  // allargamento: un secondo e un quarto
@@ -1885,7 +1903,7 @@
     const overlay = document.createElement('div');
     overlay.innerHTML = `
       <div class="erato-content-half" style="width:${narrowWidth}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
-        ${eratoContentHtml(g)}
+        ${eratoContentHtml(g, number)}
       </div>
       <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
         ${eratoLbPreviewHtml(g)}
