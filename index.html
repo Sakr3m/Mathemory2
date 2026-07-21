@@ -438,8 +438,14 @@
     z-index: 2;
     opacity: 0;
   }
+  .erato-title-row{
+    position: relative;
+  }
   .erato-gamex-label{
-    text-align: left;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
     font-family:'Space Mono', monospace;
     font-size: 1rem;
     letter-spacing: 0.06em;
@@ -450,21 +456,31 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.6rem;
+    align-items: center;
+    gap: 0.7rem;
     height: 100%;
+    text-align: center;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
   }
   .erato-rules-preview h3{
     font-family:'Kalam', cursive;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     color: var(--ink);
-    text-align: center;
-    margin: 0 0 0.3rem;
+    margin: 0;
   }
   .erato-rules-preview p{
     font-family:'Work Sans', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    line-height: 1.4;
     color: var(--ink-dim);
     margin: 0;
+    max-width: 90%;
+  }
+  .erato-rules-preview .erato-rules-fairplay{
+    color: var(--ink-faint);
+    font-size: 0.72rem;
+    margin-top: 0.2rem;
   }
   .erato-mid-divider{
     position: absolute;
@@ -1616,8 +1632,10 @@
   // per popolare la card animata
   function eratoContentHtml(g){
     return `
-      <h2 class="game-title-centered">${g.title}</h2>
-      <div class="erato-gamex-label">GAME 1</div>
+      <div class="erato-title-row">
+        <div class="erato-gamex-label">GAME 1</div>
+        <h2 class="game-title-centered">${g.title}</h2>
+      </div>
       <div class="play-preview-block">
         <div class="play-now-split">
           <button type="button" class="cta-inline cta-split" onclick="openModeModal(0, false)">Play now<span class="cta-split-sub">Normal (locked)</span></button>
@@ -1987,19 +2005,36 @@
       rulesBtn.dataset.hoverBound = 'true';
       const rulesPreviewHtml = `
         <div class="erato-rules-preview">
-          <h3>Rules — Eratosthenes</h3>
-          <p><strong>How to play:</strong> find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</p>
-          <p><strong>Modes:</strong> each mode has its own rules on time limits and leaderboards — check them when choosing your mode.</p>
-          <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
-          <p><em>Happy prime hunting.</em></p>
+          <h3>Rules</h3>
+          <p>Find the 5 hidden primes in the 5×5 grid and add them up.</p>
+          <p>Enter the total — correct answer, next level.</p>
+          <p>Each mode has its own time limit and leaderboard.</p>
+          <p class="erato-rules-fairplay">Play fair. Happy hunting.</p>
         </div>`;
       let savedLbContent = '';
+      let swapTimer = null;
+      const fadeMs = 500;
+
       rulesBtn.addEventListener('mouseenter', () => {
+        clearTimeout(swapTimer);
         savedLbContent = lbHalf.innerHTML; // fresco ad ogni hover, mai una copia vecchia
-        lbHalf.innerHTML = rulesPreviewHtml;
+        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
+        lbHalf.style.opacity = '0';
+        swapTimer = setTimeout(() => {
+          lbHalf.innerHTML = rulesPreviewHtml;
+          void lbHalf.offsetWidth; // forzo il reflow prima di far ripartire la dissolvenza
+          lbHalf.style.opacity = '1';
+        }, fadeMs);
       });
       rulesBtn.addEventListener('mouseleave', () => {
-        lbHalf.innerHTML = savedLbContent;
+        clearTimeout(swapTimer);
+        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
+        lbHalf.style.opacity = '0';
+        swapTimer = setTimeout(() => {
+          lbHalf.innerHTML = savedLbContent;
+          void lbHalf.offsetWidth;
+          lbHalf.style.opacity = '1';
+        }, fadeMs);
       });
     }
 
