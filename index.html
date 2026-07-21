@@ -68,6 +68,28 @@
     text-transform: uppercase;
   }
 
+  /* simboli che sostituiscono T, E, O nel titolo: font a parte perché Kalam
+     non ha questi glifi, valori em pensati per restare nell'ingombro delle
+     lettere normali (tranne la croce, che sfora di proposito in altezza) */
+  .mark-sym{
+    font-family: Arial, 'Helvetica Neue', sans-serif;
+    display: inline-block;
+    line-height: 1;
+  }
+  .mark-cross{
+    font-size: 1.2em;
+    vertical-align: -0.14em;
+    margin: 0 -0.02em;
+  }
+  .mark-sigma{
+    font-size: 0.82em;
+    vertical-align: 0.02em;
+  }
+  .mark-emptyset{
+    font-size: 0.8em;
+    vertical-align: 0.01em;
+  }
+
   .subtitle{
     font-family:'Work Sans', sans-serif;
     font-size: 1.25rem;
@@ -1280,7 +1302,7 @@
   <header>
     <div class="title-row">
       <button type="button" class="index-sound-btn audio-toggle-btn" id="indexSoundBtn" aria-label="Sound">🔊</button>
-      <span class="mark">Mathemory</span>
+      <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
     </div>
     <p class="subtitle">A collection of math games, unlocking one after another over time.<br>Each one runs its own ~12-day race with a leaderboard ranked by fastest completion time.<br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
     <svg class="header-divider" viewBox="0 0 356 10" preserveAspectRatio="none" aria-hidden="true">
