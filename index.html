@@ -428,9 +428,13 @@
     cursor: pointer;
   }
   .game-number-btn:hover{ color: var(--yellow); border-color: var(--yellow); }
-  .erato-gamex-row{
-    display: flex;
-    justify-content: center;
+  .erato-gamex-tag{
+    position: absolute;
+    top: -1.1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-panel);
+    z-index: 2;
   }
   /* --- overlay condiviso da tutti i popup (regole, scelta modalità, ecc.) --- */
   .modal-overlay{
@@ -1562,12 +1566,9 @@
   // contenuto vero della card di Eratosthenes (titolo, pulsanti, anteprima, descrizione):
   // non vive più come markup statico nella griglia, viene costruito solo quando serve
   // per popolare la card animata
-  function eratoContentHtml(g, number){
+  function eratoContentHtml(g){
     return `
       <h2 class="game-title-centered">${g.title}</h2>
-      <div class="erato-gamex-row">
-        <button type="button" class="game-number-btn" onclick="openRulesModal()">Game ${number}</button>
-      </div>
       <div class="play-preview-block">
         <div class="play-now-split">
           <button type="button" class="cta-inline cta-split" onclick="openModeModal(0, false)">Play now<span class="cta-split-sub">Normal (locked)</span></button>
@@ -1775,7 +1776,7 @@
     probe.style.flexDirection = 'row';
     probe.innerHTML = `
       <div class="erato-content-half" style="width:50%; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
-        ${eratoContentHtml(g, 1)}
+        ${eratoContentHtml(g)}
       </div>
       <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
         ${eratoLbPreviewHtml(g)}
@@ -1807,12 +1808,19 @@
     if (grid.dataset.eratoIntroPlayed === 'true') return;
     grid.dataset.eratoIntroPlayed = 'true';
 
-    // niente segnaposto: la griglia stessa (vuota) dà già posizione e larghezza corrette,
-    // dato che entrambe dipendono solo dal CSS del layout, non da un contenuto interno
-    const targetRect = grid.getBoundingClientRect();
-    const targetTop = targetRect.top + window.scrollY;
-    const targetLeft = targetRect.left + window.scrollX;
-    const targetWidth = targetRect.width;
+    // larghezza calcolata come una singola colonna della griglia (la stessa
+    // larghezza delle vecchie card "coming soon" nelle altre pagine), immaginata con
+    // il lato destro al centro della pagina, poi raddoppiata verso destra: quello è
+    // il totale per la card di Eratosthenes + classifica
+    const gridRect = grid.getBoundingClientRect();
+    const gridStyle = getComputedStyle(grid);
+    const gap = parseFloat(gridStyle.columnGap || gridStyle.gap) || 0;
+    const singleColWidth = (gridRect.width - gap) / 2;
+
+    const viewportCenter = window.innerWidth / 2;
+    const targetWidth = singleColWidth * 2;
+    const targetLeft = viewportCenter - singleColWidth;
+    const targetTop = gridRect.top + window.scrollY;
 
     // l'altezza invece la misuro qui, da zero, con una prova di contenuto vero, apposta
     // per NON dipendere mai da cachedEratoHeight — quella variabile è condivisa con
@@ -1839,7 +1847,7 @@
     probe.style.flexDirection = 'row';
     probe.innerHTML = `
       <div class="erato-content-half" style="width:${halfWidth}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
-        ${eratoContentHtml(g, number)}
+        ${eratoContentHtml(g)}
       </div>
       <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
         ${eratoLbPreviewHtml(g)}
@@ -1887,8 +1895,9 @@
 
     const overlay = document.createElement('div');
     overlay.innerHTML = `
+      <button type="button" class="game-number-btn erato-gamex-tag" onclick="openRulesModal()">Game ${number}</button>
       <div class="erato-content-half" style="width:${narrowWidth}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
-        ${eratoContentHtml(g, number)}
+        ${eratoContentHtml(g)}
       </div>
       <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
         ${eratoLbPreviewHtml(g)}
