@@ -411,7 +411,7 @@
     font-weight:700;
     border-radius: 6px;
     animation: mc-light-up 1.5s ease forwards;
-    animation-delay: calc(var(--i) * 90ms + 3.0s);
+    animation-delay: calc(var(--i) * 90ms + 3.5s);
   }
   @keyframes mc-light-up{
     from{ color: var(--ink); background: transparent; box-shadow: none; }
@@ -1841,9 +1841,9 @@
   // si allarga (1.5s) — durante tutta questa fase non è interagibile. L'anteprima della
   // griglia (mini-sieve) parte 0.5s dopo che tutto ha finito
   function playEratoIntroOverlay(targetTop, targetLeft, targetWidth, targetHeight, g){
-    const fadeInDuration = 1500;   // TEST: un secondo e mezzo
+    const fadeInDuration = 1500;   // comparsa: un secondo e mezzo
     const pauseDuration = 250;    // pausa ferma al centro: un quarto di secondo
-    const expandDuration = 1500;  // allargamento: un secondo e mezzo
+    const expandDuration = 1250;  // allargamento: un secondo e un quarto
 
     const narrowWidth = targetWidth / 2;
     const viewportCenter = window.innerWidth / 2;
@@ -1885,7 +1885,7 @@
     function startSequence(){
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          overlay.style.transition = `opacity ${fadeInDuration}ms ease, transform ${fadeInDuration}ms ease`;
+          overlay.style.transition = `opacity ${fadeInDuration}ms ease-in, transform ${fadeInDuration}ms ease-in`;
           overlay.style.opacity = '1';
           overlay.style.transform = 'translateY(0)';
 
@@ -1908,7 +1908,17 @@
     if (document.readyState === 'complete'){
       startSequence();
     } else {
-      window.addEventListener('load', startSequence, { once: true });
+      // limite di sicurezza: se il caricamento completo non arriva entro 15 secondi
+      // (connessione lenta, risorsa bloccata, ecc.), si parte comunque — evita di
+      // restare in attesa all'infinito
+      let started = false;
+      function startOnce(){
+        if (started) return;
+        started = true;
+        startSequence();
+      }
+      window.addEventListener('load', startOnce, { once: true });
+      setTimeout(startOnce, 15000);
     }
   }
 
