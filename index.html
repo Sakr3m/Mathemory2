@@ -2021,7 +2021,7 @@
     }
 
     function respawn(el){
-      const fadeOutMs = jitter(1500, 300); // sparizione: ~1.5s
+      const fadeOutMs = jitter(1500, 700); // sparizione: ~1.5s, variazione ampia per rompere la sincronia
       // a questo punto il simbolo è quasi certamente ancora a metà del suo percorso di 7s:
       // aggiungo la dissolvenza alla transizione del movimento già in corso, invece di
       // sovrascriverla — altrimenti il movimento si interrompe di colpo proprio qui
@@ -2038,9 +2038,9 @@
         el.style.transition = 'none';
         el.style.transform = 'translate(0, 0)';
         void el.getBoundingClientRect(); // forzo il reflow prima di far ripartire la dissolvenza
-        const gapMs = jitter(1000, 250); // attesa dopo la sparizione, prima di ricomparire: ~1s
+        const gapMs = jitter(1000, 600); // attesa dopo la sparizione, prima di ricomparire: ~1s, variazione ampia
         setTimeout(() => {
-          const fadeInMs = jitter(1500, 300); // comparsa: ~1.5s
+          const fadeInMs = jitter(1500, 700); // comparsa: ~1.5s, variazione ampia per rompere la sincronia
           el.style.transition = `opacity ${(fadeInMs / 1000).toFixed(2)}s ease`;
           el.style.opacity = '';
           driftAway(el);
@@ -2050,12 +2050,12 @@
     }
 
     function lifeLoop(el){
-      const lifeMs = jitter(3000, 500); // vita: ~3s
+      const lifeMs = jitter(3000, 1500); // vita: ~3s, variazione molto ampia per evitare che muoiano a blocchi
       setTimeout(() => { respawn(el); }, lifeMs);
     }
 
     texts.forEach((el) => {
-      const initialStagger = 500 + Math.random() * 1000; // partenza tra 0.5s e 1.5s, mai tutti insieme
+      const initialStagger = Math.random() * 4000; // partenza sparsa su una finestra ampia, mai tutti insieme
       setTimeout(() => {
         driftAway(el);
         lifeLoop(el);
