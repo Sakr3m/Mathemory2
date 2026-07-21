@@ -1503,7 +1503,7 @@
   // Resta disattivata finché l'effetto a comparsa non ha finito, per non sovrapporre le due
   // animazioni. Se un giorno l'effetto a comparsa viene tolto, questo timer va rimosso o
   // azzerato: senza comparsa non serve più aspettare nulla.
-  function initEratoHoverExpand(grid){
+  function initEratoHoverExpand(grid, g){
     if (window.innerWidth <= 900) return;
     const slot = grid.querySelector('.game-slot:first-child');
     if (!slot) return;
@@ -1511,7 +1511,6 @@
     if (!card) return;
     const fixedContent = card.querySelector('.erato-fixed-content');
     const lbPreview = card.querySelector('.erato-lb-preview');
-    const leaderboardCard = grid.querySelector('.game-slot:last-child .leaderboard-card');
 
     let hoverReady = false;
     let isExpanded = false;
@@ -1538,10 +1537,11 @@
         fixedContent.style.flexShrink = '0';
       }
 
-      // copia (non sposta) il contenuto già renderizzato della classifica: nessun nuovo fetch, nessun tocco al Worker
-      if (lbPreview && leaderboardCard){
+      // genera il contenuto della classifica direttamente dai dati in cache: nessun nuovo
+      // fetch, nessun tocco al Worker, e non dipende più dall'esistenza della vecchia card
+      if (lbPreview){
         clearTimeout(card._lbClearTimer);
-        lbPreview.innerHTML = leaderboardCard.innerHTML;
+        lbPreview.innerHTML = eratoLbPreviewHtml(g);
 
         // il bordo destro delle tabelle deve distare dal bordo destro della card tanto quanto
         // l'anteprima della griglia dista dal bordo sinistro: misurato dal vero, non un valore fisso
@@ -1690,6 +1690,27 @@
     }
   }
 
+  // genera il contenuto della classifica direttamente dai dati già in cache — usata dal
+  // pannello dentro la card allargata, indipendente dalla vecchia card della leaderboard
+  // (che potrebbe anche non esistere più in futuro)
+  function eratoLbPreviewHtml(g){
+    return `
+      <div class="lb-half">
+        <h2>The Sieve</h2>
+        <p class="race-end-inline">The race ends on ${g.raceEnd}</p>
+        <div class="lb-section">
+          ${podiumRowsHtml(cachedPodium)}
+        </div>
+      </div>
+      <div class="lb-divider"></div>
+      <div class="lb-half">
+        <h3>Prime Rush</h3>
+        <div class="lb-section">
+          ${dualPodiumRowsHtml(cachedPrimeRushPodium, null)}
+        </div>
+      </div>`;
+  }
+
   function leaderboardCardHtml(g){
     const state = gameState(g);
     const heightStyle = cachedEratoHeight ? `style="height:${cachedEratoHeight}px"` : '';
@@ -1814,7 +1835,7 @@
     const number = currentIndex + 1;
 
     grid.innerHTML = gameCardHtml(g, number) + leaderboardCardHtml(g);
-    initEratoHoverExpand(grid);
+    initEratoHoverExpand(grid, g);
     positionIndexSoundBtn();
     centerEratoRightEdge();
 
@@ -2055,7 +2076,7 @@
     }
 
     texts.forEach((el) => {
-      const initialStagger = Math.random() * 4000; // partenza sparsa su una finestra ampia, mai tutti insieme
+      const initialStagger = 100; // solo un istante tecnico per il caricamento della pagina, il movimento parte subito per tutti
       setTimeout(() => {
         driftAway(el);
         lifeLoop(el);
