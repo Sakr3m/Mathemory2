@@ -57,7 +57,6 @@
     height: 10px;
     margin: 2.2vh auto 0;
   }
-  .header-divider path{ fill: var(--rule); }
 
   .mark{
     font-family:'Kalam', cursive;
@@ -1226,7 +1225,15 @@
     </div>
     <p class="subtitle">A collection of math games, unlocking one after another over time.<br>Each one runs its own ~12-day race with a leaderboard ranked by fastest completion time.<br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
     <svg class="header-divider" viewBox="0 0 356 10" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,5 Q89,2 178,3.5 Q267,2 356,5 Q267,8 178,6.5 Q89,8 0,5 Z" />
+      <defs>
+        <linearGradient id="dividerFade" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="rgba(243,239,228,0)" />
+          <stop offset="18%" stop-color="rgba(243,239,228,0.12)" />
+          <stop offset="82%" stop-color="rgba(243,239,228,0.12)" />
+          <stop offset="100%" stop-color="rgba(243,239,228,0)" />
+        </linearGradient>
+      </defs>
+      <path d="M0,5 Q89,2 178,3.5 Q267,2 356,5 Q267,8 178,6.5 Q89,8 0,5 Z" fill="url(#dividerFade)" />
     </svg>
   </header>
 
@@ -1797,7 +1804,6 @@
     const number = currentIndex + 1;
 
     grid.innerHTML = gameCardHtml(g, number) + gameXSlotHtml(number);
-    initEratoHoverExpand(grid, g);
     positionIndexSoundBtn();
     centerEratoRightEdge();
 
@@ -1811,6 +1817,11 @@
     if (cachedEratoHeight){
       cards.forEach(c => { c.style.height = cachedEratoHeight + 'px'; });
     }
+
+    // solo ORA, dopo che tutte le misure sul layout normale sono state fatte,
+    // rendo la card assoluta per l'apertura automatica — altrimenti le misure sopra
+    // (centerEratoRightEdge compresa) leggerebbero uno slot collassato e sbaglierebbero
+    initEratoHoverExpand(grid, g);
 
     document.getElementById('prevBtn').classList.toggle('disabled', currentIndex === 0);
     document.getElementById('nextBtn').classList.toggle('disabled', currentIndex === NAV_LIMIT_INDEX);
