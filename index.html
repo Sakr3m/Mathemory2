@@ -132,6 +132,8 @@
     flex-shrink: 0;
   }
   .erato-leaderboard-half{
+    display: flex;
+    flex-direction: row;
     flex: 1 1 auto;
     min-width: 0;
   }
@@ -2059,72 +2061,17 @@
   // l'allargamento è completamente finito, altrimenti si misura la card ancora
   // stretta e tutto risulta fuori posto
   function finalizeEratoLayout(overlay){
-    // al passaggio del mouse su RULES, la classifica sparisce per un attimo lasciando
-    // spazio al testo delle regole (lo stesso che si legge aprendo il popup); toglendo
-    // il mouse, torna la classifica
-    const rulesBtn = overlay.querySelector('#eratoRulesBtn');
     const lbHalf = overlay.querySelector('.erato-leaderboard-half');
-    if (rulesBtn && lbHalf && !rulesBtn.dataset.hoverBound){
-      rulesBtn.dataset.hoverBound = 'true';
-      const rulesPreviewHtml = `
-        <div class="erato-rules-preview">
-          <h3>Rules</h3>
-          <p><strong>How to play:</strong> find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</p>
-          <p><strong>Modes:</strong> each mode has its own rules on time limits and leaderboards — check them when choosing your mode.</p>
-          <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
-          <p>Happy prime hunting.</p>
-          <p class="device-note-old">Progress is saved per device — switching devices restarts from level 1.</p>
-        </div>`;
-      // stato esplicito, mai dedotto leggendo l'HTML attuale: leggere lbHalf.innerHTML
-      // per "indovinare" cosa c'è dentro era la causa del blocco — con hover ripetuti
-      // veloci, a volte veniva letto mentre RULES era già in vista, salvando quel
-      // testo come se fosse la classifica vera, corrompendo il ripristino per sempre
-      lbHalf._realLbHtml = lbHalf.innerHTML;
-      lbHalf._isShowingRules = false;
-      let swapTimer = null;
-      const fadeMs = 350;
-
-      rulesBtn.addEventListener('mouseenter', () => {
-        if (lbHalf._isShowingRules) return; // già in vista o in transizione: ignoro il re-trigger
-        lbHalf._isShowingRules = true;
-        clearTimeout(swapTimer);
-        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
-        lbHalf.style.opacity = '0';
-        swapTimer = setTimeout(() => {
-          lbHalf.innerHTML = rulesPreviewHtml;
-          const rulesPreviewEl = lbHalf.querySelector('.erato-rules-preview');
-          if (rulesPreviewEl){
-            const savedMarginRight = overlay.dataset.eratoLbMarginRight || '0';
-            rulesPreviewEl.style.width = '85%';
-            rulesPreviewEl.style.marginRight = savedMarginRight + 'px';
-            rulesPreviewEl.style.marginLeft = 'auto';
-          }
-          void lbHalf.offsetWidth; // forzo il reflow prima di far ripartire la dissolvenza
-          lbHalf.style.opacity = '1';
-        }, fadeMs);
-      });
-      rulesBtn.addEventListener('mouseleave', () => {
-        if (!lbHalf._isShowingRules) return; // non era in vista: nulla da ripristinare
-        lbHalf._isShowingRules = false;
-        clearTimeout(swapTimer);
-        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
-        lbHalf.style.opacity = '0';
-        swapTimer = setTimeout(() => {
-          lbHalf.innerHTML = lbHalf._realLbHtml; // sempre il contenuto vero, mai una copia sporcata
-          void lbHalf.offsetWidth;
-          lbHalf.style.opacity = '1';
-        }, fadeMs);
-      });
-    }
 
     // il bordo destro delle tabelle della classifica deve distare dal bordo destro della
     // card tanto quanto l'anteprima della griglia dista dal bordo sinistro: misurato dal
-    // vero, non un valore fisso (queste sono tutte uguali, la parte più lunga della classifica)
+    // vero, non un valore fisso (queste sono tutte uguali, la parte più lunga della classifica).
+    // Questo va fatto PRIMA di catturare il contenuto "vero" per RULES qui sotto, altrimenti
+    // il ripristino al mouseleave riporterebbe una versione senza questo margine applicato
     const miniSieve = overlay.querySelector('.mini-sieve');
     if (miniSieve){
       const leftGap = miniSieve.getBoundingClientRect().left - overlay.getBoundingClientRect().left;
-      const lbHalfEl = overlay.querySelector('.erato-leaderboard-half');
-      const lbHalfPaddingRight = lbHalfEl ? (parseFloat(getComputedStyle(lbHalfEl).paddingRight) || 0) : 0;
+      const lbHalfPaddingRight = lbHalf ? (parseFloat(getComputedStyle(lbHalf).paddingRight) || 0) : 0;
       const marginRight = Math.max(0, leftGap - lbHalfPaddingRight);
       overlay.dataset.eratoLbMarginRight = marginRight;
       overlay.querySelectorAll('.lb-row, .leaderboard-card h2, .leaderboard-card h3, .race-end-inline').forEach(el => {
@@ -2139,11 +2086,12 @@
     const playButtons = overlay.querySelectorAll('.play-now-split .cta-split');
     const rightPlayBtn = playButtons[1];
     const firstLbRow = overlay.querySelector('.lb-row');
+    let dividerX = null;
     if (rightPlayBtn && firstLbRow){
       const overlayRect = overlay.getBoundingClientRect();
       const btnRight = rightPlayBtn.getBoundingClientRect().right;
       const rowLeft = firstLbRow.getBoundingClientRect().left;
-      const dividerX = (btnRight + rowLeft) / 2 - overlayRect.left;
+      dividerX = (btnRight + rowLeft) / 2 - overlayRect.left;
 
       let dividerLine = overlay.querySelector('.erato-mid-divider');
       if (!dividerLine){
@@ -2195,6 +2143,66 @@
         });
       }
       faceImg.style.left = dividerX + 'px';
+    }
+
+    // al passaggio del mouse su RULES, la classifica sparisce per un attimo lasciando
+    // spazio al testo delle regole (lo stesso che si legge aprendo il popup); togliendo
+    // il mouse, torna la classifica. Questo blocco va DOPO tutto il resto, così il
+    // contenuto catturato come "vero" è già nella sua forma finale corretta (margini,
+    // ecc.) — prima veniva catturato troppo presto, riportando indietro una versione
+    // senza quegli aggiustamenti quando si toglieva il mouse da RULES
+    const rulesBtn = overlay.querySelector('#eratoRulesBtn');
+    if (rulesBtn && lbHalf && !rulesBtn.dataset.hoverBound){
+      rulesBtn.dataset.hoverBound = 'true';
+      const rulesPreviewHtml = `
+        <div class="erato-rules-preview">
+          <h3>Rules</h3>
+          <p><strong>How to play:</strong> find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</p>
+          <p><strong>Modes:</strong> each mode has its own rules on time limits and leaderboards — check them when choosing your mode.</p>
+          <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
+          <p>Happy prime hunting.</p>
+          <p class="device-note-old">Progress is saved per device — switching devices restarts from level 1.</p>
+        </div>`;
+      // stato esplicito, mai dedotto leggendo l'HTML attuale: leggere lbHalf.innerHTML
+      // per "indovinare" cosa c'è dentro era la causa del blocco — con hover ripetuti
+      // veloci, a volte veniva letto mentre RULES era già in vista, salvando quel
+      // testo come se fosse la classifica vera, corrompendo il ripristino per sempre
+      lbHalf._realLbHtml = lbHalf.innerHTML;
+      lbHalf._isShowingRules = false;
+      let swapTimer = null;
+      const fadeMs = 350;
+
+      rulesBtn.addEventListener('mouseenter', () => {
+        if (lbHalf._isShowingRules) return; // già in vista o in transizione: ignoro il re-trigger
+        lbHalf._isShowingRules = true;
+        clearTimeout(swapTimer);
+        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
+        lbHalf.style.opacity = '0';
+        swapTimer = setTimeout(() => {
+          lbHalf.innerHTML = rulesPreviewHtml;
+          const rulesPreviewEl = lbHalf.querySelector('.erato-rules-preview');
+          if (rulesPreviewEl){
+            const savedMarginRight = overlay.dataset.eratoLbMarginRight || '0';
+            rulesPreviewEl.style.width = '85%';
+            rulesPreviewEl.style.marginRight = savedMarginRight + 'px';
+            rulesPreviewEl.style.marginLeft = 'auto';
+          }
+          void lbHalf.offsetWidth; // forzo il reflow prima di far ripartire la dissolvenza
+          lbHalf.style.opacity = '1';
+        }, fadeMs);
+      });
+      rulesBtn.addEventListener('mouseleave', () => {
+        if (!lbHalf._isShowingRules) return; // non era in vista: nulla da ripristinare
+        lbHalf._isShowingRules = false;
+        clearTimeout(swapTimer);
+        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
+        lbHalf.style.opacity = '0';
+        swapTimer = setTimeout(() => {
+          lbHalf.innerHTML = lbHalf._realLbHtml; // sempre il contenuto vero, mai una copia sporcata
+          void lbHalf.offsetWidth;
+          lbHalf.style.opacity = '1';
+        }, fadeMs);
+      });
     }
   }
 
