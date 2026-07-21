@@ -1817,27 +1817,41 @@
     if (grid.dataset.eratoIntroPlayed === 'true') return;
     grid.dataset.eratoIntroPlayed = 'true';
 
-    // larghezza calcolata come una singola colonna della griglia (la stessa
-    // larghezza delle vecchie card "coming soon" nelle altre pagine), immaginata con
-    // il lato destro al centro della pagina, poi raddoppiata verso destra: quello è
-    // il totale per la card di Eratosthenes + classifica
-    const gridRect = grid.getBoundingClientRect();
-    const gridStyle = getComputedStyle(grid);
-    const gap = parseFloat(gridStyle.columnGap || gridStyle.gap) || 0;
-    const singleColWidth = (gridRect.width - gap) / 2;
+    function measureAndPlay(){
+      // larghezza calcolata come una singola colonna della griglia (la stessa
+      // larghezza delle vecchie card "coming soon" nelle altre pagine), immaginata con
+      // il lato destro al centro della pagina, poi raddoppiata verso destra: quello è
+      // il totale per la card di Eratosthenes + classifica
+      const gridRect = grid.getBoundingClientRect();
+      const gridStyle = getComputedStyle(grid);
+      const gap = parseFloat(gridStyle.columnGap || gridStyle.gap) || 0;
+      const singleColWidth = (gridRect.width - gap) / 2;
 
-    const viewportCenter = window.innerWidth / 2;
-    const targetWidth = singleColWidth * 2;
-    const targetLeft = viewportCenter - singleColWidth;
-    const targetTop = gridRect.top + window.scrollY;
+      const viewportCenter = window.innerWidth / 2;
+      const targetWidth = singleColWidth * 2;
+      const targetLeft = viewportCenter - singleColWidth;
+      const targetTop = gridRect.top + window.scrollY;
 
-    // l'altezza invece la misuro qui, da zero, con una prova di contenuto vero, apposta
-    // per NON dipendere mai da cachedEratoHeight — quella variabile è condivisa con
-    // altri punti del codice ed è già stata causa di bug quando qualcosa la sporcava
-    // in un momento sbagliato
-    const targetHeight = measureEratoContentHeight(g, number, targetWidth);
+      // l'altezza la misuro qui, da zero, con una prova di contenuto vero, apposta
+      // per NON dipendere mai da cachedEratoHeight — quella variabile è condivisa con
+      // altri punti del codice ed è già stata causa di bug quando qualcosa la sporcava
+      // in un momento sbagliato
+      const targetHeight = measureEratoContentHeight(g, number, targetWidth);
 
-    playEratoIntroOverlay(targetTop, targetLeft, targetWidth, targetHeight, g, number);
+      playEratoIntroOverlay(targetTop, targetLeft, targetWidth, targetHeight, g, number);
+    }
+
+    // aspetto che i font siano DAVVERO pronti prima di misurare qualunque cosa: il
+    // titolo (e tutto il resto) usa il font "Kalam", esterno — se non è ancora
+    // scaricato, il browser misura con un font di riserva più piccolo, dando
+    // unaltezza sbagliata. Siccome il tempo di scaricamento del font varia a ogni
+    // refresh, senza questa attesa il bug sembra comparire "a caso"
+    if (document.fonts && document.fonts.ready){
+      document.fonts.ready.then(measureAndPlay);
+    } else {
+      measureAndPlay();
+    }
+  }
   }
 
   // misura da zero l'altezza naturale del contenuto vero (titolo, Game X, pulsanti,
