@@ -489,7 +489,7 @@
   .erato-mid-divider svg{ display: block; width: 100%; height: 100%; }
   .erato-face-img{
     position: absolute;
-    bottom: -0.0625rem;
+    bottom: 0.25rem;
     left: 0;
     transform: translateX(-50%);
     max-height: 20.71%;
@@ -1154,9 +1154,15 @@
       color: var(--ink-dim);
       font-family:'Space Mono', monospace;
       cursor: pointer;
-      transition: border-color 0.15s ease, color 0.15s ease, opacity 0.5s ease;
+      transition: border-color 0.15s ease, color 0.15s ease, opacity 0.5s ease, background 0.15s ease, box-shadow 0.2s ease;
       z-index: 50;
       opacity: 0; /* stesso fade in sincronizzato di titolo/sottotitolo */
+    }
+    .index-sound-btn:hover{
+      color: var(--yellow);
+      border-color: rgba(232,196,104,0.75);
+      background: rgba(232,196,104,0.22);
+      box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
     }
     .mobile-index-sound-btn{ display: none; }
   }
@@ -1187,6 +1193,15 @@
     text-align: right;
   }
   .audio-toggle-btn{ cursor: pointer; }
+  .index-sound-btn svg, .mobile-index-sound-btn svg{ width: 46%; height: 46%; }
+  /* stato "acceso" del volume (audio non muto): stessa illuminazione dei numeri
+     selezionati nella griglia, l'icona resta sempre la stessa, cambia solo questo */
+  .audio-toggle-btn.audio-on{
+    color: #1C1F16;
+    background: var(--yellow);
+    border-color: var(--yellow);
+    box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
+  }
 
   .rotate-lock-overlay{ display: none; }
   @media (orientation: landscape) and (max-width: 900px), (orientation: landscape) and (max-height: 500px){
@@ -1278,7 +1293,7 @@
     </svg>
   <header>
     <div class="title-row">
-      <button type="button" class="index-sound-btn audio-toggle-btn" id="indexSoundBtn" aria-label="Sound">🔊</button>
+      <button type="button" class="index-sound-btn audio-toggle-btn" id="indexSoundBtn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></button>
       <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
     </div>
     <p class="subtitle">A collection of math games, unlocking one after another over time.<br>Each game has timed leaderboard modes and more relaxed modes just for fun.<br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
@@ -1326,7 +1341,7 @@
           <div class="mobile-shifted-content">
             <span class="mark">Mathemory</span>
             <p class="subtitle">A collection of math games, unlocking one after another over time.<br><br>Each game has timed leaderboard modes and more relaxed modes just for fun.<br><br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
-            <button type="button" class="mobile-index-sound-btn audio-toggle-btn" aria-label="Sound">🔊</button>
+            <button type="button" class="mobile-index-sound-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></button>
             <p class="scroll-hint">↓ Scroll down to explore the games and the rest of the site. ↓</p>
           </div>
         </section>

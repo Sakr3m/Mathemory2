@@ -591,6 +591,15 @@
     text-align: right;
   }
   .audio-toggle-btn{ cursor: pointer; }
+  .mobile-icon-btn svg{ width: 46%; height: 46%; }
+  /* stato "acceso" del volume (audio non muto): stessa illuminazione dei numeri
+     selezionati nella griglia, l'icona resta sempre la stessa, cambia solo questo */
+  .audio-toggle-btn.audio-on{
+    color: #1C1F16;
+    background: var(--yellow);
+    border-color: var(--yellow);
+    box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
+  }
   .modal-note{
     font-family:'Space Mono', monospace;
     font-size: 0.75rem;
@@ -638,9 +647,9 @@
   <div class="content-col">
   <div class="wrap" id="wrap">
     <div class="title-icon-row">
-      <button type="button" class="mobile-icon-btn audio-toggle-btn" id="mobileSkipBtn" aria-label="Sound">🔊</button>
+      <button type="button" class="mobile-icon-btn audio-toggle-btn" id="mobileSkipBtn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></button>
       <h1 id="levelTitle"></h1>
-      <a class="mobile-icon-btn" id="homeBtn" href="index.html" aria-label="Home">🏠</a>
+      <a class="mobile-icon-btn" id="homeBtn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
     </div>
     <p class="instructions">Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total.</p>
     <div class="rank-callout" id="rankCallout"></div>

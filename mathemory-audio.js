@@ -52,8 +52,9 @@
   }
 
   function updateAllButtons(){
-    const icon = isMuted() ? '🔇' : '🔊';
-    buttons.forEach(btn => { btn.textContent = icon; });
+    // l'icona resta sempre la stessa (non cambia più tra muto/attivo): lo stato si
+    // vede solo dall'accensione del pulsante, come i numeri selezionati nella griglia
+    buttons.forEach(btn => { btn.classList.toggle('audio-on', !isMuted()); });
   }
 
   function hasUserChoice(){ return localStorage.getItem(MUTED_KEY) !== null; }
