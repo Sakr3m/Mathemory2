@@ -728,13 +728,13 @@
     .mobile-index-sound-btn{
       display: flex;
       position: absolute;
-      top: 75%;
+      top: 70%;
       left: 50%;
       transform: translateX(-50%);
       align-items: center;
       justify-content: center;
-      width: 44px;
-      height: 44px;
+      width: 50.6px;
+      height: 50.6px;
       border: 1px solid var(--rule);
       border-radius: 50%;
       background: var(--bg-panel);
@@ -743,6 +743,7 @@
       font-size: 1.2rem;
       cursor: pointer;
     }
+    .mobile-index-sound-btn svg{ width: 30.475px; height: 30.475px; }
   }
 
   /* --- fascia intermedia (finestra desktop stretta, non mobile): 1 sola card, contenuto essenziale --- */
@@ -1212,7 +1213,7 @@
     text-align: right;
   }
   .audio-toggle-btn{ cursor: pointer; }
-  .index-sound-btn svg, .mobile-index-sound-btn svg{ width: 26.5px; height: 26.5px; }
+  .index-sound-btn svg{ width: 26.5px; height: 26.5px; }
   /* stato "acceso" del volume (audio non muto): stessa illuminazione dei numeri
      selezionati nella griglia, l'icona resta sempre la stessa, cambia solo questo */
   .audio-toggle-btn.audio-on{
@@ -1845,7 +1846,7 @@
         <div class="mobile-records-block">
           <h3>Prime Rush</h3>
           <div class="lb-section">
-            ${podiumRowsHtml(cachedPrimeRushPodium)}
+            ${dualPodiumRowsHtml(cachedPrimeRushPodium, null)}
           </div>
         </div>
       </div>`;
