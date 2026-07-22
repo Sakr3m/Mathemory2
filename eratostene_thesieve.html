@@ -1389,15 +1389,6 @@
       .forEach(k => localStorage.removeItem(k));
   }
 
-  // stessa parola segreta impostata nella variabile d'ambiente SUBMIT_TOKEN_SECRET
-  // del Worker: DEVE combaciare esattamente, altrimenti ogni invio verrà rifiutato
-  const SUBMIT_TOKEN_SECRET = 'CAMBIAMI-stessa-parola-del-Worker';
-  async function computeSubmitToken(nickname, time, secret){
-    const data = new TextEncoder().encode(`${nickname}|${time}|${secret}`);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-  }
-
   document.getElementById('finishConfirmBtn').addEventListener('click', () => {
     const nickname = document.getElementById('finishNickname').value.trim();
     const note = document.getElementById('finishNote');
@@ -1412,15 +1403,12 @@
     const timeValue = parseFloat(totalRaceTime);
 
     // invio il tempo al Worker per il podio globale; se fallisce (rete assente, Worker giù)
-    // l'utente prosegue comunque, non è bloccante — la navigazione alla home non aspetta
-    // né il calcolo del token né la risposta del Worker
-    computeSubmitToken(nickname, timeValue, SUBMIT_TOKEN_SECRET).then(token => {
-      fetch('https://eratostene.sl-eternal-lux.workers.dev/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname, time: timeValue, token })
-      }).catch(() => {});
-    });
+    // l'utente prosegue comunque, non è bloccante
+    fetch('https://eratostene.sl-eternal-lux.workers.dev/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nickname, time: timeValue })
+    }).catch(() => {});
 
     resetForNewRun();
     window.location.href = 'index.html';
