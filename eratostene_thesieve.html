@@ -379,6 +379,11 @@
   .content-col{ grid-area: content; min-width:0; position: relative; z-index: 1; }
 
   @media (max-width: 900px){
+    html, body{
+      overflow: hidden;
+      height: 100%;
+      overscroll-behavior: none;
+    }
     .page-shell{
       min-height: 100vh;
       grid-template-columns: 1fr;
@@ -790,6 +795,14 @@
 </div>
 
 <script>
+  // schermata bloccata su mobile: non deve scorrere in nessuna direzione (tutto
+  // dovrebbe già stare nella schermata grazie al ridimensionamento). L'overflow:hidden
+  // via CSS non basta sempre (es. il "rimbalzo" di iOS Safari), quindi blocco anche
+  // il gesto stesso qui. Solo su mobile, non tocca in alcun modo il desktop
+  if (window.innerWidth <= 900){
+    document.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
+  }
+
   // simboli di sfondo: statici (nessun movimento), ma con posizione casuale a ogni
   // apertura pagina — un "seed" diverso genera una nuova disposizione ogni volta,
   // incluso ogni cambio livello (che qui ricarica sempre la pagina intera). Chiamata
