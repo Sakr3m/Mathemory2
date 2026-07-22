@@ -48,14 +48,14 @@
 
   /* --- masthead --- */
   header{
-    margin-bottom: 2.2vh; /* stesso valore del margine sopra il divisorio, per averli identici */
+    margin-bottom: calc(2.5vh + 3px); /* 25px + 3px di margine della card = 28px sotto il divisorio */
   }
   .header-divider{
     display: block;
     width: 22.3rem;
     max-width: 100%;
     height: 10px;
-    margin: 2.2vh auto 0;
+    margin: 2.5vh auto 0;
   }
 
   .mark{
@@ -1947,7 +1947,7 @@
         // sulla larghezza piena: se la card si restringe con loro già visibili, l'overflow
         // hidden li taglia via finché l'allargamento non li "raggiunge" di nuovo (il
         // "pezzettino di RESET" segnalato). Li nascondo prima di restringere, e li
-        // faccio ricomparire con la stessa dissolvenza di 0.9s usata alla primissima
+        // faccio ricomparire con la stessa dissolvenza di 1s usata alla primissima
         // comparsa, ma solo a sequenza (fade+pausa+allargamento) completamente finita
         const geometry = computeCardGeometry(g, number);
         const dividerLine = eratoOverlayEl.querySelector('.erato-mid-divider');
@@ -1958,13 +1958,15 @@
           el.style.transition = 'none';
           el.style.opacity = '0';
         });
+        if (gamexTag) gamexTag.style.pointerEvents = 'none'; // non hoverabile finché non è del tutto comparso
         playCardNavAnimation(eratoOverlayEl, geometry.top, geometry.left, geometry.width, geometry.height, () => {
           [dividerLine, gamexTag, faceImg].forEach(el => {
             if (!el) return;
             void el.offsetWidth;
-            el.style.transition = 'opacity 0.9s ease';
+            el.style.transition = 'opacity 1s ease';
             el.style.opacity = '1';
           });
+          if (gamexTag) setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
         });
       } else if (eratoOverlayEl && eratoOverlayEl.dataset.eratoFinalized === 'true'){
         // forzo opacità/display solo se la sequenza di comparsa è già del tutto
@@ -2304,12 +2306,18 @@
       if (gamexTag){
         gamexTag.style.left = dividerX + 'px';
         gamexTag.style.top = '-2px';
+        // non cliccabile/hoverabile finché non è del tutto comparso: l'opacità da
+        // sola non blocca gli eventi del mouse, serve pointer-events esplicito
+        gamexTag.style.pointerEvents = 'none';
         // ora che è nel posto giusto, lo faccio comparire gradualmente — mai visibile
-        // nella posizione sbagliata, nessun salto
-        requestAnimationFrame(() => {
-          gamexTag.style.transition = 'opacity 0.9s ease';
-          gamexTag.style.opacity = '1';
-        });
+        // nella posizione sbagliata, nessun salto. Il reflow forzato (offsetWidth)
+        // prima di impostare transition+opacity è necessario: con un rAF singolo e
+        // basta, a volte il browser raggruppa tutto nello stesso ricalcolo di stile
+        // e la dissolvenza sparisce, comparendo di scatto invece che gradualmente
+        void gamexTag.offsetWidth;
+        gamexTag.style.transition = 'opacity 1s ease';
+        gamexTag.style.opacity = '1';
+        setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
       }
 
       // piccola immagine di Eratostene, dalla parte opposta di Game X: stessa X della
@@ -2322,10 +2330,9 @@
         faceImg.alt = '';
         faceImg.style.opacity = '0';
         overlay.appendChild(faceImg);
-        requestAnimationFrame(() => {
-          faceImg.style.transition = 'opacity 0.9s ease';
-          faceImg.style.opacity = '1';
-        });
+        void faceImg.offsetWidth; // stesso reflow forzato di gamexTag, stesso motivo
+        faceImg.style.transition = 'opacity 1s ease';
+        faceImg.style.opacity = '1';
       }
       faceImg.style.left = dividerX + 'px';
     }
