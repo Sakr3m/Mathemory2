@@ -435,7 +435,7 @@
       width: 100%;
     }
     .title-icon-row h1{
-      font-size: 0.85rem;
+      font-size: 0.7225rem;
       text-align: center;
     }
     .mobile-icon-btn{
@@ -446,9 +446,16 @@
     .mobile-icon-btn:active{ background: var(--rule); }
 
     .instructions{ display: none; } /* niente spazio per il paragrafo lungo qui, il titolo basta */
-    .rank-callout{ flex-wrap: nowrap; width: 100%; min-height: 0.85rem; margin-bottom: 0.59rem; align-items: flex-start; }
+    .rank-callout{
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      min-height: 0;
+      gap: 0.28rem;
+      margin-bottom: 0.59rem;
+    }
     .rank-badge{ font-size: 0.528rem; padding: 0.18rem 0.54rem; flex-shrink: 0; }
-    .rank-phrase{ font-size: 0.456rem; flex: 1 1 auto; min-width: 0; margin-top: -0.1rem; }
+    .rank-phrase{ font-size: 0.456rem; width: 100%; text-align: center; margin-top: 0; }
 
     /* niente più colonne fisse: un blocco solo, la griglia occupa tutta la larghezza del contenitore */
     .level-layout{
@@ -522,7 +529,7 @@
       box-sizing: border-box;
     }
     .picked-chip{
-      font-size: 1.8rem;
+      font-size: 1.35rem;
       text-align: center;
       border: 1px solid var(--rule);
       border-radius: 4px;
