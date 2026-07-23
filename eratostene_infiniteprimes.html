@@ -804,11 +804,18 @@
   // --- 3 effetti sonori via Web Audio API: latenza minima, decodificati in memoria in anticipo ---
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   const soundBuffers = {};
+  const pendingSounds = new Set(); // suoni richiesti prima che il file finisse di caricare: li suono appena pronti
   function loadSound(name, url){
     fetch(url)
       .then(res => res.arrayBuffer())
       .then(data => audioCtx.decodeAudioData(data))
-      .then(buffer => { soundBuffers[name] = buffer; })
+      .then(buffer => {
+        soundBuffers[name] = buffer;
+        if (pendingSounds.has(name)){
+          pendingSounds.delete(name);
+          playSound(name); // richiesto troppo presto: lo suono ora, con un po' di ritardo ma non perso
+        }
+      })
       .catch(() => {}); // se il file manca o non si carica, il gioco funziona comunque senza audio
   }
   loadSound('pad', 'eratostene_pad.mp3');
@@ -833,7 +840,10 @@
 
   function playSound(name){
     const buffer = soundBuffers[name];
-    if (!buffer) return; // non ancora decodificato (o file assente): niente audio, nessun errore
+    if (!buffer){
+      pendingSounds.add(name); // non ancora decodificato: lo riprovo quando il file finisce di caricare
+      return;
+    }
     if (window.MathemoryAudio && window.MathemoryAudio.isMuted()) return;
     if (audioCtx.state === 'suspended') audioCtx.resume();
 
