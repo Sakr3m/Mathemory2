@@ -890,23 +890,23 @@
       .then(buffer => { soundBuffers[name] = buffer; })
       .catch(() => {}); // se il file manca o non si carica, il gioco funziona comunque senza audio
   }
-  loadSound('circle', 'eratostene_pad.mp3');
+  loadSound('pad', 'eratostene_pad.mp3');
   loadSound('right', 'eratostene_right.mp3');
   loadSound('wrong', 'eratostene_wrong.mp3');
   loadSound('winner', 'eratostene_winner.mp3');
   loadSound('badge', 'eratostene_badge.mp3');
   loadSound('tap', 'tap.mp3'); // suono generico, riusabile per la maggior parte dei pulsanti della pagina
 
-  let currentCircleSource = null;
+  let currentPadSource = null;
   function playSound(name){
     const buffer = soundBuffers[name];
     if (!buffer) return; // non ancora decodificato (o file assente): niente audio, nessun errore
     if (window.MathemoryAudio && window.MathemoryAudio.isMuted()) return;
     if (audioCtx.state === 'suspended') audioCtx.resume();
 
-    // solo per il cerchio: fermo l'istanza precedente, niente sovrapposizioni da tap veloci
-    if (name === 'circle' && currentCircleSource){
-      try { currentCircleSource.stop(); } catch(e){}
+    // solo per il suono di selezione (pad): fermo l'istanza precedente, niente sovrapposizioni da tap veloci
+    if (name === 'pad' && currentPadSource){
+      try { currentPadSource.stop(); } catch(e){}
     }
 
     const source = audioCtx.createBufferSource();
@@ -916,7 +916,7 @@
     source.connect(gainNode);
     gainNode.connect(audioCtx.destination);
     source.start(0);
-    if (name === 'circle') currentCircleSource = source;
+    if (name === 'pad') currentPadSource = source;
   }
   let levelStartTime = null;
   let heartbeatInterval = null;
@@ -1224,7 +1224,7 @@
       }
       checkLocked = false; // qualunque cambio di selezione sblocca il pulsante dall'errore precedente
       render(); // prima il cerchio appare, SUBITO dopo parte il suono: mai farlo aspettare l'audio
-      if (selected.has(i)) playSound('circle');
+      if (selected.has(i)) playSound('pad');
     }
 
     let checkLocked = false;
