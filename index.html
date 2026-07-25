@@ -640,6 +640,69 @@
   }
   .rules-modal-card p strong{ color: var(--ink); }
 
+  /* --- popup di segnalazione bug --- */
+  .modal-buttons{
+    display:flex;
+    justify-content:center;
+    gap: 1rem;
+  }
+  .modal-btn{
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.8rem;
+    cursor:pointer;
+  }
+  .modal-btn.yes{ background: var(--yellow); color: var(--bg); }
+  .modal-btn.no{ background: transparent; color: var(--ink-dim); border: 1px solid var(--rule); }
+  .modal-btn:disabled{ opacity: 0.5; cursor: default; }
+  .modal-note{
+    font-family:'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    margin-top: 0.8rem;
+    text-align: center;
+  }
+  .report-textarea{
+    display:block;
+    width: 100%;
+    min-height: 6rem;
+    resize: vertical;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    color: var(--ink);
+    font-family:'Work Sans', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.8rem;
+    box-sizing: border-box;
+    margin: 0 0 1rem;
+  }
+  .report-textarea:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+  .report-file-row{
+    display:flex;
+    align-items:center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .report-file-row label{
+    font-family:'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+  }
+  .report-image-preview{
+    display:none;
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 8px;
+    border: 1px solid var(--rule);
+    margin-bottom: 1rem;
+  }
+  .report-image-preview.visible{ display:block; }
+
   .carousel-row{
     display:flex;
     align-items:center;
@@ -1478,6 +1541,25 @@
     <p><strong>Modes:</strong> each mode has its own rules on time limits and leaderboards — check them when choosing your mode.</p>
     <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
     <p><em>Happy prime hunting.</em></p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="reportModal">
+  <div class="rules-modal-card">
+    <button type="button" class="rules-close-btn" id="reportCloseBtn" aria-label="Close">✕</button>
+    <h3>Report a bug</h3>
+    <p>Found something broken? Describe what happened below — attaching an image is optional, but it helps a lot.</p>
+    <textarea class="report-textarea" id="reportDescription" maxlength="1000" placeholder="What happened, and on which page?"></textarea>
+    <div class="report-file-row">
+      <label for="reportImageInput">Add an image (optional):</label>
+      <input type="file" id="reportImageInput" accept="image/*">
+    </div>
+    <img class="report-image-preview" id="reportImagePreview" alt="">
+    <div class="modal-buttons">
+      <button type="button" class="modal-btn yes" id="reportSubmitBtn">Send</button>
+      <button type="button" class="modal-btn no" id="reportCancelBtn">Cancel</button>
+    </div>
+    <p class="modal-note" id="reportNote"></p>
   </div>
 </div>
 
@@ -2933,6 +3015,128 @@
   document.getElementById('modeCloseBtn').addEventListener('click', closeModeModal);
   modeModal.addEventListener('click', (e) => {
     if (e.target === modeModal) closeModeModal();
+  });
+
+  // --- popup di segnalazione bug ---
+  // ============================================================
+  // SEZIONE: POPUP — segnalazione bug (descrizione + immagine opzionale dal dispositivo)
+  // ============================================================
+  const reportModal = document.getElementById('reportModal');
+  const reportDescriptionEl = document.getElementById('reportDescription');
+  const reportImageInput = document.getElementById('reportImageInput');
+  const reportImagePreview = document.getElementById('reportImagePreview');
+  const reportNote = document.getElementById('reportNote');
+  const reportSubmitBtn = document.getElementById('reportSubmitBtn');
+  let reportImageBlob = null; // immagine già ridimensionata/compressa, pronta per l'invio
+
+  function resetReportForm(){
+    reportDescriptionEl.value = '';
+    reportImageInput.value = '';
+    reportImageBlob = null;
+    reportImagePreview.src = '';
+    reportImagePreview.classList.remove('visible');
+    reportNote.textContent = '';
+    reportSubmitBtn.disabled = false;
+    reportSubmitBtn.textContent = 'Send';
+  }
+
+  function openReportModal(){
+    playSound('tap');
+    resetReportForm();
+    reportModal.classList.add('visible');
+  }
+  function closeReportModal(){
+    playSound('tap');
+    reportModal.classList.remove('visible');
+  }
+  document.getElementById('reportCloseBtn').addEventListener('click', closeReportModal);
+  document.getElementById('reportCancelBtn').addEventListener('click', closeReportModal);
+  reportModal.addEventListener('click', (e) => {
+    if (e.target === reportModal) closeReportModal();
+  });
+  // stesso popup sia dal pulsante desktop (spostato nel body via JS) che da quello mobile
+  document.querySelectorAll('#indexReportBtn, .mobile-report-btn').forEach(btn => {
+    btn.addEventListener('click', openReportModal);
+  });
+
+  // ridimensiona/comprime l'immagine lato client (max 1600px sul lato lungo, JPEG 82%)
+  // prima dell'invio: riduce i tempi di upload su mobile e resta comodamente sotto
+  // il limite di allegato di Discord anche per foto scattate con fotocamere moderne
+  function compressReportImage(file){
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const maxSide = 1600;
+        let { width, height } = img;
+        if (width > maxSide || height > maxSide){
+          const scale = maxSide / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          URL.revokeObjectURL(url);
+          if (blob) resolve(blob); else reject(new Error('compressione fallita'));
+        }, 'image/jpeg', 0.82);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('immagine non valida')); };
+      img.src = url;
+    });
+  }
+
+  reportImageInput.addEventListener('change', async () => {
+    const file = reportImageInput.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')){
+      reportNote.textContent = 'Please select an image file.';
+      reportImageInput.value = '';
+      return;
+    }
+    reportNote.textContent = 'Processing image...';
+    try {
+      reportImageBlob = await compressReportImage(file);
+      reportImagePreview.src = URL.createObjectURL(reportImageBlob);
+      reportImagePreview.classList.add('visible');
+      reportNote.textContent = '';
+    } catch (e){
+      reportNote.textContent = 'Could not read that image, try another one.';
+      reportImageBlob = null;
+    }
+  });
+
+  reportSubmitBtn.addEventListener('click', async () => {
+    const description = reportDescriptionEl.value.trim();
+    if (!description){
+      reportNote.textContent = 'Please describe the issue first.';
+      return;
+    }
+    reportSubmitBtn.disabled = true;
+    reportSubmitBtn.textContent = 'Sending...';
+    reportNote.textContent = '';
+
+    const formData = new FormData();
+    formData.append('description', description);
+    formData.append('page', window.location.pathname);
+    formData.append('userAgent', navigator.userAgent);
+    if (reportImageBlob) formData.append('image', reportImageBlob, 'report.jpg');
+
+    try {
+      const res = await fetch('https://eratostene.sl-eternal-lux.workers.dev/report-bug', {
+        method: 'POST',
+        body: formData
+      });
+      if (!res.ok) throw new Error('bad status ' + res.status);
+      reportNote.textContent = 'Thanks, report received.';
+      setTimeout(closeReportModal, 1200);
+    } catch (e){
+      reportNote.textContent = 'Something went wrong, please try again later.';
+      reportSubmitBtn.disabled = false;
+      reportSubmitBtn.textContent = 'Send';
+    }
   });
 
   // i font potrebbero non essere ancora caricati al primo render: quando lo sono davvero, rimisuro
