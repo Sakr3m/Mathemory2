@@ -1875,18 +1875,53 @@
       });
   }
 
+  // ============================================================
+  // SEZIONE: CLASSIFICHE — formattazione del tempo (h/min/s)
+  // ============================================================
+  // converte i secondi grezzi (con decimali) in una stringa leggibile in ore/minuti/
+  // secondi; showMs aggiunge i millisecondi in coda al secondo (es. "2h 19min 42.507s"),
+  // usato solo per spareggiare due tempi altrimenti identici una volta arrotondati
+  function formatRaceTime(totalSeconds, showMs){
+    const wholeSeconds = Math.floor(totalSeconds);
+    const ms = Math.round((totalSeconds - wholeSeconds) * 1000);
+    const h = Math.floor(wholeSeconds / 3600);
+    const m = Math.floor((wholeSeconds % 3600) / 60);
+    const s = wholeSeconds % 60;
+
+    const secondsLabel = showMs ? `${s}.${String(ms).padStart(3, '0')}s` : `${s}s`;
+    const parts = [];
+    if (h > 0) parts.push(`${h}h`);
+    if (h > 0 || m > 0) parts.push(`${m}min`);
+    parts.push(secondsLabel);
+    return parts.join(' ');
+  }
+
+  // tempi formattati per un intero podio: se due o più voci arrivano allo stesso
+  // secondo intero (quindi stessa h/min/s mostrata), aggiunge i millisecondi solo a
+  // quelle in parità, per non far sembrare due tempi diversi identici in classifica
+  function formatPodiumTimes(podium){
+    if (!podium) return [];
+    const wholeSecondsList = podium.map(entry => Math.floor(entry.time));
+    return podium.map((entry, i) => {
+      const tied = wholeSecondsList.filter(s => s === wholeSecondsList[i]).length > 1;
+      return formatRaceTime(entry.time, tied);
+    });
+  }
+
   // 3 righe, ognuna ospita 2 classifiche affiancate con la stessa medaglia al centro:
   // tempo - nickname (sinistra, già implementata) - medaglia - nickname - tempo (destra,
   // riservata per una seconda classifica non ancora implementata: passare null lì)
   function dualPodiumRowsHtml(leftPodium, rightPodium){
     const medals = ['🥇', '🥈', '🥉'];
     const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
+    const leftTimes = formatPodiumTimes(leftPodium);
+    const rightTimes = formatPodiumTimes(rightPodium);
     let html = '';
     for (let i = 0; i < 3; i++){
       const leftEntry = leftPodium && leftPodium[i];
       const rightEntry = rightPodium && rightPodium[i];
-      const leftLabel = leftEntry ? `${leftEntry.nickname} — ${leftEntry.time}s` : '—';
-      const rightLabel = rightEntry ? `${rightEntry.nickname} — ${rightEntry.time}s` : '—';
+      const leftLabel = leftEntry ? `${leftEntry.nickname} — ${leftTimes[i]}` : '—';
+      const rightLabel = rightEntry ? `${rightEntry.nickname} — ${rightTimes[i]}` : '—';
       html += `
         <div class="lb-row lb-row-dual ${rankClasses[i]}">
           <span class="lb-value">${leftLabel}</span>
@@ -1904,12 +1939,13 @@
     count = count || 3;
     const medals = ['🥇', '🥈', '🥉'];
     const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
+    const times = formatPodiumTimes(podium);
     let html = '';
     for (let i = 0; i < count; i++){
       const entry = podium && podium[i];
       const medal = medals[i] || `${i + 1}.`;
       const rankClass = rankClasses[i] || '';
-      const label = entry ? `${entry.nickname} — ${entry.time}s` : '—';
+      const label = entry ? `${entry.nickname} — ${times[i]}` : '—';
       html += `<div class="lb-row ${rankClass}"><span class="lb-medal">${medal}</span><span class="lb-value">${label}</span></div>`;
     }
     return html;
