@@ -17,7 +17,8 @@
     --ink-dim: #9FB0A2;
     --ink-faint: rgba(243,239,228,0.28);
     --yellow: #E8C468;
-    --red: #C1554B;
+    --red: #D25A56;
+    --orange: #D68D5C;
     --teal: #5FA8A0;
     --rule: rgba(243,239,228,0.12);
   }
@@ -1677,8 +1678,9 @@
       hrefKey: 'erato_basic_last', hrefBase: 'eratostene_thesieve.html',
       preview: buildMiniSieve(),
       modes: [
+        { name: "Scholar's Glance", desc: 'The hardest run of them all, with its own personal leaderboard.', details: '🔒 Coming soon.', accent: 'red', comingSoon: true },
+        { name: 'Prime Rush', desc: 'The same 200 levels, a different combination, no unlocks holding you back.', details: 'Free leaderboard, no time limit · re-enter every run. Unlocks after finishing The Sieve.', file: 'eratostene_primerush.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true },
         { name: 'The Sieve', desc: 'The full 200-level race, at your own pace, ranked on the main leaderboard.', details: '~12-day race · podium once per device · anti-cheat active.', file: 'eratostene_thesieve.html', hrefKey: 'erato_basic_last', accent: 'yellow' },
-        { name: 'Prime Rush', desc: 'The same 200 levels, a different combination, no unlocks holding you back.', details: 'Free leaderboard, no time limit · re-enter every run. Unlocks after finishing The Sieve.', file: 'eratostene_primerush.html', hrefKey: 'erato_primerush_last', accent: 'red', requiresSieveFinish: true },
         { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', details: 'No leaderboard · no timer · progress saved. Unlocks after finishing The Sieve.', file: 'eratostene_infiniteprimes.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true },
       ]
     },
@@ -3057,16 +3059,17 @@
     const g = games[gameIndex];
     const sieveFinished = forceUnlockAll || localStorage.getItem('erato_basic_finished_once') === 'true';
     modeOptionsEl.innerHTML = g.modes.map(m => {
-      const isLocked = m.requiresSieveFinish && !sieveFinished;
+      const isLocked = (m.requiresSieveFinish && !sieveFinished) || m.comingSoon;
       const href = resumeHref(m.hrefKey, m.file);
 
       if (isLocked){
+        const lockMessage = m.comingSoon ? m.details : '🔒 Unlocks after finishing The Sieve.';
         return `
           <div class="mode-option mode-option-locked" style="--mode-color: var(--${m.accent})">
             <div class="mode-option-text">
               <h4>${m.name}</h4>
               <p>${m.desc}</p>
-              <p class="mode-option-details">🔒 Unlocks after finishing The Sieve.</p>
+              <p class="mode-option-details">${lockMessage}</p>
             </div>
           </div>`;
       }
