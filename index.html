@@ -728,6 +728,7 @@
     .carousel-row{ flex-direction: column; }
     .nav-arrow.rotate{ transform: rotate(90deg); }
     .index-sound-btn{ display: none; }
+    .index-report-btn{ display: none; }
     .mobile-index-sound-btn{
       display: flex;
       position: absolute;
@@ -1212,6 +1213,33 @@
       background: rgba(232,196,104,0.22);
       box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
     }
+    .index-report-btn{
+      position: absolute;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--rule);
+      border-radius: 20px;
+      background: var(--bg-panel);
+      color: var(--ink-dim);
+      font-family:'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      padding: 0.5rem 0;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease, opacity 0.5s ease, background 0.15s ease, box-shadow 0.2s ease;
+      z-index: 50;
+      opacity: 0; /* stesso fade in sincronizzato di titolo/sottotitolo/pulsante volume */
+    }
+    .index-report-btn:hover{
+      color: var(--yellow);
+      border-color: rgba(232,196,104,0.75);
+      background: rgba(232,196,104,0.22);
+      box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
+    }
     .mobile-index-sound-btn{ display: none; }
   }
 
@@ -1342,6 +1370,7 @@
   <header>
     <div class="title-row">
       <button type="button" class="index-sound-btn audio-toggle-btn" id="indexSoundBtn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></button>
+      <button type="button" class="index-report-btn" id="indexReportBtn" aria-label="Report a bug">Report bug</button>
       <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
     </div>
     <p class="subtitle">A collection of math games, unlocking one after another over time.<br>Each game has timed leaderboard modes and more relaxed modes just for fun.<br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
@@ -1924,6 +1953,7 @@
 
     grid.innerHTML = gameCardHtml(g, number);
     positionIndexSoundBtn();
+    positionReportBtn();
     centerEratoRightEdge();
     if (gameState(g) === 'open'){
       // la card vera (l'overlay) vive fuori dalla griglia: se era stata nascosta
@@ -2045,6 +2075,7 @@
   // backup del vecchio markup statico, se mai servisse ripristinarlo).
   // ============================================================
   let indexSoundBtnMovedToBody = false;
+  let indexReportBtnMovedToBody = false;
   // sposta l'intera griglia dei 2 giochi in modo che il lato destro della card di
   // Eratostene (il confine tra le 2 card) cada esattamente al centro reale della finestra,
   // non solo al centro della sua colonna. Misurato dal vero, non un valore fisso.
@@ -2173,6 +2204,7 @@
       if (revealed) return;
       revealed = true;
       positionIndexSoundBtn(); // ricalcolo qui: ora i font sono DAVVERO pronti
+      positionReportBtn();
       const geometry = computeCardGeometry(g, number);
       centerNavColumns(geometry.top, geometry.height); // stessa logica: calcolo PRIMA di mostrare, mai dopo
       document.querySelectorAll('.title-row .mark, .subtitle, .nav-column').forEach(el => {
@@ -2180,6 +2212,8 @@
       });
       const soundBtn = document.getElementById('indexSoundBtn');
       if (soundBtn) soundBtn.style.opacity = '1';
+      const reportBtn = document.getElementById('indexReportBtn');
+      if (reportBtn) reportBtn.style.opacity = '1';
     }
 
     function playCardSequence(){
@@ -2610,6 +2644,35 @@
     btn.style.top = (titleCenterY - diameter / 2) + 'px';
   }
   window.addEventListener('resize', positionIndexSoundBtn);
+
+  // stesso bordo sinistro del pulsante volume, un gradino sotto di esso: solo desktop,
+  // nessuna versione mobile per ora
+  function positionReportBtn(){
+    if (window.innerWidth <= 900) return;
+    const btn = document.getElementById('indexReportBtn');
+    const soundBtn = document.getElementById('indexSoundBtn');
+    const grid = document.getElementById('gamesGrid');
+    if (!btn || !soundBtn || !grid) return;
+
+    if (!indexReportBtnMovedToBody){
+      document.body.appendChild(btn);
+      indexReportBtnMovedToBody = true;
+    }
+
+    const gridRect = grid.getBoundingClientRect();
+    const gridStyle = getComputedStyle(grid);
+    const gap = parseFloat(gridStyle.columnGap || gridStyle.gap) || 0;
+    const singleColWidth = (gridRect.width - gap) / 2;
+    const viewportCenter = window.innerWidth / 2;
+    const cardLeft = viewportCenter - singleColWidth;
+
+    const soundBtnRect = soundBtn.getBoundingClientRect();
+    const vGap = 12; // spazio tra il fondo del pulsante volume e l'inizio di questo
+
+    btn.style.left = cardLeft + 'px';
+    btn.style.top = (soundBtnRect.bottom + window.scrollY + vGap) + 'px';
+  }
+  window.addEventListener('resize', positionReportBtn);
 
   // ============================================================
   // SEZIONE: CAROSELLO — navigazione tra i giochi (frecce, pallini)
