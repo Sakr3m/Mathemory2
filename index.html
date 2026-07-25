@@ -1228,7 +1228,7 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       white-space: nowrap;
-      padding: 0.5rem 0;
+      padding: 0.5rem 1.1rem;
       cursor: pointer;
       transition: border-color 0.15s ease, color 0.15s ease, opacity 0.5s ease, background 0.15s ease, box-shadow 0.2s ease;
       z-index: 50;
@@ -2645,14 +2645,14 @@
   }
   window.addEventListener('resize', positionIndexSoundBtn);
 
-  // stesso bordo sinistro del pulsante volume, un gradino sotto di esso: solo desktop,
-  // nessuna versione mobile per ora
+  // stesso bordo sinistro del pulsante volume, allineato all'ultima riga del
+  // sottotitolo: solo desktop, nessuna versione mobile per ora
   function positionReportBtn(){
     if (window.innerWidth <= 900) return;
     const btn = document.getElementById('indexReportBtn');
-    const soundBtn = document.getElementById('indexSoundBtn');
+    const subtitle = document.querySelector('.subtitle');
     const grid = document.getElementById('gamesGrid');
-    if (!btn || !soundBtn || !grid) return;
+    if (!btn || !subtitle || !grid) return;
 
     if (!indexReportBtnMovedToBody){
       document.body.appendChild(btn);
@@ -2666,11 +2666,19 @@
     const viewportCenter = window.innerWidth / 2;
     const cardLeft = viewportCenter - singleColWidth;
 
-    const soundBtnRect = soundBtn.getBoundingClientRect();
-    const vGap = 12; // spazio tra il fondo del pulsante volume e l'inizio di questo
+    // altezza di una riga del sottotitolo, per trovare il centro verticale
+    // dell'ULTIMA riga (il sottotitolo è su 3 righe separate da <br>)
+    const subtitleRect = subtitle.getBoundingClientRect();
+    const subtitleStyle = getComputedStyle(subtitle);
+    let lineHeight = parseFloat(subtitleStyle.lineHeight);
+    if (!lineHeight || isNaN(lineHeight)){
+      lineHeight = parseFloat(subtitleStyle.fontSize) * 1.2; // stima se il browser riporta "normal"
+    }
+    const lastLineCenterY = subtitleRect.bottom - lineHeight / 2;
+    const btnHeight = btn.getBoundingClientRect().height;
 
     btn.style.left = cardLeft + 'px';
-    btn.style.top = (soundBtnRect.bottom + window.scrollY + vGap) + 'px';
+    btn.style.top = (lastLineCenterY + window.scrollY - btnHeight / 2) + 'px';
   }
   window.addEventListener('resize', positionReportBtn);
 
