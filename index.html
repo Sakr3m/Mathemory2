@@ -748,6 +748,26 @@
       cursor: pointer;
     }
     .mobile-index-sound-btn svg{ width: 30.475px; height: 30.475px; }
+    .mobile-report-btn{
+      display: flex;
+      position: absolute;
+      top: calc(70% + 64px); /* subito sotto il pulsante audio mobile (top:70%, alto 50.6px) + margine */
+      left: 50%;
+      transform: translateX(-50%);
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--rule);
+      border-radius: 20px;
+      background: var(--bg-panel);
+      color: var(--ink-dim);
+      font-family:'Space Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      padding: 0.55rem 1.1rem;
+      cursor: pointer;
+    }
   }
 
   /* --- fascia intermedia (finestra desktop stretta, non mobile): 1 sola card, contenuto essenziale --- */
@@ -1241,6 +1261,7 @@
       box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
     }
     .mobile-index-sound-btn{ display: none; }
+    .mobile-report-btn{ display: none; }
   }
 
   .audio-slider-row{
@@ -1419,6 +1440,7 @@
             <span class="mark">Mathemory</span>
             <p class="subtitle">A collection of math games, unlocking one after another over time.<br><br>Each game has timed leaderboard modes and more relaxed modes just for fun.<br><br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
             <button type="button" class="mobile-index-sound-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></button>
+            <button type="button" class="mobile-report-btn" aria-label="Report a bug">Report bug</button>
             <p class="scroll-hint">↓ Scroll down to explore the games and the rest of the site. ↓</p>
           </div>
         </section>
