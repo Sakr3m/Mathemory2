@@ -1976,6 +1976,7 @@
     grid.innerHTML = gameCardHtml(g, number);
     positionIndexSoundBtn();
     positionReportBtn();
+    positionMobileAudioBtn();
     centerEratoRightEdge();
     if (gameState(g) === 'open'){
       // la card vera (l'overlay) vive fuori dalla griglia: se era stata nascosta
@@ -2703,6 +2704,24 @@
     btn.style.top = (lastLineCenterY + window.scrollY - btnHeight / 2) + 'px';
   }
   window.addEventListener('resize', positionReportBtn);
+
+  // solo mobile: alza il pulsante audio a metà strada tra dove finisce il sottotitolo
+  // e dove inizia il pulsante REPORT BUG, che restano entrambi dove sono
+  function positionMobileAudioBtn(){
+    if (window.innerWidth > 900) return;
+    const btn = document.querySelector('.mobile-index-sound-btn');
+    const subtitle = document.querySelector('#snapIntro .subtitle');
+    const reportBtn = document.querySelector('#snapIntro .mobile-report-btn');
+    const container = document.querySelector('#snapIntro .mobile-shifted-content');
+    if (!btn || !subtitle || !reportBtn || !container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const subtitleBottomRel = subtitle.getBoundingClientRect().bottom - containerRect.top;
+    const reportTopRel = reportBtn.getBoundingClientRect().top - containerRect.top;
+
+    btn.style.top = ((subtitleBottomRel + reportTopRel) / 2) + 'px';
+  }
+  window.addEventListener('resize', positionMobileAudioBtn);
 
   // ============================================================
   // SEZIONE: CAROSELLO — navigazione tra i giochi (frecce, pallini)
