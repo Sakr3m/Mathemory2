@@ -1548,8 +1548,8 @@
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="reportCloseBtn" aria-label="Close">✕</button>
     <h3>Report a bug</h3>
-    <p>Found something broken? Describe what happened below — attaching an image is optional, but it helps a lot.</p>
-    <textarea class="report-textarea" id="reportDescription" maxlength="1000" placeholder="What happened, and on which page?"></textarea>
+    <p>Found something broken? Describe what happened below — a description is required even if you attach an image, which is optional but helps a lot.</p>
+    <textarea class="report-textarea" id="reportDescription" maxlength="1000" placeholder="What happened, and on which page? (required)"></textarea>
     <div class="report-file-row">
       <label for="reportImageInput">Add an image (optional):</label>
       <input type="file" id="reportImageInput" accept="image/*">
@@ -1559,6 +1559,7 @@
       <button type="button" class="modal-btn yes" id="reportSubmitBtn">Send</button>
       <button type="button" class="modal-btn no" id="reportCancelBtn">Cancel</button>
     </div>
+    <p class="modal-note">If this is about a race time missing from the leaderboard, include the nickname you used — without it, the report can't be looked into.</p>
     <p class="modal-note" id="reportNote"></p>
   </div>
 </div>
