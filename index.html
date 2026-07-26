@@ -1444,7 +1444,7 @@
 </head>
 <body>
 
-<audio id="bgMusic" src="eratostene_index.mp3" loop preload="none"></audio>
+<audio id="bgMusic" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_index.mp3" loop preload="none"></audio>
 
 <div class="rotate-lock-overlay">Please rotate your device back to portrait to continue.</div>
 
@@ -1764,7 +1764,7 @@
       .then(buffer => { soundBuffers[name] = buffer; })
       .catch(() => {}); // se il file manca o non si carica, il sito funziona comunque senza audio
   }
-  loadSound('tap', 'tap.mp3');
+  loadSound('tap', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/tap.mp3');
   // volume specifico per singolo suono, sopra a quello scelto con la barra effetti
   // (o il 100% di default su mobile, dove la barra non c'e): 1 = nessuna modifica.
   // Ogni suono puo avere un valore diverso per PC e per mobile (o un solo numero,
@@ -2587,7 +2587,7 @@
       if (!faceImg){
         faceImg = document.createElement('img');
         faceImg.className = 'erato-face-img';
-        faceImg.src = 'eratostene_face.png';
+        faceImg.src = 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_face.png';
         faceImg.alt = '';
         faceImg.style.opacity = '0';
         overlay.appendChild(faceImg);
