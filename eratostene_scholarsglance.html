@@ -1550,12 +1550,16 @@
     }
 
     localStorage.setItem('erato_scholarsglance_finisher_nickname', nickname);
+    const totalRaceTime = localStorage.getItem(TOTAL_TIME_KEY) || '0';
+    const timeValue = parseFloat(totalRaceTime);
 
-    // TODO: il Worker non ha ancora una route dedicata a Scholar's Glance (verrà
-    // aggiunta insieme alla classifica vera, discussa più avanti — vedi slot destro
-    // del podio di Prime Rush). Per ora il nickname resta solo salvato in locale,
-    // nessun invio: puntare a /submit-primerush corromperebbe la classifica vera di
-    // Prime Rush con tempi di un gioco diverso.
+    // invio il tempo al Worker per il podio (terza classifica, dedicata); se fallisce
+    // (rete assente, Worker giù) l'utente prosegue comunque, non è bloccante
+    fetch('https://eratostene.sl-eternal-lux.workers.dev/submit-scholarsglance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nickname, time: timeValue })
+    }).catch(() => {});
 
     window.location.href = 'index.html';
   });
