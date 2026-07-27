@@ -109,7 +109,7 @@
     display:grid;
     grid-template-columns: 529px 1fr;
     gap: 2.3rem;
-    align-items:start;
+    align-items:stretch;
   }
   @media (max-width: 1400px){
     .level-layout{ grid-template-columns: 1fr; }
@@ -287,10 +287,9 @@
   .feedback{ font-family:'Space Mono', monospace; font-size: 0.9rem; min-height: 1.4rem; margin: 0; }
   .side-panel-wrap{ display:flex; flex-direction:column; position: relative; }
   .dev-skip-btn{
-    position: absolute;
-    left: 0;
     display: block;
     width: 100%;
+    margin-top: auto;
     padding: 0.5rem;
     font-family:'Space Mono', monospace;
     font-size: 1rem;
@@ -1219,15 +1218,6 @@
       badge.style.left = left + 'px';
       phrase.style.top = (top + badge.offsetHeight + 8) + 'px';
       phrase.style.left = left + 'px';
-    }
-
-    // tasto skip: il suo fondo allineato al fondo della griglia, indipendentemente
-    // dal fatto che ci sia o no un badge di rango da mostrare
-    const skipBtn = document.getElementById('devSkipBtn');
-    if (skipBtn && grid && sidePanel && wide){
-      const wrapRect = sidePanel.getBoundingClientRect();
-      const gridRect = grid.getBoundingClientRect();
-      skipBtn.style.top = (gridRect.bottom - wrapRect.top - skipBtn.offsetHeight) + 'px';
     }
   }
 
