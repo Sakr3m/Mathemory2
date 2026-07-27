@@ -1440,11 +1440,21 @@
     // ============================================================
     // MECCANICA: visibilità a tempo + blur ritardato + pulsante Sight
     // ============================================================
-    // curva lineare 10s (livello 1) -> 0.3s (livello 50): quanto restano leggibili
-    // i numeri in griglia prima di diventare invisibili sullo sfondo
-    const VISIBILITY_DURATION = lerp(10, 0.3, (levelNum - 1) / 49);
-    // curva lineare 3s (livello 1) -> 10s (livello 50): cooldown del pulsante Sight
-    const COOLDOWN_DURATION = lerp(3, 10, (levelNum - 1) / 49);
+    // curva a 3 tratti (non più un'unica retta 1->50): quanto restano leggibili i
+    // numeri in griglia prima di diventare invisibili sullo sfondo
+    //   livelli  1-20: 8s    -> 6.5s
+    //   livelli 21-40: 6.5s  -> 3.5s
+    //   livelli 41-50: 3.5s  -> 0.3s
+    function visibilityDurationForLevel(level){
+      if (level <= 20) return lerp(8, 6.5, (level - 1) / 19);
+      if (level <= 40) return lerp(6.5, 3.5, (level - 21) / 19);
+      return lerp(3.5, 0.3, (level - 41) / 9);
+    }
+    const VISIBILITY_DURATION = visibilityDurationForLevel(levelNum);
+    // cooldown FISSO a 7 secondi per tutti i livelli (non più una curva 3s->10s): ai
+    // livelli bassi la visibilità dura più del cooldown stesso, quindi non si sente
+    // nemmeno; dal 21 in poi il cooldown supera la visibilità e comincia a farsi sentire
+    const COOLDOWN_DURATION = 7;
     // il pannello dei 5 selezionati resta leggibile fino al livello 35, poi si offusca
     // sempre di più fino a diventare del tutto illeggibile al livello 50
     const BLUR_START_LEVEL = 35;
@@ -1500,15 +1510,11 @@
       }, duration * 1000);
     }
 
-    sightBtn.addEventListener('click', () => {
-      if (sightBtn.disabled) return;
-      playSound('tap');
-      revealNumbers(VISIBILITY_DURATION);
-
-      // il cooldown parte SUBITO alla pressione, in parallelo alla finestra di
-      // visibilità appena aperta (non dopo che questa finisce): ai livelli bassi il
-      // cooldown è più corto della visibilità stessa, quindi comunque il pulsante
-      // resta disabilitato finché i numeri non tornano invisibili
+    // cooldown fisso di Sight: NON parte dal momento in cui i numeri spariscono, ma
+    // da quando viene chiamata questa funzione — usata sia al caricamento del livello
+    // (il pulsante nasce già in cooldown, non è mai utilizzabile da subito) sia a ogni
+    // pressione successiva
+    function startSightCooldown(){
       sightOnCooldown = true;
       cooldownEndsAt = Date.now() + COOLDOWN_DURATION * 1000;
       updateSightButtonState();
@@ -1524,9 +1530,17 @@
           sightBtn.textContent = `👁 Sight (${remaining.toFixed(1)}s)`;
         }
       }, 100);
+    }
+
+    sightBtn.addEventListener('click', () => {
+      if (sightBtn.disabled) return;
+      playSound('tap');
+      revealNumbers(VISIBILITY_DURATION);
+      startSightCooldown();
     });
 
     revealNumbers(VISIBILITY_DURATION); // il livello parte sempre visibile, poi scatta il buio da solo
+    startSightCooldown(); // il cooldown parte anche solo al caricamento pagina: Sight non nasce già pronto
 
     function toggleCell(i){
       if (selected.has(i)){
