@@ -169,10 +169,36 @@
   }
 
   .answer-row{ display:flex; align-items:stretch; gap: 0.5rem; }
-  .answer-input{ flex: 2 1 0; min-width: 0; }
-  input[type="number"]{
+  .answer-input-wrap{
+    position: relative;
+    flex: 2 1 0;
+    min-width: 0;
     background: var(--bg-panel);
     border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  /* solo per i test su Mathemory2: la somma corretta del livello, in trasparenza dentro
+     la stessa casella dell'input — così non serve chiedere la soluzione in chat.
+     In produzione questo elemento semplicemente non c'è (nessun dato da nascondere) */
+  .answer-bg-hint{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 0.92rem;
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: clamp(1.1rem, 3.4vw, 1.9rem);
+    color: rgba(232,196,104,0.22);
+    pointer-events: none;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  input[type="number"]{
+    position: relative;
+    background: transparent;
+    border: none;
     border-radius: 6px;
     color: var(--ink);
     font-family:'Space Mono', monospace;
@@ -182,12 +208,11 @@
     box-sizing: border-box;
   }
   input[type="number"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
-  /* placeholder usato per mostrare la somma corretta "in trasparenza": solo per i test
-     su Mathemory2, così non serve chiedere la soluzione di un livello in chat */
-  .answer-input::placeholder{
-    color: rgba(243,239,228,0.38);
-    font-weight: 700;
-    opacity: 1;
+  /* "Sum of the primes" resta il testo visibile, scala con la larghezza della casella
+     (che ora è solo il 50% della riga) invece di avere una dimensione fissa */
+  input[type="number"]::placeholder{
+    color: var(--ink-dim);
+    font-size: clamp(0.7rem, 2.2vw, 0.95rem);
   }
   button.check{
     flex: 1 1 0;
@@ -1280,7 +1305,10 @@
             <div class="picked-row" id="pickedRow"></div>
           </div>
           <div class="answer-row">
-            <input type="number" id="answerInput" class="answer-input" placeholder="${correctSumHint}" inputmode="numeric">
+            <div class="answer-input-wrap">
+              <span class="answer-bg-hint">${correctSumHint}</span>
+              <input type="number" id="answerInput" placeholder="Sum of the primes" inputmode="numeric">
+            </div>
             <div class="skip-sight-row" id="skipSightRow">
               <button type="button" id="devSkipBtn" class="dev-skip-btn" aria-label="Dev skip">»</button>
               <button type="button" class="sight-btn" id="sightBtn" disabled>👁 Sight</button>
