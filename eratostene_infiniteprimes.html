@@ -105,6 +105,12 @@
     -webkit-tap-highlight-color: transparent;
     transition: background 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   }
+  /* solo per i test su Mathemory2: rivela in sfondo quali 5 celle sono davvero i primi
+     scelti, senza bisogno di chiedere la soluzione — .selected/.hover restano sopra */
+  .cell.answer-hint{
+    background: rgba(95,168,160,0.18);
+    border-color: rgba(95,168,160,0.5);
+  }
   .cell:hover{
     background: rgba(232,196,104,0.22);
     box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
@@ -151,22 +157,49 @@
   .picked-chip.empty-slot{
     background: transparent;
     border: 1px dashed var(--rule);
-    color: transparent;
+    color: rgba(232,196,104,0.7); /* solo test Mathemory2: mostra il numero da trovare */
   }
   @media (min-width: 1401px){
     .side-panel > div:first-child{ margin-bottom: -0.9rem; }
   }
 
   .answer-row{ display:flex; flex-direction:column; gap: 0.69rem; }
-  input[type="number"]{
+  .answer-input-wrap{
+    position: relative;
     background: var(--bg-panel);
     border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  /* solo per i test su Mathemory2: la somma corretta del livello, in trasparenza dentro
+     la stessa casella dell'input — così non serve chiedere la soluzione in chat.
+     In produzione questo elemento semplicemente non c'è (nessun dato da nascondere) */
+  .answer-bg-hint{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 0.92rem;
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: rgba(232,196,104,0.7);
+    pointer-events: none;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  input[type="number"]{
+    position: relative;
+    background: transparent;
+    border: none;
     border-radius: 6px;
     color: var(--ink);
     font-family:'Space Mono', monospace;
     font-size: 1.265rem;
     padding: 0.92rem;
     width: 100%;
+    box-sizing: border-box;
   }
   input[type="number"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
   button.check{
@@ -480,7 +513,7 @@
     .picked-chip.empty-slot{
       background: transparent;
       border-style: dashed;
-      color: transparent;
+      color: rgba(232,196,104,0.7);
     }
     input[type="number"]{ font-size: 1.05rem; padding: 0.5rem 0.7rem; width: 100%; box-sizing: border-box; }
   }  /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
@@ -881,21 +914,22 @@
   }
 
   // --- generazione live dei livelli, nessun file da caricare: infinita per davvero ---
-  const FIXED_CAPS = [37,41,43,47,59,61,71,79,89,101,103,113,137,151,167,179,199,233,263,307];
-
   function nextPrimeAtLeast(n){
     let candidate = Math.max(2, Math.floor(n));
     while (!isPrime(candidate)) candidate++;
     return candidate;
   }
 
-  // il cap segue le 20 sezioni originali fino al Livello 200, poi continua a crescere all'infinito
+  // niente più fasce/sezioni intermedie: un'unica curva lineare dal livello 1 (cap 37)
+  // fino al livello 350 (cap 997, il numero primo più alto gestibile senza rompere la
+  // griglia con cifre a 4 numeri) — da lì in poi resta fermo a 997 per sempre
   function capForLevel(levelNum){
-    const MAX_CAP = 997; // oltre questo, i numeri a 4+ cifre romperebbero la griglia: il cap resta fermo qui
-    const section = Math.floor((levelNum - 1) / 10);
-    if (section < FIXED_CAPS.length) return FIXED_CAPS[section];
-    const extraSections = section - FIXED_CAPS.length + 1;
-    return Math.min(nextPrimeAtLeast(307 + extraSections * 60), MAX_CAP);
+    const START_CAP = 37;
+    const MAX_CAP = 997;
+    const MAX_LEVEL = 350;
+    if (levelNum >= MAX_LEVEL) return MAX_CAP;
+    const target = START_CAP + (MAX_CAP - START_CAP) * (levelNum - 1) / (MAX_LEVEL - 1);
+    return nextPrimeAtLeast(target);
   }
 
   // --- nuovo modello di difficoltà: grandezza del numero + vicinanza a un multiplo di 7 ---
@@ -1091,6 +1125,9 @@
 
   function renderLevel(levelData){
     const grid = levelData.griglia;
+    // solo per test su Mathemory2: la somma corretta va nel placeholder dell'input,
+    // così appare "in trasparenza" senza doverla chiedere ogni volta in chat
+    const correctSumHint = grid.filter(isPrime).reduce((a, b) => a + b, 0);
     const circleColor = circleColorForLevel(levelNum);
 
     // "Check" impilato lettera per lettera solo su mobile, testo normale su desktop
@@ -1106,7 +1143,10 @@
             <div class="picked-row" id="pickedRow"></div>
           </div>
           <div class="answer-row">
-            <input type="number" id="answerInput" placeholder="Sum of the primes" inputmode="numeric">
+            <div class="answer-input-wrap">
+              <span class="answer-bg-hint">${correctSumHint}</span>
+              <input type="number" id="answerInput" placeholder="Sum of the primes" inputmode="numeric">
+            </div>
             <button type="button" id="devSkipBtn" class="dev-skip-btn" aria-label="Dev skip">»</button>
             <button class="check" id="checkBtn"><span class="check-label">${checkLabelHtml}</span></button>
           </div>
@@ -1136,7 +1176,7 @@
 
     grid.forEach((value, i) => {
       const cell = document.createElement('div');
-      cell.className = 'cell';
+      cell.className = 'cell' + (isPrime(value) ? ' answer-hint' : '');
       cell.dataset.index = i;
       cell.innerHTML = value + '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="27"/></svg>';
       cell.addEventListener('click', () => toggleCell(i));
@@ -1172,13 +1212,16 @@
       });
       pickedRow.innerHTML = '';
       const sortedSelected = [...selected].sort((a,b)=>a-b);
+      // solo per i test su Mathemory2: i 5 primi corretti, ordinati, da mostrare nei
+      // riquadri ancora vuoti al posto del pallino segnaposto
+      const correctPrimesSorted = grid.filter(isPrime).sort((a,b)=>a-b);
 
       // sempre 5 mini riquadri, pieni o vuoti (segnaposto tratteggiato), su qualunque schermo
       for (let slot = 0; slot < 5; slot++){
         const chip = document.createElement('span');
         const hasValue = slot < sortedSelected.length;
         chip.className = 'picked-chip' + (hasValue ? '' : ' empty-slot');
-        chip.textContent = hasValue ? grid[sortedSelected[slot]] : '·';
+        chip.textContent = hasValue ? grid[sortedSelected[slot]] : correctPrimesSorted[slot];
         pickedRow.appendChild(chip);
       }
       updateCheckButtonState();
