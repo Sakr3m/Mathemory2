@@ -80,6 +80,7 @@
   }
   @media (max-width: 1400px){
     .level-layout{ grid-template-columns: 1fr; }
+    .dev-skip-btn{ top: 100%; margin-top: 0.7rem; }
   }
 
   .grid{
@@ -168,11 +169,9 @@
     .side-panel > div:first-child{ margin-bottom: -0.9rem; }
   }
 
-  .answer-row{ display:flex; align-items:stretch; gap: 0.5rem; }
+  .answer-row{ display:flex; flex-direction:column; gap: 0.69rem; }
   .answer-input-wrap{
     position: relative;
-    flex: 2 1 0;
-    min-width: 0;
     background: var(--bg-panel);
     border: 1px solid var(--rule);
     border-radius: 6px;
@@ -203,30 +202,26 @@
     border-radius: 6px;
     color: var(--ink);
     font-family:'Space Mono', monospace;
-    font-size: clamp(0.85rem, 2.4vw, 1.265rem);
+    font-size: clamp(0.95rem, 2vw, 1.265rem);
     padding: 0.92rem;
     width: 100%;
     box-sizing: border-box;
   }
   input[type="number"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
-  /* "Sum of the primes" resta il testo visibile, scala con la larghezza della casella
-     (che ora è solo il 50% della riga) invece di avere una dimensione fissa */
+  /* "Sum of the primes" resta il testo visibile e scalabile del placeholder */
   input[type="number"]::placeholder{
     color: var(--ink-dim);
-    font-size: clamp(0.7rem, 2.2vw, 0.95rem);
+    font-size: clamp(0.8rem, 1.8vw, 0.95rem);
   }
   button.check{
-    flex: 1 1 0;
-    min-width: 0;
     font-family:'Space Mono', monospace;
     font-weight:700;
     background: var(--yellow);
     color: var(--bg);
     border:none;
     border-radius: 6px;
-    padding: 0.92rem 0.5rem;
+    padding: 0.92rem 1.61rem;
     cursor:pointer;
-    box-sizing: border-box;
   }
   button.check:hover{ background:#f0d488; }
   button.check:disabled{
@@ -244,20 +239,12 @@
 
   .feedback{ font-family:'Space Mono', monospace; font-size: 0.9rem; min-height: 1.4rem; margin: 0; }
   .side-panel-wrap{ display:flex; flex-direction:column; position: relative; }
-  /* skip+sight insieme occupano il 25% della riga (metà di quello dell'input), con
-     skip il doppio largo di sight al suo interno — stanno sulla riga dell'input, non
-     più ancorati in overlay al fondo della griglia come prima di Sight */
-  .skip-sight-row{
-    flex: 1 1 0;
-    min-width: 0;
-    display: flex;
-    gap: 0.4rem;
-    box-sizing: border-box;
-  }
+  .skip-sight-row{ display: contents; } /* su desktop non esiste come layout: skip e sight restano indipendenti come prima */
   .dev-skip-btn{
-    flex: 2 1 0;
-    min-width: 0;
+    position: absolute;
+    left: 0;
     display: block;
+    width: 100%;
     padding: 0.5rem;
     font-family:'Space Mono', monospace;
     font-size: 1rem;
@@ -269,19 +256,20 @@
     box-sizing: border-box;
   }
   .dev-skip-btn:hover{ border-color: var(--yellow); color: var(--yellow); }
+  /* Sight: unica aggiunta rispetto alle altre modalità, una riga piena tra l'input e
+     il Check (lo skip resta a parte, ancorato in overlay al fondo della griglia) */
   .sight-btn{
-    flex: 1 1 0;
-    min-width: 0;
-    padding: 0.5rem 0.2rem;
     font-family:'Space Mono', monospace;
     font-weight:700;
-    font-size: 0.7rem;
-    letter-spacing: 0.02em;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
     background: transparent;
     color: var(--ink-dim);
     border: 1px dashed var(--rule);
     border-radius: 6px;
+    padding: 0.75rem;
     cursor: pointer;
+    width: 100%;
     box-sizing: border-box;
     transition: border-color 0.15s ease, color 0.15s ease;
   }
@@ -491,23 +479,71 @@
     .cell{ font-size: 1.5rem; }
 
     .side-panel{
+      display: grid;
+      grid-template-columns: 1fr 3.4rem;
+      grid-template-rows: auto auto auto;
+      column-gap: 0.6rem;
+      row-gap: 0.5rem;
       width: 100%;
       margin-top: 0.5rem;
     }
-    .answer-row{ gap: 0.4rem; }
-    .dev-skip-btn{ font-size: 0.9rem; padding: 0.4rem 0.2rem; }
-    .sight-btn{ font-size: 0.62rem; padding: 0.4rem 0.15rem; }
-    button.check{
-      padding: 0.6rem 0.3rem;
+    .side-panel > div:first-child{ grid-column: 1; grid-row: 2; }
+    .answer-row{ display: contents; }
+    .answer-row .answer-input-wrap{
+      grid-column: 1;
+      grid-row: 1;
+      width: calc(50% - 0.3rem);
+      justify-self: start;
+    }
+    /* qui, solo su mobile, il contenitore torna "reale": taglia in due lo spazio che
+       prima era tutto dello skip — sinistra Sight, destra skip, separati da un gap */
+    .skip-sight-row{
+      display: flex;
+      gap: 0.35rem;
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: end;
+      width: calc(50% - 0.3rem);
+      box-sizing: border-box;
+    }
+    .sight-btn{
+      flex: 1 1 0;
+      min-width: 0;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.6rem;
+      padding: 0.2rem;
+      box-sizing: border-box;
+    }
+    .dev-skip-btn{
+      flex: 1 1 0;
+      min-width: 0;
+      position: static;
+      margin-top: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      box-sizing: border-box;
+    }
+    .answer-row button.check{
+      grid-column: 2;
+      grid-row: 1 / 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.4rem;
+      height: 100%;
     }
     .answer-row button.check .check-label{
       display: block;
       line-height: 1.15;
       text-align: center;
     }
+    .feedback{ grid-column: 1 / 3; grid-row: 3; }
 
     .picked-row{
       position: relative;
@@ -1282,6 +1318,20 @@
     }
   }
 
+  // tasto skip: il suo fondo allineato al fondo della griglia, calcolato dal vero
+  // (non con un margine fisso) — solo quando c'è davvero spazio a destra della
+  // griglia (sopra i 1400px: sotto quella soglia vale il CSS statico)
+  function positionDevSkipBtn(){
+    const grid = document.getElementById('gridEl');
+    const sidePanel = document.querySelector('.side-panel-wrap');
+    const skipBtn = document.getElementById('devSkipBtn');
+    if (!grid || !sidePanel || !skipBtn) return;
+    if (window.innerWidth <= 1400) return;
+    const gridRect = grid.getBoundingClientRect();
+    const wrapRect = sidePanel.getBoundingClientRect();
+    skipBtn.style.top = (gridRect.bottom - wrapRect.top - skipBtn.offsetHeight) + 'px';
+  }
+
   function renderLevel(levelData){
     const grid = levelData.griglia;
     const circleColor = circleColorForLevel(levelNum);
@@ -1310,7 +1360,7 @@
               <span class="answer-bg-hint">${correctSumHint}</span>
               <input type="number" id="answerInput" placeholder="Sum of the primes" inputmode="numeric">
             </div>
-            <div class="skip-sight-row" id="skipSightRow">
+            <div class="skip-sight-row">
               <button type="button" id="devSkipBtn" class="dev-skip-btn" aria-label="Dev skip">»</button>
               <button type="button" class="sight-btn" id="sightBtn" disabled>👁 Sight</button>
             </div>
@@ -1389,6 +1439,7 @@
       gridEl.appendChild(cell);
     });
 
+    positionDevSkipBtn(); // solo ORA la griglia ha la sua altezza vera (celle già dentro)
     randomizeConstellation(); // stesso motivo: serve l'altezza vera del contenitore
 
     // ============================================================
