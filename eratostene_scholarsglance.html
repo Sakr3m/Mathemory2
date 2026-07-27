@@ -163,7 +163,7 @@
   .picked-chip.empty-slot{
     background: transparent;
     border: 1px dashed var(--rule);
-    color: transparent;
+    color: rgba(232,196,104,0.7); /* solo test Mathemory2: mostra il numero da trovare */
   }
   @media (min-width: 1401px){
     .side-panel > div:first-child{ margin-bottom: -0.9rem; }
@@ -208,11 +208,6 @@
     box-sizing: border-box;
   }
   input[type="number"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
-  /* "Sum of the primes" resta il testo visibile e scalabile del placeholder */
-  input[type="number"]::placeholder{
-    color: var(--ink-dim);
-    font-size: clamp(0.8rem, 1.8vw, 0.95rem);
-  }
   button.check{
     font-family:'Space Mono', monospace;
     font-weight:700;
@@ -564,7 +559,7 @@
     .picked-chip.empty-slot{
       background: transparent;
       border-style: dashed;
-      color: transparent;
+      color: rgba(232,196,104,0.7);
     }
     input[type="number"]{ font-size: 1.05rem; padding: 0.5rem 0.7rem; box-sizing: border-box; }
   }  /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
@@ -1358,7 +1353,7 @@
           <div class="answer-row">
             <div class="answer-input-wrap">
               <span class="answer-bg-hint">${correctSumHint}</span>
-              <input type="number" id="answerInput" placeholder="Sum of the primes" inputmode="numeric">
+              <input type="number" id="answerInput" placeholder="" inputmode="numeric">
             </div>
             <div class="skip-sight-row">
               <button type="button" id="devSkipBtn" class="dev-skip-btn" aria-label="Dev skip">»</button>
@@ -1472,7 +1467,13 @@
       gridEl.querySelectorAll('.cell').forEach(cell => {
         cell.classList.toggle('number-hidden', !numbersVisible);
       });
-      const blurPx = numbersVisible ? 0 : blurAmount;
+      // solo su desktop: i riquadri dei selezionati non spariscono mai come i numeri
+      // in griglia, restano sempre lì — solo il loro contenuto si offusca in base al
+      // livello (blur fisso, non legato al ciclo visibile/invisibile del timer/Sight).
+      // Su mobile resta il comportamento precedente (si offusca solo quando la griglia
+      // è invisibile)
+      const isDesktop = window.innerWidth > 900;
+      const blurPx = isDesktop ? blurAmount : (numbersVisible ? 0 : blurAmount);
       pickedRow.querySelectorAll('.picked-chip').forEach(chip => {
         chip.style.filter = blurPx > 0 ? `blur(${blurPx}px)` : '';
       });
@@ -1554,13 +1555,16 @@
       });
       pickedRow.innerHTML = '';
       const sortedSelected = [...selected].sort((a,b)=>a-b);
+      // solo per i test su Mathemory2: i 5 primi corretti, ordinati, da mostrare nei
+      // riquadri ancora vuoti al posto del pallino segnaposto
+      const correctPrimesSorted = grid.filter(isPrime).sort((a,b)=>a-b);
 
       // sempre 5 mini riquadri, pieni o vuoti (segnaposto tratteggiato), su qualunque schermo
       for (let slot = 0; slot < 5; slot++){
         const chip = document.createElement('span');
         const hasValue = slot < sortedSelected.length;
         chip.className = 'picked-chip' + (hasValue ? '' : ' empty-slot');
-        chip.textContent = hasValue ? grid[sortedSelected[slot]] : '·';
+        chip.textContent = hasValue ? grid[sortedSelected[slot]] : correctPrimesSorted[slot];
         pickedRow.appendChild(chip);
       }
       updateCheckButtonState();
