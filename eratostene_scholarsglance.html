@@ -80,7 +80,6 @@
   }
   @media (max-width: 1400px){
     .level-layout{ grid-template-columns: 1fr; }
-    .skip-sight-row{ top: 100%; margin-top: 0.7rem; }
   }
 
   .grid{
@@ -105,6 +104,12 @@
     user-select:none;
     -webkit-tap-highlight-color: transparent;
     transition: background 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  /* solo per i test su Mathemory2: rivela in sfondo quali 5 celle sono davvero i primi
+     scelti, senza bisogno di chiedere la soluzione — .selected/.hover restano sopra */
+  .cell.answer-hint{
+    background: rgba(95,168,160,0.18);
+    border-color: rgba(95,168,160,0.5);
   }
   .cell:hover{
     background: rgba(232,196,104,0.22);
@@ -163,27 +168,39 @@
     .side-panel > div:first-child{ margin-bottom: -0.9rem; }
   }
 
-  .answer-row{ display:flex; flex-direction:column; gap: 0.69rem; }
+  .answer-row{ display:flex; align-items:stretch; gap: 0.5rem; }
+  .answer-input{ flex: 2 1 0; min-width: 0; }
   input[type="number"]{
     background: var(--bg-panel);
     border: 1px solid var(--rule);
     border-radius: 6px;
     color: var(--ink);
     font-family:'Space Mono', monospace;
-    font-size: 1.265rem;
+    font-size: clamp(0.85rem, 2.4vw, 1.265rem);
     padding: 0.92rem;
     width: 100%;
+    box-sizing: border-box;
   }
   input[type="number"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+  /* placeholder usato per mostrare la somma corretta "in trasparenza": solo per i test
+     su Mathemory2, così non serve chiedere la soluzione di un livello in chat */
+  .answer-input::placeholder{
+    color: rgba(243,239,228,0.38);
+    font-weight: 700;
+    opacity: 1;
+  }
   button.check{
+    flex: 1 1 0;
+    min-width: 0;
     font-family:'Space Mono', monospace;
     font-weight:700;
     background: var(--yellow);
     color: var(--bg);
     border:none;
     border-radius: 6px;
-    padding: 0.92rem 1.61rem;
+    padding: 0.92rem 0.5rem;
     cursor:pointer;
+    box-sizing: border-box;
   }
   button.check:hover{ background:#f0d488; }
   button.check:disabled{
@@ -201,16 +218,18 @@
 
   .feedback{ font-family:'Space Mono', monospace; font-size: 0.9rem; min-height: 1.4rem; margin: 0; }
   .side-panel-wrap{ display:flex; flex-direction:column; position: relative; }
+  /* skip+sight insieme occupano il 25% della riga (metà di quello dell'input), con
+     skip il doppio largo di sight al suo interno — stanno sulla riga dell'input, non
+     più ancorati in overlay al fondo della griglia come prima di Sight */
   .skip-sight-row{
-    position: absolute;
-    left: 0;
-    width: 100%;
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     box-sizing: border-box;
   }
   .dev-skip-btn{
-    flex: 1 1 0;
+    flex: 2 1 0;
     min-width: 0;
     display: block;
     padding: 0.5rem;
@@ -227,11 +246,11 @@
   .sight-btn{
     flex: 1 1 0;
     min-width: 0;
-    padding: 0.5rem;
+    padding: 0.5rem 0.2rem;
     font-family:'Space Mono', monospace;
     font-weight:700;
-    font-size: 0.85rem;
-    letter-spacing: 0.03em;
+    font-size: 0.7rem;
+    letter-spacing: 0.02em;
     background: transparent;
     color: var(--ink-dim);
     border: 1px dashed var(--rule);
@@ -446,48 +465,23 @@
     .cell{ font-size: 1.5rem; }
 
     .side-panel{
-      display: grid;
-      grid-template-columns: 1fr 3.4rem;
-      grid-template-rows: auto auto auto auto;
-      column-gap: 0.6rem;
-      row-gap: 0.5rem;
       width: 100%;
       margin-top: 0.5rem;
     }
-    .side-panel > div:first-child{ grid-column: 1; grid-row: 2; }
-    .answer-row{ display: contents; }
-    .answer-row input[type="number"]{
-      grid-column: 1;
-      grid-row: 1;
-      width: 100%;
-    }
-    .answer-row button.check{
-      grid-column: 2;
-      grid-row: 1 / 3;
+    .answer-row{ gap: 0.4rem; }
+    .dev-skip-btn{ font-size: 0.9rem; padding: 0.4rem 0.2rem; }
+    .sight-btn{ font-size: 0.62rem; padding: 0.4rem 0.15rem; }
+    button.check{
+      padding: 0.6rem 0.3rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.4rem;
-      height: 100%;
     }
     .answer-row button.check .check-label{
       display: block;
       line-height: 1.15;
       text-align: center;
     }
-    .answer-row .skip-sight-row{ grid-column: 1 / 3; grid-row: 3; }
-    .skip-sight-row{ position: static; display: flex; gap: 0.5rem; }
-    .dev-skip-btn{
-      flex: 0 0 auto;
-      width: 3.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      box-sizing: border-box;
-    }
-    .sight-btn{ flex: 1 1 0; min-width: 0; }
-    .feedback{ grid-column: 1 / 3; grid-row: 4; }
 
     .picked-row{
       position: relative;
@@ -510,7 +504,7 @@
       border-style: dashed;
       color: transparent;
     }
-    input[type="number"]{ font-size: 1.05rem; padding: 0.5rem 0.7rem; width: 100%; box-sizing: border-box; }
+    input[type="number"]{ font-size: 1.05rem; padding: 0.5rem 0.7rem; box-sizing: border-box; }
   }  /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
   .rotate-lock-overlay{ display: none; }
   @media (orientation: landscape) and (max-width: 900px), (orientation: landscape) and (max-height: 500px){
@@ -1262,23 +1256,12 @@
     }
   }
 
-  // riga skip+sight: il suo fondo allineato al fondo della griglia, calcolato dal vero
-  // (non con un margine fisso) — solo quando c'è davvero spazio a destra della
-  // griglia (sopra i 1400px: sotto quella soglia vale il CSS statico)
-  function positionDevSkipBtn(){
-    const grid = document.getElementById('gridEl');
-    const sidePanel = document.querySelector('.side-panel-wrap');
-    const skipSightRow = document.getElementById('skipSightRow');
-    if (!grid || !sidePanel || !skipSightRow) return;
-    if (window.innerWidth <= 1400) return;
-    const gridRect = grid.getBoundingClientRect();
-    const wrapRect = sidePanel.getBoundingClientRect();
-    skipSightRow.style.top = (gridRect.bottom - wrapRect.top - skipSightRow.offsetHeight) + 'px';
-  }
-
   function renderLevel(levelData){
     const grid = levelData.griglia;
     const circleColor = circleColorForLevel(levelNum);
+    // solo per test su Mathemory2: la somma corretta va nel placeholder dell'input,
+    // così appare "in trasparenza" senza doverla chiedere ogni volta in chat
+    const correctSumHint = grid.filter(isPrime).reduce((a, b) => a + b, 0);
 
     // "Check" impilato lettera per lettera solo su mobile, testo normale su desktop
     const checkLabelHtml = window.innerWidth <= 900 ? 'C<br>h<br>e<br>c<br>k' : 'Check';
@@ -1297,7 +1280,7 @@
             <div class="picked-row" id="pickedRow"></div>
           </div>
           <div class="answer-row">
-            <input type="number" id="answerInput" placeholder="Sum of the primes" inputmode="numeric">
+            <input type="number" id="answerInput" class="answer-input" placeholder="${correctSumHint}" inputmode="numeric">
             <div class="skip-sight-row" id="skipSightRow">
               <button type="button" id="devSkipBtn" class="dev-skip-btn" aria-label="Dev skip">»</button>
               <button type="button" class="sight-btn" id="sightBtn" disabled>👁 Sight</button>
@@ -1370,14 +1353,13 @@
 
     grid.forEach((value, i) => {
       const cell = document.createElement('div');
-      cell.className = 'cell';
+      cell.className = 'cell' + (isPrime(value) ? ' answer-hint' : '');
       cell.dataset.index = i;
       cell.innerHTML = value + '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="27"/></svg>';
       cell.addEventListener('click', () => toggleCell(i));
       gridEl.appendChild(cell);
     });
 
-    positionDevSkipBtn(); // solo ORA la griglia ha la sua altezza vera (celle già dentro)
     randomizeConstellation(); // stesso motivo: serve l'altezza vera del contenitore
 
     // ============================================================
