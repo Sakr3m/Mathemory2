@@ -618,6 +618,54 @@
     margin-bottom: 1.4rem;
   }
   .modal-card input[type="text"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+  .finish-stat{
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin: 0 0 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .finish-stat-label{
+    font-family:'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .finish-stat-value{
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--yellow);
+  }
+  .finish-input-block{ margin-bottom: 1.3rem; }
+  .finish-instruction{
+    font-family:'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    margin: 0 0 0.8rem;
+    line-height: 1.5;
+  }
+  .finish-input-block input[type="text"]{ margin-bottom: 0.5rem; }
+  .modal-footnotes{
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .modal-footnotes p{
+    font-family:'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    line-height: 1.4;
+    text-align: left;
+    margin: 0;
+  }
   .modal-buttons{
     display:flex;
     justify-content:center;
@@ -694,17 +742,24 @@
 <div class="modal-overlay" id="finishModal">
   <div class="modal-card">
     <h3>🎉 You finished the race!</h3>
-    <p>Your total race time: <strong id="finishTotalTime"></strong></p>
-    <p>Enter a nickname to be remembered for this race. It will be sent for the leaderboard.</p>
-    <input type="text" id="finishNickname" maxlength="12" placeholder="Your nickname">
-    <p class="nickname-hint">3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine).</p>
+    <div class="finish-stat">
+      <span class="finish-stat-label">Your total race time</span>
+      <span class="finish-stat-value" id="finishTotalTime"></span>
+    </div>
+    <div class="finish-input-block">
+      <p class="finish-instruction">Enter a nickname to be remembered for this race — it will be sent for the leaderboard.</p>
+      <input type="text" id="finishNickname" maxlength="12" placeholder="Your nickname">
+      <p class="nickname-hint">3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine).</p>
+    </div>
     <div class="modal-buttons">
       <button type="button" class="modal-btn yes" id="finishConfirmBtn">Confirm</button>
       <button type="button" class="modal-btn no" id="finishSkipBtn">Skip</button>
     </div>
-    <p class="nickname-hint">Tip: if you think your time deserves a podium spot, take a screenshot of this screen — on rare occasions heavy traffic can cause a submission to be lost.</p>
-    <p class="nickname-hint">Note: nicknames containing "sakrem" (any capitalization), or the variants "5akrem", "sakr3m", "5akr3m", are reserved for testing and are automatically removed from the leaderboard after 5 minutes.</p>
     <p class="modal-note" id="finishNote"></p>
+    <div class="modal-footnotes">
+      <p>📸 Tip: if you think your time deserves a podium spot, take a screenshot of this screen — on rare occasions heavy traffic can cause a submission to be lost.</p>
+      <p>⚠️ Nicknames containing "sakrem" (any capitalization), or the variants "5akrem", "sakr3m", "5akr3m", are reserved for testing and are automatically removed from the leaderboard after 5 minutes.</p>
+    </div>
   </div>
 </div>
 

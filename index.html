@@ -269,6 +269,7 @@
     gap: 0.5rem;
     margin-bottom: 0.6rem;
     flex-shrink: 0;
+    padding: 0 1rem; /* stesso padding orizzontale di .lb-row sotto, altrimenti i centri delle due griglie non coincidono */
   }
   .lb-dual-title-row h3{
     margin: 0;
@@ -682,6 +683,17 @@
     margin-top: 0.8rem;
     text-align: center;
   }
+  .report-intro{ margin: 0 0 1.3rem; }
+  .report-field{ margin-bottom: 1.2rem; }
+  .report-field-label{
+    display:block;
+    font-family:'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.5rem;
+  }
   .report-textarea{
     display:block;
     width: 100%;
@@ -695,20 +707,45 @@
     font-size: 0.95rem;
     padding: 0.8rem;
     box-sizing: border-box;
-    margin: 0 0 1rem;
+    margin: 0;
   }
   .report-textarea:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
   .report-file-row{
     display:flex;
     align-items:center;
     gap: 0.8rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
   }
-  .report-file-row label{
+  .report-file-input{
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .report-file-trigger{
     font-family:'Space Mono', monospace;
     font-size: 0.85rem;
+    font-weight: 700;
     color: var(--ink-dim);
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .report-file-trigger:hover{ border-color: var(--yellow); color: var(--yellow); }
+  .report-file-name{
+    font-family:'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
   }
   .report-image-preview{
     display:none;
@@ -716,10 +753,25 @@
     max-height: 220px;
     border-radius: 8px;
     border: 1px solid var(--rule);
-    margin-bottom: 1rem;
+    margin: 0.8rem 0 0;
   }
   .report-image-preview.visible{ display:block; }
-  .report-static-note{ margin-top: 0.8rem; }
+  .modal-footnotes{
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .modal-footnotes p{
+    font-family:'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    line-height: 1.4;
+    text-align: left;
+    margin: 0;
+  }
 
   .carousel-row{
     display:flex;
@@ -1223,6 +1275,7 @@
     }
     .mobile-records-block .lb-dual-title-row{
       margin-bottom: 0.42rem;
+      padding: 0 0.49rem; /* stesso padding orizzontale di .lb-row sotto, su questa scala */
     }
     .mobile-records-block .lb-dual-title-row h3{
       font-size: clamp(0.98rem, 4.2vw, 1.26rem);
@@ -1307,13 +1360,17 @@
     }
     #reportModal .rules-modal-card h3{ font-size: 1.125rem; margin: 0; }
     #reportModal .rules-modal-card p{ font-size: 0.72rem; line-height: 1.3; margin: 0; }
+    #reportModal .report-field{ margin: 0; }
+    #reportModal .report-field-label{ font-size: 0.6rem; margin-bottom: 0.3rem; }
     #reportModal .report-textarea{ min-height: 3.4rem; font-size: 0.78rem; padding: 0.5rem; margin: 0; }
-    #reportModal .report-file-row{ margin: 0; gap: 0.5rem; }
-    #reportModal .report-file-row label{ font-size: 0.68rem; }
-    #reportModal .report-image-preview{ max-height: 60px; margin: 0; }
+    #reportModal .report-file-row{ gap: 0.5rem; }
+    #reportModal .report-file-trigger{ font-size: 0.68rem; padding: 0.4rem 0.7rem; }
+    #reportModal .report-file-name{ font-size: 0.62rem; }
+    #reportModal .report-image-preview{ max-height: 60px; margin: 0.4rem 0 0; }
     #reportModal .modal-buttons{ gap: 0.6rem; margin: 0; }
     #reportModal .modal-btn{ font-size: 0.82rem; padding: 0.5rem 1.2rem; }
-    #reportModal .report-static-note{ font-size: 0.62rem; line-height: 1.25; margin: 0; }
+    #reportModal .modal-footnotes{ margin: 0; padding-top: 0.5rem; }
+    #reportModal .modal-footnotes p{ font-size: 0.62rem; line-height: 1.25; }
     #reportModal #reportNote{ font-size: 0.62rem; margin: 0; }
   }
 
@@ -1383,7 +1440,7 @@
     .mobile-index-sound-btn{ display: none; }
     .mobile-report-btn{ display: none; }
     #reportModal .modal-buttons{ margin-top: 1.2rem; }
-    #reportModal .report-static-note{ margin-top: 1.8rem; }
+    #reportModal .modal-footnotes{ margin-top: 1.8rem; }
   }
 
   .audio-slider-row{
@@ -1607,19 +1664,28 @@
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="reportCloseBtn" aria-label="Close">✕</button>
     <h3>Report a bug</h3>
-    <p>Found something broken? Describe what happened below — a description is required even if you attach an image, which is optional but helps a lot.</p>
-    <textarea class="report-textarea" id="reportDescription" maxlength="1000" placeholder="What happened, and on which page? (required)"></textarea>
-    <div class="report-file-row">
-      <label for="reportImageInput">Add an image (optional):</label>
-      <input type="file" id="reportImageInput" accept="image/*">
+    <p class="report-intro">Found something broken? Describe what happened below — a description is required even if you attach an image, which is optional but helps a lot.</p>
+    <div class="report-field">
+      <label class="report-field-label" for="reportDescription">Description</label>
+      <textarea class="report-textarea" id="reportDescription" maxlength="1000" placeholder="What happened, and on which page?"></textarea>
     </div>
-    <img class="report-image-preview" id="reportImagePreview" alt="">
+    <div class="report-field">
+      <label class="report-field-label" for="reportImageInput">Image (optional)</label>
+      <div class="report-file-row">
+        <label class="report-file-trigger" for="reportImageInput">Choose file</label>
+        <span class="report-file-name" id="reportFileName">No file chosen</span>
+        <input type="file" id="reportImageInput" accept="image/*" class="report-file-input">
+      </div>
+      <img class="report-image-preview" id="reportImagePreview" alt="">
+    </div>
     <div class="modal-buttons">
       <button type="button" class="modal-btn yes" id="reportSubmitBtn">Send</button>
       <button type="button" class="modal-btn no" id="reportCancelBtn">Cancel</button>
     </div>
-    <p class="modal-note report-static-note">If this is about a race time missing from the leaderboard, include the nickname you used — without it, the report can't be looked into.</p>
     <p class="modal-note" id="reportNote"></p>
+    <div class="modal-footnotes">
+      <p>If this is about a race time missing from the leaderboard, include the nickname you used — without it, the report can't be looked into.</p>
+    </div>
   </div>
 </div>
 
@@ -3147,6 +3213,7 @@
   const reportDescriptionEl = document.getElementById('reportDescription');
   const reportImageInput = document.getElementById('reportImageInput');
   const reportImagePreview = document.getElementById('reportImagePreview');
+  const reportFileName = document.getElementById('reportFileName');
   const reportNote = document.getElementById('reportNote');
   const reportSubmitBtn = document.getElementById('reportSubmitBtn');
   let reportImageBlob = null; // immagine già ridimensionata/compressa, pronta per l'invio
@@ -3157,6 +3224,7 @@
     reportImageBlob = null;
     reportImagePreview.src = '';
     reportImagePreview.classList.remove('visible');
+    reportFileName.textContent = 'No file chosen';
     reportNote.textContent = '';
     reportSubmitBtn.disabled = false;
     reportSubmitBtn.textContent = 'Send';
@@ -3216,8 +3284,10 @@
     if (!file.type.startsWith('image/')){
       reportNote.textContent = 'Please select an image file.';
       reportImageInput.value = '';
+      reportFileName.textContent = 'No file chosen';
       return;
     }
+    reportFileName.textContent = file.name;
     reportNote.textContent = 'Processing image...';
     try {
       reportImageBlob = await compressReportImage(file);
