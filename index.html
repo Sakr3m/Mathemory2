@@ -123,34 +123,17 @@
     min-width: 0;
   }
   /* le 6 tabelle (Sieve + Prime Rush) hanno tutte la stessa altezza, indipendentemente
-     da quanto altro testo ha ogni metà sopra di loro, e sono ristrette al 85% di
-     larghezza, centrate */
+     da quanto altro testo ha ogni metà sopra di loro. La larghezza (85%, allineate
+     a destra) arriva dal padding-left di .lb-half qui sopra, non serve più ripeterla */
   .erato-leaderboard-half .lb-row{
     flex: 0 0 auto;
     height: 2.6rem;
-    width: 85%;
-    margin-left: auto;
-    margin-right: 0;
   }
-  /* la riga del titolo doveva condividere la STESSA larghezza delle tabelle sotto
-     (85%, allineate a destra) — mancava, quindi le due righe avevano estensioni
-     orizzontali diverse: centrare "dentro la propria riga" dava risultati diversi
-     perché le identiche percentuali si applicavano a basi diverse */
-  .erato-leaderboard-half .lb-dual-title-row{
-    width: 85%;
-    margin-left: auto;
-    margin-right: 0;
-  }
-  /* stesso allineamento a destra delle righe classifica: il padding delle due metà
-     della card è identico (0.855rem ciascuna), quindi il margine destro corretto è
-     sempre 0 — non serve più calcolarlo via JS (vedi nota dove c'era applyEratoLbMargin) */
   .leaderboard-card h2,
   .leaderboard-card h3,
   .race-end-inline,
   .erato-rules-preview{
-    width: 85%;
-    margin-left: auto;
-    margin-right: 0;
+    margin-left: 0;
   }
   @keyframes erato-border-cycle{
     0%   { border-color: rgba(232,196,104,0.85); box-shadow: 0 0 0 1px rgba(232,196,104,0.55), 0 0 0 2px rgba(232,196,104,0.25); }
@@ -248,6 +231,16 @@
     flex-direction:column;
     min-height: 0;
   }
+  /* nel contesto della card espansa, le tabelle occupano solo l'85% dello spazio
+     (allineate a destra) — invece di ripetere width:85%/margin-left:auto su OGNI
+     singolo elemento dentro (titolo, righe, h2, testo regole...) e rischiare di
+     dimenticarlo su uno nuovo in futuro, il rientro vive UNA VOLTA SOLA qui, come
+     padding: ogni figlio lo eredita automaticamente, gratis, senza bisogno di
+     nessuna regola propria */
+  .erato-leaderboard-half .lb-half{
+    padding-left: 15%;
+    box-sizing: border-box;
+  }
   .leaderboard-card h2{
     font-family:'Kalam', cursive;
     font-size: 1.8rem;
@@ -278,7 +271,7 @@
     flex-shrink: 0;
   }
   .lb-dual-title-row h3{
-    width: auto; /* neutralizza il width:85% di .leaderboard-card h3 (altro contesto, ma .lb-half ci è annidato dentro) */
+    width: auto;
     justify-self: stretch; /* esplicito, non affidato al default della griglia: il box deve riempire tutta la sua colonna 1fr, non restringersi al testo */
     margin: 0;
     font-size: 1.25rem;
