@@ -273,7 +273,7 @@
     justify-self: stretch; /* esplicito, non affidato al default della griglia: il box deve riempire tutta la sua colonna 1fr, non restringersi al testo */
     margin: 0;
     font-size: 1.25rem;
-    text-align: center;
+    text-align: center !important; /* .leaderboard-card ha text-align:left diretto sul contenitore esterno: !important per escludere qualunque dubbio su chi vince */
   }
   .lb-dual-title-spacer{ width: 1.452rem; } /* larghezza della colonna medaglia, per coerenza visiva */
   .lb-section{
