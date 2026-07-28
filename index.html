@@ -132,6 +132,15 @@
     margin-left: auto;
     margin-right: 0;
   }
+  /* la riga del titolo doveva condividere la STESSA larghezza delle tabelle sotto
+     (85%, allineate a destra) — mancava, quindi le due righe avevano estensioni
+     orizzontali diverse: centrare "dentro la propria riga" dava risultati diversi
+     perché le identiche percentuali si applicavano a basi diverse */
+  .erato-leaderboard-half .lb-dual-title-row{
+    width: 85%;
+    margin-left: auto;
+    margin-right: 0;
+  }
   /* stesso allineamento a destra delle righe classifica: il padding delle due metà
      della card è identico (0.855rem ciascuna), quindi il margine destro corretto è
      sempre 0 — non serve più calcolarlo via JS (vedi nota dove c'era applyEratoLbMargin) */
