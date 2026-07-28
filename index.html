@@ -285,8 +285,8 @@
     line-height: 1.15;
     transform: translate(-50%, -50%); /* il testo si centra sul punto (left), non parte da lì */
   }
-  .lb-dual-title-row h3:first-child{ left: 25%; } /* Prime Rush: a metà tra il bordo sinistro e il centro (50%) */
-  .lb-dual-title-row h3:last-child{ left: 75%; } /* Scholar's Glance: a metà tra il centro e il bordo destro */
+  .lb-dual-title-row h3:first-child{ left: calc(25% + 35px); } /* Prime Rush */
+  .lb-dual-title-row h3:last-child{ left: calc(75% + 35px); } /* Scholar's Glance */
   .lb-section{
     flex: 1 1 0;
     display:flex;
@@ -2624,23 +2624,6 @@
         overlay.appendChild(dividerLine);
       }
       dividerLine.style.left = dividerX + 'px';
-
-      // titoli "Prime Rush"/"Scholar's Glance": non più centrati sulla riga della
-      // classifica, ma a 25%/75% tra la riga divisoria vera (dividerX, appena
-      // calcolata) e il margine destro della riga — un riferimento diverso, su
-      // richiesta esplicita. dividerX è relativo a overlay, va riportato a
-      // coordinate assolute (viewport) per confrontarlo con getBoundingClientRect(),
-      // poi riconvertito in locali (relative a .lb-dual-title-row) per lo style.left
-      const titleRow = overlay.querySelector('.lb-dual-title-row');
-      if (titleRow){
-        const titleRowRect = titleRow.getBoundingClientRect();
-        const dividerXAbs = overlayRect.left + dividerX;
-        const availableWidth = titleRowRect.right - dividerXAbs;
-        const leftTitle = titleRow.querySelector('h3:first-child');
-        const rightTitle = titleRow.querySelector('h3:last-child');
-        if (leftTitle) leftTitle.style.left = (dividerXAbs + availableWidth * 0.25 - titleRowRect.left) + 'px';
-        if (rightTitle) rightTitle.style.left = (dividerXAbs + availableWidth * 0.75 - titleRowRect.left) + 'px';
-      }
 
       // Game X va alla stessa posizione orizzontale della riga, ma più in basso
       // (non più a cavallo del bordo), abbastanza da leggersi tutto senza tagli
