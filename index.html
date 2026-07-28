@@ -257,36 +257,23 @@
     margin-bottom: 0.6rem;
     flex-shrink: 0;
   }
-  /* doppio titolo sopra Prime Rush / Scholar's Glance: ogni titolo occupa esattamente
-     metà della riga (stesso padding orizzontale di .lb-row sotto) e si centra al suo
-     interno. Per costruzione, la medaglia della riga valori sotto è SEMPRE esattamente
-     al centro della riga (riga simmetrica), quindi "centrato a metà riga" equivale
-     sempre a "centrato tra il bordo e il centro della medaglia", senza dover
-     replicare la struttura esatta (gap compreso) della riga dei valori */
+  /* doppio titolo sopra Prime Rush / Scholar's Glance: stessa identica griglia
+     (1fr auto 1fr) delle righe .lb-row-dual sotto, così i due titoli restano
+     sempre centrati esattamente sopra le rispettive colonne di valori */
   .lb-dual-title-row{
-    position: relative;
-    height: 1.9rem;
+    display:grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items:center;
+    gap: 0.5rem;
     margin-bottom: 0.6rem;
     flex-shrink: 0;
-    padding: 0 1rem; /* stesso padding orizzontale di .lb-row sotto */
-    box-sizing: border-box;
   }
   .lb-dual-title-row h3{
-    position: absolute;
-    top: 50%;
-    width: auto; /* neutralizza il width:85% di .leaderboard-card h3 (altro contesto, ma .lb-half ci è annidato dentro): senza, il box è largo l'85% della riga e il transform centra il BOX, non il testo */
-    max-width: 46%; /* durante la fase stretta della card (parte a metà larghezza finale, prima
-      di allargarsi) il testo va a capo invece di sovrapporsi al titolo vicino: senza questo,
-      "nowrap" avrebbe reso i due titoli sempre alla loro larghezza piena, facendoli scontrare
-      quando la card è ancora stretta */
-    margin: 0; /* neutralizza anche margin-left:auto/margin-right della stessa regola */
+    width: auto; /* neutralizza il width:85% di .leaderboard-card h3 (altro contesto, ma .lb-half ci è annidato dentro) */
+    margin: 0;
     font-size: 1.25rem;
-    text-align: center;
-    line-height: 1.15;
-    transform: translate(-50%, -50%); /* il testo si centra sul punto (left), non parte da lì */
   }
-  .lb-dual-title-row h3:first-child{ left: calc(25% + 35px); } /* Prime Rush */
-  .lb-dual-title-row h3:last-child{ left: calc(75% + 35px); } /* Scholar's Glance */
+  .lb-dual-title-spacer{ width: 1.452rem; } /* larghezza della colonna medaglia, per coerenza visiva */
   .lb-section{
     flex: 1 1 0;
     display:flex;
@@ -1288,14 +1275,13 @@
       margin: 0 0 0.42rem;
     }
     .mobile-records-block .lb-dual-title-row{
-      height: 1.9rem;
       margin-bottom: 0.42rem;
-      padding: 0 0.49rem; /* stesso padding orizzontale di .lb-row sotto, su questa scala */
     }
     .mobile-records-block .lb-dual-title-row h3{
       font-size: clamp(0.98rem, 4.2vw, 1.26rem);
       margin: 0;
     }
+    .mobile-records-block .lb-dual-title-spacer{ width: 0.77rem; }
     .mobile-lb-block .lb-row-dual, .mobile-records-block .lb-row-dual{
       grid-template-columns: 1fr 0.9rem 1fr;
     }
@@ -2125,6 +2111,7 @@
       <div class="lb-half">
         <div class="lb-dual-title-row">
           <h3>Prime Rush</h3>
+          <span class="lb-dual-title-spacer"></span>
           <h3>Scholar's Glance</h3>
         </div>
         <div class="lb-section">
@@ -2215,6 +2202,7 @@
         <div class="mobile-records-block">
           <div class="lb-dual-title-row">
             <h3>Prime Rush</h3>
+            <span class="lb-dual-title-spacer"></span>
             <h3>Scholar's Glance</h3>
           </div>
           <div class="lb-section">
