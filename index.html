@@ -272,10 +272,12 @@
     width: auto; /* neutralizza il width:85% di .leaderboard-card h3 (altro contesto, ma .lb-half ci è annidato dentro) */
     margin: 0;
     font-size: 1.25rem;
-    position: relative;
+    text-align: center; /* il box è già alla larghezza giusta (1fr della stessa griglia
+      della riga valori sotto): mancava solo questo per centrare il TESTO dentro il box,
+      invece di lasciarlo a sinistra. Sostituisce i due aggiustamenti manuali in px
+      (che erano fissi e non si sarebbero adattati ai vari breakpoint) con qualcosa che
+      si ricalcola da solo a ogni larghezza di schermo */
   }
-  .lb-dual-title-row h3:first-child{ left: 75px; } /* Prime Rush */
-  .lb-dual-title-row h3:last-child{ left: 10px; } /* Scholar's Glance */
   .lb-dual-title-spacer{ width: 1.452rem; } /* larghezza della colonna medaglia, per coerenza visiva */
   .lb-section{
     flex: 1 1 0;
