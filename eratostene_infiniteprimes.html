@@ -61,6 +61,14 @@
     margin: 0 0 0.6rem;
   }
   h1 .accent{ color: var(--yellow); }
+  /* titolo qui è sempre lo stesso testo (nessun numero di livello mostrato), quindi
+     basta UNA sola regola invece delle 2-3 fasce per cifre degli altri giochi.
+     Margine di sicurezza più ampio del solito (10% invece di 3%) perché il simbolo ∞
+     non esiste nel font Kalam: il browser userà un font di fallback per quel carattere,
+     quindi la larghezza reale non è misurabile con certezza assoluta come per il resto */
+  @media (min-width: 901px){
+    #levelTitle{ font-size: min(3.192rem, 4.6969rem, calc(2.8728rem * (100vw - 360px) / 573.10px)); }
+  }
   .rank-callout-spacer{ margin: 0 0 0.9rem; }
   .instructions{
     color: var(--ink-dim);
@@ -161,6 +169,7 @@
   }
   @media (min-width: 1401px){
     .side-panel > div:first-child{ margin-bottom: -0.9rem; }
+    .side-panel-wrap{ justify-content: center; } /* sostituisce alignSidePanel: centra .side-panel nell'altezza (già stretchata) del wrapper, senza bisogno di misurarla via JS */
   }
 
   .answer-row{ display:flex; flex-direction:column; gap: 0.69rem; }
@@ -1146,21 +1155,6 @@
     const pickedRow = document.getElementById('pickedRow');
     const selected = new Set();
 
-    // il pannello destro si centra sull'altezza della griglia SOLO in modalità a due colonne (desktop).
-    // Su mobile (una colonna sola) non deve imporre nulla: lascio decidere il margine al CSS.
-    const sidePanel = document.querySelector('.side-panel');
-    function alignSidePanel(){
-      if (window.innerWidth <= 1400){
-        sidePanel.style.marginTop = ''; // tolgo l'inline style, non lo forzo a 0
-        return;
-      }
-      // griglia e pannello partono dalla stessa altezza naturale (stessa riga della grid CSS,
-      // align-items:start): basta la differenza di altezza tra i due, senza contare l'offset di pagina.
-      const desiredMarginTop = (gridEl.offsetHeight - sidePanel.offsetHeight) / 2;
-      sidePanel.style.marginTop = Math.max(0, desiredMarginTop) + 'px';
-    }
-    window.addEventListener('resize', alignSidePanel);
-
     grid.forEach((value, i) => {
       const cell = document.createElement('div');
       cell.className = 'cell' + (isPrime(value) ? ' answer-hint' : '');
@@ -1214,54 +1208,6 @@
     }
     render();
     window.addEventListener('resize', render);
-
-    // dimensiona i pulsanti tondi (volume, home) come il pulsante suono dell'index (55px
-    // fisso). Qui il titolo è statico (non cambia per livello come nelle altre due
-    // pagine), quindi basta chiamarla una volta al caricamento
-    function sizeTitleIconButtons(){
-      const h1 = document.getElementById('levelTitle');
-      const btns = document.querySelectorAll('.title-icon-row .mobile-icon-btn');
-      if (window.innerWidth <= 900){
-        if (h1) h1.style.fontSize = '';
-        btns.forEach(btn => { btn.style.width = ''; btn.style.height = ''; btn.style.fontSize = ''; });
-        return;
-      }
-      if (!h1 || !btns.length) return;
-
-      const diameter = 55;
-      btns.forEach(btn => {
-        btn.style.width = diameter + 'px';
-        btn.style.height = diameter + 'px';
-        btn.style.fontSize = (diameter * 0.4267) + 'px';
-      });
-
-      h1.style.fontSize = '';
-      const availableWidth = h1.getBoundingClientRect().width;
-      const baseFontSize = parseFloat(getComputedStyle(h1).fontSize);
-
-      const titleProbe = document.createElement('span');
-      const h1Style = getComputedStyle(h1);
-      titleProbe.style.fontFamily = h1Style.fontFamily;
-      titleProbe.style.fontWeight = h1Style.fontWeight;
-      titleProbe.style.fontSize = h1Style.fontSize;
-      titleProbe.style.whiteSpace = 'nowrap';
-      titleProbe.style.position = 'absolute';
-      titleProbe.style.visibility = 'hidden';
-      titleProbe.textContent = h1.textContent;
-      document.body.appendChild(titleProbe);
-      const neededWidth = titleProbe.getBoundingClientRect().width;
-      document.body.removeChild(titleProbe);
-
-      if (neededWidth > availableWidth && availableWidth > 0){
-        const scale = (availableWidth / neededWidth) * 0.97;
-        h1.style.fontSize = (baseFontSize * scale) + 'px';
-      }
-    }
-    sizeTitleIconButtons();
-    window.addEventListener('resize', sizeTitleIconButtons);
-
-    // solo ORA il pannello destro ha davvero tutti e 5 i riquadri dentro: l'altezza misurata è quella reale
-    alignSidePanel();
 
     // --- pulsante skip (solo PC, solo test): apre il popup con le 4 opzioni ---
     document.getElementById('devSkipBtn').addEventListener('click', () => {
