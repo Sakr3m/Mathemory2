@@ -2625,6 +2625,23 @@
       }
       dividerLine.style.left = dividerX + 'px';
 
+      // titoli "Prime Rush"/"Scholar's Glance": non più centrati sulla riga della
+      // classifica, ma a 25%/75% tra la riga divisoria vera (dividerX, appena
+      // calcolata) e il margine destro della riga — un riferimento diverso, su
+      // richiesta esplicita. dividerX è relativo a overlay, va riportato a
+      // coordinate assolute (viewport) per confrontarlo con getBoundingClientRect(),
+      // poi riconvertito in locali (relative a .lb-dual-title-row) per lo style.left
+      const titleRow = overlay.querySelector('.lb-dual-title-row');
+      if (titleRow){
+        const titleRowRect = titleRow.getBoundingClientRect();
+        const dividerXAbs = overlayRect.left + dividerX;
+        const availableWidth = titleRowRect.right - dividerXAbs;
+        const leftTitle = titleRow.querySelector('h3:first-child');
+        const rightTitle = titleRow.querySelector('h3:last-child');
+        if (leftTitle) leftTitle.style.left = (dividerXAbs + availableWidth * 0.25 - titleRowRect.left) + 'px';
+        if (rightTitle) rightTitle.style.left = (dividerXAbs + availableWidth * 0.75 - titleRowRect.left) + 'px';
+      }
+
       // Game X va alla stessa posizione orizzontale della riga, ma più in basso
       // (non più a cavallo del bordo), abbastanza da leggersi tutto senza tagli
       const gamexTag = overlay.querySelector('.erato-gamex-tag');
