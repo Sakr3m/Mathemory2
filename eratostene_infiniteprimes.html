@@ -75,7 +75,7 @@
     display:grid;
     grid-template-columns: 529px 1fr;
     gap: 2.3rem;
-    align-items:start;
+    align-items:stretch;
   }
   @media (max-width: 1400px){
     .level-layout{ grid-template-columns: 1fr; }
@@ -232,6 +232,7 @@
   .dev-skip-btn{
     position: absolute;
     left: 0;
+    bottom: 0; /* ancoraggio CSS puro, ora che align-items:stretch rende .side-panel-wrap alto quanto la griglia */
     display: block;
     width: 100%;
     padding: 0.5rem;
@@ -762,20 +763,6 @@
     document.addEventListener('touchmove', (e) => { e.preventDefault(); }, { passive: false });
   }
 
-  // tasto skip: il suo fondo allineato al fondo della griglia, calcolato dal vero
-  // (non con un margine fisso) — solo quando c'è davvero spazio a destra della
-  // griglia (sopra i 1400px: sotto quella soglia vale il CSS statico)
-  function positionDevSkipBtn(){
-    const grid = document.getElementById('gridEl');
-    const sidePanel = document.querySelector('.side-panel-wrap');
-    const skipBtn = document.getElementById('devSkipBtn');
-    if (!grid || !sidePanel || !skipBtn) return;
-    if (window.innerWidth <= 1400) return;
-    const gridRect = grid.getBoundingClientRect();
-    const wrapRect = sidePanel.getBoundingClientRect();
-    skipBtn.style.top = (gridRect.bottom - wrapRect.top - skipBtn.offsetHeight) + 'px';
-  }
-
   // simboli di sfondo: statici (nessun movimento), ma con posizione casuale a ogni
   // apertura pagina — un "seed" diverso genera una nuova disposizione ogni volta.
   // Chiamata solo DOPO che la griglia vera è stata riempita: misurarla prima
@@ -1183,7 +1170,6 @@
       gridEl.appendChild(cell);
     });
     randomizeConstellation(); // solo ORA la griglia ha la sua altezza vera
-    positionDevSkipBtn(); // stesso motivo: il tasto skip deve allinearsi al fondo della griglia vera
 
     function toggleCell(i){
       if (selected.has(i)){

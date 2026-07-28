@@ -76,7 +76,7 @@
     display:grid;
     grid-template-columns: 529px 1fr;
     gap: 2.3rem;
-    align-items:start;
+    align-items:stretch;
   }
   @media (max-width: 1400px){
     .level-layout{ grid-template-columns: 1fr; }
@@ -238,6 +238,7 @@
   .dev-skip-btn{
     position: absolute;
     left: 0;
+    bottom: 0; /* si ancora da solo al fondo di .side-panel-wrap, ora davvero alto quanto la griglia grazie ad align-items:stretch — zero JS */
     display: block;
     width: 100%;
     padding: 0.5rem;
@@ -1313,20 +1314,6 @@
     }
   }
 
-  // tasto skip: il suo fondo allineato al fondo della griglia, calcolato dal vero
-  // (non con un margine fisso) — solo quando c'è davvero spazio a destra della
-  // griglia (sopra i 1400px: sotto quella soglia vale il CSS statico)
-  function positionDevSkipBtn(){
-    const grid = document.getElementById('gridEl');
-    const sidePanel = document.querySelector('.side-panel-wrap');
-    const skipBtn = document.getElementById('devSkipBtn');
-    if (!grid || !sidePanel || !skipBtn) return;
-    if (window.innerWidth <= 1400) return;
-    const gridRect = grid.getBoundingClientRect();
-    const wrapRect = sidePanel.getBoundingClientRect();
-    skipBtn.style.top = (gridRect.bottom - wrapRect.top - skipBtn.offsetHeight) + 'px';
-  }
-
   function renderLevel(levelData){
     const grid = levelData.griglia;
     const circleColor = circleColorForLevel(levelNum);
@@ -1434,7 +1421,6 @@
       gridEl.appendChild(cell);
     });
 
-    positionDevSkipBtn(); // solo ORA la griglia ha la sua altezza vera (celle già dentro)
     randomizeConstellation(); // stesso motivo: serve l'altezza vera del contenitore
 
     // ============================================================
