@@ -130,20 +130,18 @@
     height: 2.6rem;
     width: 85%;
     margin-left: auto;
-    margin-right: var(--erato-lb-margin, 0px);
+    margin-right: 0;
   }
-  /* stesso allineamento a destra delle righe classifica, condiviso tramite la
-     variabile CSS --erato-lb-margin impostata una volta sola sulla card (vedi
-     applyEratoLbMargin): qualunque contenuto venga iniettato qui dentro in futuro
-     (dati aggiornati, popup RULES) la eredita automaticamente, senza bisogno di
-     riscriverla via JS a ogni singolo punto che tocca questo contenuto */
+  /* stesso allineamento a destra delle righe classifica: il padding delle due metà
+     della card è identico (0.855rem ciascuna), quindi il margine destro corretto è
+     sempre 0 — non serve più calcolarlo via JS (vedi nota dove c'era applyEratoLbMargin) */
   .leaderboard-card h2,
   .leaderboard-card h3,
   .race-end-inline,
   .erato-rules-preview{
     width: 85%;
     margin-left: auto;
-    margin-right: var(--erato-lb-margin, 0px);
+    margin-right: 0;
   }
   @keyframes erato-border-cycle{
     0%   { border-color: rgba(232,196,104,0.85); box-shadow: 0 0 0 1px rgba(232,196,104,0.55), 0 0 0 2px rgba(232,196,104,0.25); }
@@ -1910,26 +1908,10 @@
   let cachedScholarsGlancePodium = null;
   let eratoOverlayEl = null; // riferimento alla card animata (se già creata), per aggiornare la classifica quando arrivano dati freschi dal Worker
 
-  // margine destro della classifica: misurato dal vero (dipende solo dal padding interno,
-  // non dalla larghezza della card), condiviso tra refreshEratoLeaderboard (quando i dati
-  // arrivano dopo che la card è già finalizzata) e playEratoIntroOverlay (applicato subito
-  // dopo la creazione, mentre la card è ancora invisibile, per evitare il salto visibile)
-  function applyEratoLbMargin(overlay, lbHalf){
-    const miniSieve = overlay.querySelector('.mini-sieve');
-    if (!miniSieve) return;
-    // il bordo della card va tolto dal gap misurato: altrimenti finisce contato due volte
-    // (una volta implicito nel leftGap, una volta nel bordo destro reale quando il margine
-    // viene applicato), spostando la classifica di 1px in più rispetto alla griglia invece
-    // di restare alla stessa identica distanza
-    const overlayBorderWidth = parseFloat(getComputedStyle(overlay).borderLeftWidth) || 0;
-    const leftGap = miniSieve.getBoundingClientRect().left - overlay.getBoundingClientRect().left - overlayBorderWidth;
-    const lbHalfPaddingRight = lbHalf ? (parseFloat(getComputedStyle(lbHalf).paddingRight) || 0) : 0;
-    const marginRight = Math.max(0, leftGap - lbHalfPaddingRight);
-    // impostata UNA VOLTA come variabile CSS sulla card: qualunque contenuto venga
-    // iniettato dentro (ora o in futuro, da qualunque punto del codice) la eredita
-    // automaticamente tramite la regola CSS, senza bisogno di riscriverla via JS
-    overlay.style.setProperty('--erato-lb-margin', marginRight + 'px');
-  }
+  // NOTA: c'era qui una funzione (applyEratoLbMargin) che misurava via JS un margine
+  // destro per allineare la classifica al bordo della card. Da quando le due metà
+  // hanno lo stesso padding (0.855rem), quel margine calcolava sempre zero — rimossa,
+  // il CSS ora usa direttamente margin-right:0
 
   // aggiorna la classifica dentro la card già visibile, se esiste — altrimenti i dati
   // arrivati dopo la comparsa non si vedrebbero mai (l'overlay non viene ricostruito
@@ -1947,9 +1929,7 @@
     }
     lbHalf.innerHTML = freshHtml;
     lbHalf._realLbHtml = lbHalf.innerHTML;
-    // l'allineamento a destra arriva da solo dalla variabile CSS --erato-lb-margin
-    // già impostata sulla card (vedi applyEratoLbMargin): qualunque contenuto nuovo
-    // la eredita automaticamente, non serve più ricalcolarla o riapplicarla qui
+    // l'allineamento a destra è statico nel CSS (margin-right:0), non serve calcolarlo
   }
   const LEADERBOARD_API = 'https://eratostene.sl-eternal-lux.workers.dev';
 
@@ -2599,14 +2579,6 @@
     overlay.dataset.eratoFinalized = 'true'; // da qui in poi, è sicuro calcolare margini basati sulla larghezza finale
     const lbHalf = overlay.querySelector('.erato-leaderboard-half');
 
-    // il margine destro della classifica potrebbe essere già quello giusto (applicato
-    // in playEratoIntroOverlay mentre la card era ancora invisibile), MA se nel
-    // frattempo sono arrivati i dati veri dal Worker (refreshEratoLeaderboard) prima
-    // che l'allargamento finisse, quella funzione riscrive l'HTML della classifica e
-    // perde lo stile inline del margine, confidando che venisse rifatto qui — quindi
-    // va sempre riapplicato qui, non è mai sicuro assumere che sia già a posto
-    if (lbHalf) applyEratoLbMargin(overlay, lbHalf);
-
     // riga divisoria: a metà esatta tra il bordo destro del pulsante "Play now" di
     // destra e il bordo sinistro delle tabelle della classifica — misurata dal vero
     const playButtons = overlay.querySelectorAll('.play-now-split .cta-split');
@@ -2712,7 +2684,7 @@
         swapTimer = setTimeout(() => {
           lbHalf.innerHTML = rulesPreviewHtml;
           // l'allineamento a destra (.erato-rules-preview è tra i selettori della
-          // regola CSS condivisa) arriva da solo dalla variabile --erato-lb-margin
+          // regola CSS condivisa) è statico nel CSS, non serve calcolarlo
           void lbHalf.offsetWidth; // forzo il reflow prima di far ripartire la dissolvenza
           lbHalf.style.opacity = '1';
         }, fadeMs);
@@ -2725,8 +2697,7 @@
         lbHalf.style.opacity = '0';
         swapTimer = setTimeout(() => {
           lbHalf.innerHTML = lbHalf._realLbHtml; // sempre il contenuto vero, mai una copia sporcata
-          // l'allineamento a destra arriva da solo dalla variabile --erato-lb-margin,
-          // non serve più riapplicarlo a mano riga per riga
+          // l'allineamento a destra è statico nel CSS, non serve riapplicarlo a mano
           void lbHalf.offsetWidth;
           lbHalf.style.opacity = '1';
         }, fadeMs);
@@ -2827,13 +2798,6 @@
     document.body.appendChild(overlay);
     eratoOverlayEl = overlay;
     loopMiniSievePreview(overlay);
-
-    // applico subito il margine destro della classifica, mentre la card è ancora
-    // invisibile (opacity:0): questa misura dipende solo dal padding interno, non
-    // dalla larghezza della card (che cambierà durante l'animazione), quindi è già
-    // corretta ora — applicarla qui invece che a fine animazione evita il salto
-    // visibile che si vedeva prima
-    applyEratoLbMargin(overlay, overlay.querySelector('.erato-leaderboard-half'));
 
     // la card resta ferma qui, pronta e invisibile, finché la pagina non è DAVVERO
     // finita di caricare (non solo il DOM: immagini, font, tutto) — solo allora parte
