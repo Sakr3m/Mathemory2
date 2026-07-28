@@ -264,19 +264,26 @@
      sempre centrati esattamente sopra le rispettive colonne di valori */
   .lb-dual-title-row{
     display:grid;
-    grid-template-columns: 1fr 1.6rem 1fr;
+    grid-template-columns: 1fr 0.8rem 0.8rem 1fr; /* la colonna medaglia (1.6rem) divisa in due metà:
+      ogni titolo copre la sua metà esterna (1fr) + la mezza colonna adiacente, così si centra
+      esattamente tra il bordo e il CENTRO della medaglia, non tra il bordo e il suo confine */
     align-items:center;
-    gap: 0.5rem;
     margin-bottom: 0.6rem;
     flex-shrink: 0;
     padding: 0 1rem; /* stesso padding orizzontale di .lb-row sotto, altrimenti i centri delle due griglie non coincidono */
   }
-  .lb-dual-title-row h3{
+  .lb-dual-title-row h3:first-child{
+    grid-column: 1 / 3;
     margin: 0;
     font-size: 1.25rem;
     text-align: center;
   }
-  .lb-dual-title-spacer{ width: 1.452rem; } /* larghezza della colonna medaglia, per coerenza visiva */
+  .lb-dual-title-row h3:last-child{
+    grid-column: 3 / 5;
+    margin: 0;
+    font-size: 1.25rem;
+    text-align: center;
+  }
   .lb-section{
     flex: 1 1 0;
     display:flex;
@@ -1280,7 +1287,7 @@
     .mobile-records-block .lb-dual-title-row{
       margin-bottom: 0.42rem;
       padding: 0 0.49rem; /* stesso padding orizzontale di .lb-row sotto, su questa scala */
-      grid-template-columns: 1fr 0.9rem 1fr;
+      grid-template-columns: 1fr 0.45rem 0.45rem 1fr;
     }
     .mobile-records-block .lb-dual-title-row h3{
       font-size: clamp(0.98rem, 4.2vw, 1.26rem);
@@ -2133,7 +2140,6 @@
       <div class="lb-half">
         <div class="lb-dual-title-row">
           <h3>Prime Rush</h3>
-          <span class="lb-dual-title-spacer"></span>
           <h3>Scholar's Glance</h3>
         </div>
         <div class="lb-section">
@@ -2224,7 +2230,6 @@
         <div class="mobile-records-block">
           <div class="lb-dual-title-row">
             <h3>Prime Rush</h3>
-            <span class="lb-dual-title-spacer"></span>
             <h3>Scholar's Glance</h3>
           </div>
           <div class="lb-section">
