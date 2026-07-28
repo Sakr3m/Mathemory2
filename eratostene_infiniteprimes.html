@@ -51,7 +51,7 @@
     font-size: 1.5rem;
     fill: rgba(159, 176, 162, 0.20);
   }
-  .wrap > .title-icon-row, .wrap > .instructions, .wrap > .rank-callout-spacer, .wrap > .level-layout{
+  .wrap > .title-icon-row, .wrap > .instructions, .wrap > .rank-callout, .wrap > .level-layout{
     position: relative;
     z-index: 1;
   }
@@ -69,7 +69,78 @@
   @media (min-width: 901px){
     #levelTitle{ font-size: min(3.192rem, 4.6969rem, calc(2.8728rem * (100vw - 360px) / 573.10px)); }
   }
-  .rank-callout-spacer{ margin: 0 0 0.9rem; }
+  /* stesso identico blocco di The Sieve/Prime Rush, così lo spazio riservato sopra la
+     griglia è ESATTAMENTE lo stesso (badge/frase qui sono permanentemente nascosti via
+     .no-rank: qui non esiste un sistema di rango, ma serve la stessa altezza per non
+     spostare griglia/pannello rispetto agli altri due giochi) */
+  .rank-callout{
+    position: relative;
+    height: 26.78px;
+    margin: 0 0 0.9rem;
+    display: grid;
+    grid-template-columns: 529px 1fr;
+  }
+  .rank-badge{
+    position: absolute;
+    grid-column: 2;
+    top: 41.18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 409px; height: 40px;
+    font-family:'Space Mono', monospace;
+    font-size: 0.935rem;
+    font-weight:700;
+    color: var(--bg);
+    background: var(--circle-color, var(--yellow));
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  .rank-phrase{
+    position: absolute;
+    grid-column: 2;
+    top: calc(41.18px + 40px + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 409px;
+    text-align: center;
+    font-family:'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(243,239,228,0.5);
+  }
+  .rank-callout.no-rank .rank-badge,
+  .rank-callout.no-rank .rank-phrase{
+    visibility: hidden;
+  }
+  @media (max-width: 1400px){
+    .rank-callout{
+      position: static;
+      height: auto;
+      display:flex; align-items:baseline; gap: 0.7rem; flex-wrap: nowrap;
+    }
+    .rank-badge{
+      position: static;
+      display:inline-block;
+      width: auto; height: auto;
+      flex-shrink: 0;
+      padding: 0.275rem 0.77rem;
+      transform: none;
+      grid-column: auto;
+    }
+    .rank-phrase{
+      position: static;
+      width: auto;
+      flex: 1 1 auto;
+      min-width: 0;
+      text-align: left;
+      font-size: 0.935rem;
+      color: var(--ink-dim);
+      transform: none;
+      grid-column: auto;
+    }
+  }
   .instructions{
     color: var(--ink-dim);
     font-size: 1.14rem;
@@ -441,7 +512,16 @@
     .mobile-icon-btn:active{ background: var(--rule); }
 
     .instructions{ display: none; } /* niente spazio per il paragrafo lungo qui, il titolo basta */
-    .rank-callout-spacer{ margin-bottom: 0.59rem; }
+    .rank-callout{
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      min-height: 0;
+      gap: 0.28rem;
+      margin-bottom: 0.59rem;
+    }
+    .rank-badge{ font-size: 0.528rem; padding: 0.18rem 0.54rem; flex-shrink: 0; }
+    .rank-phrase{ font-size: 0.456rem; width: 100%; text-align: center; margin-top: 0; }
 
     /* niente più colonne fisse: un blocco solo, la griglia occupa tutta la larghezza del contenitore */
     .level-layout{
@@ -468,7 +548,7 @@
     }
     .side-panel > div:first-child{ grid-column: 1; grid-row: 2; }
     .answer-row{ display: contents; }
-    .answer-row input[type="number"]{
+    .answer-row .answer-input-wrap{
       grid-column: 1;
       grid-row: 1;
       width: calc(50% - 0.3rem);
@@ -742,7 +822,7 @@
       <a class="mobile-icon-btn" id="homeBtn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
     </div>
     <p class="instructions">Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total.</p>
-    <div class="rank-callout-spacer"></div>
+    <div class="rank-callout no-rank"><span class="rank-badge">Placeholder rank</span><span class="rank-phrase">Placeholder phrase text goes here.</span></div>
     <div class="level-layout" id="levelLayout">
       <p style="color:var(--ink-dim); font-family:'Space Mono', monospace; font-size:0.85rem;">Loading level…</p>
     </div>
