@@ -275,9 +275,14 @@
     position: absolute;
     top: 50%;
     width: auto; /* neutralizza il width:85% di .leaderboard-card h3 (altro contesto, ma .lb-half ci è annidato dentro): senza, il box è largo l'85% della riga e il transform centra il BOX, non il testo */
+    max-width: 46%; /* durante la fase stretta della card (parte a metà larghezza finale, prima
+      di allargarsi) il testo va a capo invece di sovrapporsi al titolo vicino: senza questo,
+      "nowrap" avrebbe reso i due titoli sempre alla loro larghezza piena, facendoli scontrare
+      quando la card è ancora stretta */
     margin: 0; /* neutralizza anche margin-left:auto/margin-right della stessa regola */
     font-size: 1.25rem;
-    white-space: nowrap;
+    text-align: center;
+    line-height: 1.15;
     transform: translate(-50%, -50%); /* il testo si centra sul punto (left), non parte da lì */
   }
   .lb-dual-title-row h3:first-child{ left: 25%; } /* Prime Rush: a metà tra il bordo sinistro e il centro (50%) */
