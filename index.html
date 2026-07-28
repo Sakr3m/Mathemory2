@@ -271,8 +271,6 @@
     margin-bottom: 0.6rem;
     flex-shrink: 0;
     padding: 0 1rem; /* stesso padding orizzontale di .lb-row sotto */
-    position: relative;
-    left: 30px; /* aggiustamento a tentoni, su richiesta */
   }
   .lb-dual-title-row h3{
     flex: 1 1 0;
@@ -280,7 +278,10 @@
     margin: 0;
     font-size: 1.25rem;
     text-align: center;
+    position: relative;
   }
+  .lb-dual-title-row h3:first-child{ left: 45px; } /* Prime Rush: 30px di prima + altri 15px richiesti */
+  .lb-dual-title-row h3:last-child{ left: 30px; } /* Scholar's Glance: resta dov'era, va già bene */
   .lb-section{
     flex: 1 1 0;
     display:flex;
