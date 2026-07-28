@@ -266,22 +266,23 @@
      sempre a "centrato tra il bordo e il centro della medaglia", senza dover
      replicare la struttura esatta (gap compreso) della riga dei valori */
   .lb-dual-title-row{
-    display:flex;
-    align-items:center;
+    position: relative;
+    height: 1.9rem;
     margin-bottom: 0.6rem;
     flex-shrink: 0;
     padding: 0 1rem; /* stesso padding orizzontale di .lb-row sotto */
+    box-sizing: border-box;
   }
   .lb-dual-title-row h3{
-    flex: 1 1 0;
-    min-width: 0;
+    position: absolute;
+    top: 50%;
     margin: 0;
     font-size: 1.25rem;
-    text-align: center;
-    position: relative;
+    white-space: nowrap;
+    transform: translate(-50%, -50%); /* il testo si centra sul punto (left), non parte da lì */
   }
-  .lb-dual-title-row h3:first-child{ left: 50px; } /* Prime Rush: 45px di prima + altri 5px richiesti */
-  .lb-dual-title-row h3:last-child{ left: 30px; } /* Scholar's Glance: resta dov'era, va già bene */
+  .lb-dual-title-row h3:first-child{ left: 25%; } /* Prime Rush: a metà tra il bordo sinistro e il centro (50%) */
+  .lb-dual-title-row h3:last-child{ left: 75%; } /* Scholar's Glance: a metà tra il centro e il bordo destro */
   .lb-section{
     flex: 1 1 0;
     display:flex;
@@ -1283,6 +1284,7 @@
       margin: 0 0 0.42rem;
     }
     .mobile-records-block .lb-dual-title-row{
+      height: 1.9rem;
       margin-bottom: 0.42rem;
       padding: 0 0.49rem; /* stesso padding orizzontale di .lb-row sotto, su questa scala */
     }
