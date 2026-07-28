@@ -74,9 +74,17 @@
     position: relative;
     height: 26.78px; /* stessa altezza di prima, per non spostare griglia/pannello sotto */
     margin: 0 0 0.9rem;
+    display: grid;
+    grid-template-columns: 529px 1fr; /* stesse colonne di .level-layout: badge/frase, messi nella seconda,
+                                          si centrano esattamente sopra il pannello laterale vero, qualunque
+                                          sia la sua larghezza — non serve più misurarla via JS */
   }
   .rank-badge{
     position: absolute;
+    grid-column: 2;
+    top: 41.18px; /* altezza+margine di .rank-callout: allinea il bordo superiore del badge a quello della griglia sotto */
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -91,6 +99,10 @@
   }
   .rank-phrase{
     position: absolute;
+    grid-column: 2;
+    top: calc(41.18px + 40px + 8px); /* stesso offset del badge, più la sua altezza (40px) e 8px di margine */
+    left: 50%;
+    transform: translateX(-50%);
     width: 409px; /* poco sotto il badge, stessa larghezza */
     text-align: center;
     font-family:'Space Mono', monospace;
@@ -134,6 +146,8 @@
       width: auto; height: auto;
       flex-shrink: 0;
       padding: 0.275rem 0.77rem;
+      transform: none;
+      grid-column: auto;
     }
     .rank-phrase{
       position: static;
@@ -143,6 +157,8 @@
       text-align: left;
       font-size: 0.935rem;
       color: var(--ink-dim);
+      transform: none;
+      grid-column: auto;
     }
     .dev-skip-btn{
       position: static;
@@ -1201,28 +1217,6 @@
   // bordo superiore: calcolato dal vero (non hardcoded), così funziona a qualunque
   // larghezza di finestra desktop, ma solo quando la griglia e il pannello laterale
   // sono davvero affiancati (sopra i 1400px: sotto quella soglia si impilano, vedi CSS)
-  function positionRankBadge(){
-    const grid = document.getElementById('gridEl');
-    const sidePanel = document.querySelector('.side-panel-wrap');
-    const wide = window.innerWidth > 1400; // sotto questa soglia vale il CSS statico per il layout impilato
-
-    const badge = document.querySelector('.rank-badge');
-    const phrase = document.querySelector('.rank-phrase');
-    const callout = document.getElementById('rankCallout');
-    if (badge && phrase && callout && grid && sidePanel && wide){
-      const calloutRect = callout.getBoundingClientRect();
-      const gridRect = grid.getBoundingClientRect();
-      const sidePanelRect = sidePanel.getBoundingClientRect();
-
-      const top = gridRect.top - calloutRect.top;
-      const left = sidePanelRect.left + (sidePanelRect.width - badge.offsetWidth) / 2 - calloutRect.left;
-      badge.style.top = top + 'px';
-      badge.style.left = left + 'px';
-      phrase.style.top = (top + badge.offsetHeight + 8) + 'px';
-      phrase.style.left = left + 'px';
-    }
-  }
-
   function renderLevel(levelData){
     const grid = levelData.griglia;
     // solo per test su Mathemory2: la somma corretta va nel placeholder dell'input,
@@ -1325,7 +1319,6 @@
       gridEl.appendChild(cell);
     });
 
-    positionRankBadge(); // solo ORA la griglia ha la sua altezza vera (celle già dentro)
     randomizeConstellation(); // stesso motivo: serve l'altezza vera del contenitore
 
     function toggleCell(i){
