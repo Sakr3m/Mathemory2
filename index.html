@@ -270,13 +270,10 @@
   }
   .lb-dual-title-row h3{
     width: auto; /* neutralizza il width:85% di .leaderboard-card h3 (altro contesto, ma .lb-half ci è annidato dentro) */
+    justify-self: stretch; /* esplicito, non affidato al default della griglia: il box deve riempire tutta la sua colonna 1fr, non restringersi al testo */
     margin: 0;
     font-size: 1.25rem;
-    text-align: center; /* il box è già alla larghezza giusta (1fr della stessa griglia
-      della riga valori sotto): mancava solo questo per centrare il TESTO dentro il box,
-      invece di lasciarlo a sinistra. Sostituisce i due aggiustamenti manuali in px
-      (che erano fissi e non si sarebbero adattati ai vari breakpoint) con qualcosa che
-      si ricalcola da solo a ogni larghezza di schermo */
+    text-align: center;
   }
   .lb-dual-title-spacer{ width: 1.452rem; } /* larghezza della colonna medaglia, per coerenza visiva */
   .lb-section{
