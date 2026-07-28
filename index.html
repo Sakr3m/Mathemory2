@@ -276,7 +276,8 @@
   .lb-dual-title-row h3{
     position: absolute;
     top: 50%;
-    margin: 0;
+    width: auto; /* neutralizza il width:85% di .leaderboard-card h3 (altro contesto, ma .lb-half ci è annidato dentro): senza, il box è largo l'85% della riga e il transform centra il BOX, non il testo */
+    margin: 0; /* neutralizza anche margin-left:auto/margin-right della stessa regola */
     font-size: 1.25rem;
     white-space: nowrap;
     transform: translate(-50%, -50%); /* il testo si centra sul punto (left), non parte da lì */
