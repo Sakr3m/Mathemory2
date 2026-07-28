@@ -1464,11 +1464,11 @@
     // numeri in griglia prima di diventare invisibili sullo sfondo
     //   livelli  1-20: 8s    -> 6.5s
     //   livelli 21-40: 6.5s  -> 3.5s
-    //   livelli 41-50: 3.5s  -> 0.3s
+    //   livelli 41-50: 3.5s  -> 0.5s
     function visibilityDurationForLevel(level){
       if (level <= 20) return lerp(8, 6.5, (level - 1) / 19);
       if (level <= 40) return lerp(6.5, 3.5, (level - 21) / 19);
-      return lerp(3.5, 0.3, (level - 41) / 9);
+      return lerp(3.5, 0.5, (level - 41) / 9);
     }
     const VISIBILITY_DURATION = visibilityDurationForLevel(levelNum);
     // cooldown FISSO a 7 secondi per tutti i livelli (non più una curva 3s->10s): ai
