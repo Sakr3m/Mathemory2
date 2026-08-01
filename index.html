@@ -2352,6 +2352,15 @@
       } else if (!nowInMobileErato && mobileEratoInView){
         mobileEratoInView = false;
         stopMobileMiniSievePreview();
+      } else if (nowInMobileErato && mobileEratoInView && mobileMiniSieveFirstLightDone){
+        // il DOM è stato appena ricreato senza che l'utente sia mai uscito dalla
+        // schermata (es. dati classifica appena arrivati, che richiamano render()):
+        // le celle nuove non hanno nessuno stile applicato. Se eravamo già oltre la
+        // primissima accensione le riaccendo subito su di loro, altrimenti la
+        // sequenza restava bloccata al primo numero. Se il primo giro non era ancora
+        // partito, il timeout già in corsa ripesca da solo le celle giuste al momento
+        // giusto: non serve intervenire qui
+        lightMobileMiniSieveCells();
       }
     }
   }
@@ -2618,6 +2627,7 @@
   // di nuovo a ogni tick invece di essere salvate una volta sola
   let mobileEratoInView = false;
   let mobileMiniSieveTimers = [];
+  let mobileMiniSieveFirstLightDone = false; // true solo dopo la primissima accensione del giro in corso
 
   function clearMobileMiniSieveTimers(){
     mobileMiniSieveTimers.forEach(id => { clearTimeout(id); clearInterval(id); });
@@ -2629,6 +2639,7 @@
   }
 
   function lightMobileMiniSieveCells(){
+    mobileMiniSieveFirstLightDone = true;
     mobileMiniSieveCells().forEach((c, i) => {
       c.style.animation = 'none';
       void c.offsetWidth; // stesso reflow forzato usato sopra, stesso motivo
@@ -2639,6 +2650,7 @@
 
   function startMobileMiniSievePreview(){
     clearMobileMiniSieveTimers();
+    mobileMiniSieveFirstLightDone = false;
     // primo giro: il primo primo si accende 2s dopo l'ingresso nella schermata
     const t1 = setTimeout(() => {
       lightMobileMiniSieveCells();
@@ -2655,6 +2667,7 @@
 
   function stopMobileMiniSievePreview(){
     clearMobileMiniSieveTimers();
+    mobileMiniSieveFirstLightDone = false;
     mobileMiniSieveCells().forEach(c => { c.style.animation = 'none'; }); // spegne subito, niente coda residua se si torna prima che scada un timer
   }
 
