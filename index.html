@@ -1892,6 +1892,7 @@
   // SEZIONE: STATO GLOBALE — carosello, cache altezza/classifiche
   // ============================================================
   let currentIndex = 0;
+  let lastMobileGameIndex = null; // null forza la prima costruzione; da lì in poi si ricostruisce solo se currentIndex cambia davvero
   const maxIndex = games.length - 1;
   // per ora si può navigare solo fino a Game 2: niente promesse sugli altri 10 finché non vediamo come va
   const NAV_LIMIT_INDEX = 11;
@@ -2335,16 +2336,26 @@
     const snapGame = document.getElementById('snapGame');
     const snapLeaderboard = document.getElementById('snapLeaderboard');
     if (snapGame && snapLeaderboard){
-      snapGame.innerHTML = mobileGameSectionHtml(g, number);
+      // il markup di mobileGameSectionHtml dipende SOLO da g/number (quindi da
+      // currentIndex), mai dai dati di classifica: ricostruirlo a ogni render() —
+      // anche quando currentIndex non è cambiato affatto (resize, arrivo dati
+      // classifica, barra indirizzi che si nasconde/mostra scrollando: tutte cose
+      // che richiamano render() senza che l'utente abbia mai lasciato la pagina) —
+      // distruggeva e ricreava anche le celle del mini-sieve a metà sequenza,
+      // interrompendo l'accensione dei primi ogni volta. Ora si ricostruisce solo
+      // quando la pagina è davvero cambiata
+      if (lastMobileGameIndex !== currentIndex){
+        lastMobileGameIndex = currentIndex;
+        snapGame.innerHTML = mobileGameSectionHtml(g, number);
+        document.querySelectorAll('.mobile-prev').forEach(el => el.onclick = () => step(-1));
+        document.querySelectorAll('.mobile-next').forEach(el => el.onclick = () => step(1));
+      }
+      // questa invece dipende dai dati di classifica: va sempre aggiornata
       snapLeaderboard.innerHTML = mobileLeaderboardSectionHtml(g);
 
-      document.querySelectorAll('.mobile-prev').forEach(el => el.onclick = () => step(-1));
-      document.querySelectorAll('.mobile-next').forEach(el => el.onclick = () => step(1));
-
-      // ingresso/uscita dalla schermata di Eratostene su mobile: confrontato con lo
-      // stato precedente, non con "il DOM è stato appena ricreato" — altrimenti un
-      // render() dovuto ad altro (es. dati classifica appena arrivati) mentre si è
-      // già dentro farebbe ripartire il timer da zero senza che l'utente sia mai uscito
+      // ingresso/uscita dalla schermata di Eratostene su mobile: ora che il DOM sopra
+      // non viene più ricostruito se currentIndex resta lo stesso, questo scatta solo
+      // su una vera navigazione, mai su un render() incidentale
       const nowInMobileErato = window.innerWidth <= 900 && currentIndex === 0 && gameState(g) === 'open';
       if (nowInMobileErato && !mobileEratoInView){
         mobileEratoInView = true;
@@ -2352,15 +2363,6 @@
       } else if (!nowInMobileErato && mobileEratoInView){
         mobileEratoInView = false;
         stopMobileMiniSievePreview();
-      } else if (nowInMobileErato && mobileEratoInView && mobileMiniSieveFirstLightDone){
-        // il DOM è stato appena ricreato senza che l'utente sia mai uscito dalla
-        // schermata (es. dati classifica appena arrivati, che richiamano render()):
-        // le celle nuove non hanno nessuno stile applicato. Se eravamo già oltre la
-        // primissima accensione le riaccendo subito su di loro, altrimenti la
-        // sequenza restava bloccata al primo numero. Se il primo giro non era ancora
-        // partito, il timeout già in corsa ripesca da solo le celle giuste al momento
-        // giusto: non serve intervenire qui
-        lightMobileMiniSieveCells();
       }
     }
   }
@@ -2621,13 +2623,11 @@
   // --- stessa anteprima, ma su mobile: niente animazione di apertura da attendere,
   // quindi il via lo dà l'ingresso nella schermata (verticale) di Eratostene, non un
   // timer fisso dalla creazione della card. Il clock (setTimeout/setInterval) resta
-  // sempre valido a prescindere da quante volte il DOM sotto viene ricreato (ogni
-  // render() riscrive snapGame.innerHTML, anche per motivi che non sono una vera
-  // navigazione, es. arrivo dati classifica): per questo le celle vengono ricercate
-  // di nuovo a ogni tick invece di essere salvate una volta sola
+  // sempre valido a prescindere da quante volte il DOM sotto viene ricreato: per
+  // questo le celle vengono ricercate di nuovo a ogni tick invece di essere salvate
+  // una volta sola
   let mobileEratoInView = false;
   let mobileMiniSieveTimers = [];
-  let mobileMiniSieveFirstLightDone = false; // true solo dopo la primissima accensione del giro in corso
 
   function clearMobileMiniSieveTimers(){
     mobileMiniSieveTimers.forEach(id => { clearTimeout(id); clearInterval(id); });
@@ -2639,7 +2639,6 @@
   }
 
   function lightMobileMiniSieveCells(){
-    mobileMiniSieveFirstLightDone = true;
     mobileMiniSieveCells().forEach((c, i) => {
       c.style.animation = 'none';
       void c.offsetWidth; // stesso reflow forzato usato sopra, stesso motivo
@@ -2650,8 +2649,7 @@
 
   function startMobileMiniSievePreview(){
     clearMobileMiniSieveTimers();
-    mobileMiniSieveFirstLightDone = false;
-    // primo giro: il primo primo si accende 2s dopo l'ingresso nella schermata
+    // primo giro: il primo primo si accende 2.5s dopo l'ingresso nella schermata
     const t1 = setTimeout(() => {
       lightMobileMiniSieveCells();
       // da qui in poi stesso identico reset ogni 30s del loop desktop
@@ -2661,13 +2659,12 @@
         mobileMiniSieveTimers.push(t2);
       }, 30000);
       mobileMiniSieveTimers.push(intervalId);
-    }, 2000);
+    }, 2500);
     mobileMiniSieveTimers.push(t1);
   }
 
   function stopMobileMiniSievePreview(){
     clearMobileMiniSieveTimers();
-    mobileMiniSieveFirstLightDone = false;
     mobileMiniSieveCells().forEach(c => { c.style.animation = 'none'; }); // spegne subito, niente coda residua se si torna prima che scada un timer
   }
 
