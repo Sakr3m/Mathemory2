@@ -251,14 +251,16 @@
   }
   input[type="number"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
   /* nasconde le freccette visive dello spinner nativo del browser sull'input
-     numerico: restano invariate le freccette della tastiera (ArrowUp/ArrowDown),
-     che il browser gestisce comunque in modo nativo su input type="number" */
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button{
-    -webkit-appearance: none;
-    margin: 0;
+     numerico, solo su desktop: restano invariate le freccette della tastiera
+     (ArrowUp/ArrowDown), gestite comunque nativamente dal browser */
+  @media (min-width: 901px){
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button{
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"]{ -moz-appearance: textfield; }
   }
-  input[type="number"]{ -moz-appearance: textfield; }
   button.check{
     font-family:'Space Mono', monospace;
     font-weight:700;
