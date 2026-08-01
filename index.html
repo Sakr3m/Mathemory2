@@ -612,6 +612,14 @@
     margin-top: 0.35rem;
     line-height: 1.35;
   }
+  /* le 4 strisce delle modalità devono avere tutte la stessa altezza, a
+     prescindere da quanto testo contengono (bloccata = solo nome + messaggio,
+     sbloccata = nome + descrizione + dettagli): altezza minima fissa +
+     align-items:center (già impostato su .mode-option) le centra dentro.
+     Solo desktop */
+  @media (min-width: 901px){
+    .mode-option{ min-height: 8.6rem; box-sizing: border-box; }
+  }
   .mode-modal-footnote{
     font-family:'Space Mono', monospace;
     font-size: 0.75rem;
@@ -1775,10 +1783,10 @@
       hrefKey: 'erato_basic_last', hrefBase: 'eratostene_thesieve.html',
       preview: buildMiniSieve(),
       modes: [
-        { name: "Scholar's Glance", desc: 'The hardest run of them all, with its own personal leaderboard.', details: 'Personal leaderboard · numbers fade fast, use Sight wisely. Unlocks after finishing The Sieve.', file: 'eratostene_scholarsglance.html', normalFile: 'eratostene_scholarsglance_normal.html', hrefKey: 'erato_scholarsglance_last', accent: 'red', requiresSieveFinish: true },
-        { name: 'Prime Rush', desc: '100 levels, a different combination each time, no unlocks holding you back.', details: 'Free leaderboard, no time limit · re-enter every run. Unlocks after finishing The Sieve.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true },
-        { name: 'The Sieve', desc: 'The full 200-level race, at your own pace, ranked on the main leaderboard.', details: '~21-day race · podium once per device · anti-cheat active.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_last', accent: 'yellow' },
-        { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', details: 'No leaderboard · no timer · progress saved. Unlocks after finishing The Sieve.', file: 'eratostene_infiniteprimes.html', normalFile: 'eratostene_infiniteprimes_normal.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true },
+        { name: "Scholar's Glance", desc: '50 levels of total concentration.', details: 'No time limit · progress saved · podium once per device.', file: 'eratostene_scholarsglance.html', normalFile: 'eratostene_scholarsglance_normal.html', hrefKey: 'erato_scholarsglance_last', accent: 'red', requiresSieveFinish: true },
+        { name: 'Prime Rush', desc: '100 levels of pure racing against the clock, against other players.', details: 'No time limit · no progress saved · podium once per device.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true },
+        { name: 'The Sieve', desc: 'The full 200-level race, at your own pace, ranked on the main leaderboard.', details: 'Time-limited race · progress saved · podium once per device · anti-cheat active.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_last', accent: 'yellow' },
+        { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', details: 'No leaderboard · progress saved.', file: 'eratostene_infiniteprimes.html', normalFile: 'eratostene_infiniteprimes_normal.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true },
       ]
     },
   ];
@@ -3179,7 +3187,6 @@
           <div class="mode-option mode-option-locked" style="--mode-color: var(--${m.accent})">
             <div class="mode-option-text">
               <h4>${m.name}</h4>
-              <p>${m.desc}</p>
               <p class="mode-option-details">${lockMessage}</p>
             </div>
           </div>`;
