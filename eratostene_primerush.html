@@ -285,6 +285,15 @@
     box-sizing: border-box;
   }
   input[type="number"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+  /* nasconde le freccette visive dello spinner nativo del browser sull'input
+     numerico: restano invariate le freccette della tastiera (ArrowUp/ArrowDown),
+     che il browser gestisce comunque in modo nativo su input type="number" */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button{
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"]{ -moz-appearance: textfield; }
   button.check{
     font-family:'Space Mono', monospace;
     font-weight:700;
@@ -790,6 +799,25 @@
     color: var(--ink-faint);
     margin: 0.4rem 0 0;
   }
+  /* popup di fine run (nickname): ingrandito x1.5 su desktop, scoped a #finishModal
+     per non toccare devSkipModal e gli altri popup che condividono le stesse classi.
+     Il mobile mantiene la sua gabbia fissa dedicata (vedi media query sotto):
+     va adattato a parte se serve anche lì, per non far traboccare quel layout */
+  #finishModal .modal-card{ max-width: 720px; padding: 3rem; }
+  #finishModal .modal-card h3{ font-size: 2.4rem; margin: 0 0 1.5rem; }
+  #finishModal .modal-card p{ font-size: 1.425rem; margin: 0 0 1.8rem; }
+  #finishModal .modal-card input[type="text"]{ font-size: 1.575rem; padding: 1.05rem; margin-bottom: 2.1rem; }
+  #finishModal .finish-stat{ padding: 1.275rem 1.5rem; margin: 0 0 1.95rem; }
+  #finishModal .finish-stat-label{ font-size: 1.02rem; }
+  #finishModal .finish-stat-value{ font-size: 2.1rem; }
+  #finishModal .finish-input-block{ margin-bottom: 1.95rem; }
+  #finishModal .finish-instruction{ font-size: 1.275rem; margin: 0 0 1.2rem; }
+  #finishModal .modal-footnotes{ margin-top: 1.5rem; padding-top: 1.35rem; gap: 0.75rem; }
+  #finishModal .modal-footnotes p{ font-size: 1.02rem; }
+  #finishModal .modal-buttons{ gap: 1.5rem; }
+  #finishModal .modal-btn{ font-size: 1.5rem; padding: 1.05rem 2.7rem; }
+  #finishModal .modal-note{ font-size: 1.125rem; margin-top: 1.2rem; }
+  #finishModal .nickname-hint{ font-size: 1.05rem; margin: 0.6rem 0 0; }
   /* popup di fine run su mobile: stessa gabbia fissa del popup modalità di index.html
      (top:9%/bottom:9%, non un max-width) invece di un box centrato che sul contenuto
      denso (statistica + nickname + note + due footnote) andava oltre lo schermo.

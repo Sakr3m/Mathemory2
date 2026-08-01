@@ -231,7 +231,7 @@
     color: var(--yellow);
     background: rgba(232,196,104,0.12);
     border-radius: 6px;
-    font-size: 1.0925rem;
+    font-size: 2.185rem; /* era 1.0925rem, dimezzata per errore rispetto agli altri giochi */
   }
   .picked-chip.empty-slot{
     background: transparent;
@@ -282,6 +282,15 @@
     box-sizing: border-box;
   }
   input[type="number"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+  /* nasconde le freccette visive dello spinner nativo del browser sull'input
+     numerico: restano invariate le freccette della tastiera (ArrowUp/ArrowDown),
+     che il browser gestisce comunque in modo nativo su input type="number" */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button{
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"]{ -moz-appearance: textfield; }
   button.check{
     font-family:'Space Mono', monospace;
     font-weight:700;
