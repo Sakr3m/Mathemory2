@@ -429,7 +429,7 @@
   .mc.prime{
     border-radius: 6px;
     animation: mc-light-up 1s ease forwards;
-    animation-delay: calc(var(--i) * 750ms + 3.5s);
+    animation-delay: calc(var(--i) * 2000ms + 3.5s);
   }
   @keyframes mc-light-up{
     from{ color: var(--ink); background: transparent; box-shadow: none; }
@@ -442,6 +442,15 @@
 
   @media (prefers-reduced-motion: reduce){
     .mc.prime{ animation:none; color:#1C1F16; background:var(--yellow); box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow); }
+  }
+
+  /* su mobile l'accensione non parte da un timer fisso dalla creazione della card
+     (lì non c'è nessuna animazione di apertura da dover attendere), ma da quando la
+     schermata di Eratostene entra in vista: la gestisce interamente il JS
+     (startMobileMiniSievePreview), quindi l'animazione CSS automatica va disattivata
+     qui, altrimenti scatterebbe comunque in background al primo caricamento */
+  @media (max-width: 900px){
+    .mobile-preview-block .mc.prime{ animation: none; }
   }
 
   @media (min-width: 901px){
@@ -1726,10 +1735,12 @@
                        26, 44, 20, 16, 25];
     const primeIdx = [1, 7, 10, 13, 4];
     let html = '';
+    let primeRank = 0; // 0,1,2,3,4 nell'ordine in cui i primi compaiono in griglia (non la posizione grezza): serve per un gap reale di 2s tra un'accensione e l'altra, vedi --i sotto
     values.forEach((v, i) => {
       const isPrime = primeIdx.includes(i);
       if (isPrime){
-        html += `<div class="mc prime" style="--i:${i}">${v}</div>`;
+        html += `<div class="mc prime" style="--i:${primeRank}">${v}</div>`;
+        primeRank++;
       } else {
         html += `<div class="mc composite">${v}</div>`;
       }
@@ -2329,6 +2340,19 @@
 
       document.querySelectorAll('.mobile-prev').forEach(el => el.onclick = () => step(-1));
       document.querySelectorAll('.mobile-next').forEach(el => el.onclick = () => step(1));
+
+      // ingresso/uscita dalla schermata di Eratostene su mobile: confrontato con lo
+      // stato precedente, non con "il DOM è stato appena ricreato" — altrimenti un
+      // render() dovuto ad altro (es. dati classifica appena arrivati) mentre si è
+      // già dentro farebbe ripartire il timer da zero senza che l'utente sia mai uscito
+      const nowInMobileErato = window.innerWidth <= 900 && currentIndex === 0 && gameState(g) === 'open';
+      if (nowInMobileErato && !mobileEratoInView){
+        mobileEratoInView = true;
+        startMobileMiniSievePreview();
+      } else if (!nowInMobileErato && mobileEratoInView){
+        mobileEratoInView = false;
+        stopMobileMiniSievePreview();
+      }
     }
   }
 
@@ -2579,10 +2603,59 @@
         cells.forEach((c, i) => {
           void c.offsetWidth; // forzo il reflow prima di far ripartire l'animazione
           c.style.animation = 'mc-light-up 1s ease forwards';
-          c.style.animationDelay = `${i * 750}ms`;
+          c.style.animationDelay = `${i * 2000}ms`;
         });
       }, 1000);
     }, 30000);
+  }
+
+  // --- stessa anteprima, ma su mobile: niente animazione di apertura da attendere,
+  // quindi il via lo dà l'ingresso nella schermata (verticale) di Eratostene, non un
+  // timer fisso dalla creazione della card. Il clock (setTimeout/setInterval) resta
+  // sempre valido a prescindere da quante volte il DOM sotto viene ricreato (ogni
+  // render() riscrive snapGame.innerHTML, anche per motivi che non sono una vera
+  // navigazione, es. arrivo dati classifica): per questo le celle vengono ricercate
+  // di nuovo a ogni tick invece di essere salvate una volta sola
+  let mobileEratoInView = false;
+  let mobileMiniSieveTimers = [];
+
+  function clearMobileMiniSieveTimers(){
+    mobileMiniSieveTimers.forEach(id => { clearTimeout(id); clearInterval(id); });
+    mobileMiniSieveTimers = [];
+  }
+
+  function mobileMiniSieveCells(){
+    return Array.from(document.querySelectorAll('#snapGame .mc.prime'));
+  }
+
+  function lightMobileMiniSieveCells(){
+    mobileMiniSieveCells().forEach((c, i) => {
+      c.style.animation = 'none';
+      void c.offsetWidth; // stesso reflow forzato usato sopra, stesso motivo
+      c.style.animation = 'mc-light-up 1s ease forwards';
+      c.style.animationDelay = `${i * 2000}ms`;
+    });
+  }
+
+  function startMobileMiniSievePreview(){
+    clearMobileMiniSieveTimers();
+    // primo giro: il primo primo si accende 2s dopo l'ingresso nella schermata
+    const t1 = setTimeout(() => {
+      lightMobileMiniSieveCells();
+      // da qui in poi stesso identico reset ogni 30s del loop desktop
+      const intervalId = setInterval(() => {
+        mobileMiniSieveCells().forEach(c => { c.style.animation = 'none'; });
+        const t2 = setTimeout(lightMobileMiniSieveCells, 1000);
+        mobileMiniSieveTimers.push(t2);
+      }, 30000);
+      mobileMiniSieveTimers.push(intervalId);
+    }, 2000);
+    mobileMiniSieveTimers.push(t1);
+  }
+
+  function stopMobileMiniSievePreview(){
+    clearMobileMiniSieveTimers();
+    mobileMiniSieveCells().forEach(c => { c.style.animation = 'none'; }); // spegne subito, niente coda residua se si torna prima che scada un timer
   }
 
   // misura e posiziona tutto ciò che dipende dalla larghezza FINALE della card
