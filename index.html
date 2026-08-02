@@ -1477,7 +1477,8 @@
       transition: opacity 0.9s ease;
     }
     .title-row .mark{
-      opacity: 0; /* diventa visibile solo quando il titolo del gate finisce di atterrare qui sopra (vedi initIntroGate), non nel gruppo di fade qui sopra: eviterebbe la doppia immagine durante l'atterraggio */
+      opacity: 0; /* compare in fade un po' prima che il titolo del gate finisca di atterrare (vedi initIntroGate): il pulsante resta visibile sopra, poi sfuma via lui, rivelando che il titolo vero era già arrivato */
+      transition: opacity 0.5s ease;
       transform: translateY(0.28125px); /* per portare il centro del titolo esattamente a 127px dal bordo alto */
     }
     #introGateMark{ font-size: clamp(5rem, 11vw, 11rem); }
@@ -3622,7 +3623,7 @@
           gateMark.style.width = fromRect.width + 'px';
           gateMark.style.margin = '0';
           void gateMark.offsetWidth; // forza il reflow prima di far partire la transizione
-          gateMark.style.transition = 'transform 2.25s ease';
+          gateMark.style.transition = 'transform 1.5s ease';
           gateMark.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
         }
       }
@@ -3637,19 +3638,32 @@
       // lo sfondo del gate si dissolve con un pelino di anticipo sul taglio finale
       // (stessa tempistica di arrivo, solo un ingresso più morbido invece di uno scatto).
       // Su mobile il titolo vero parte a dissolversi insieme, in sincrono col fade out
-      // del titolo del gate impostato sopra. Su desktop il titolo vero resta sincronizzato
-      // ESATTAMENTE con la fine del viaggio del titolo del gate (rallentato di 0.75s su
-      // richiesta, da 1.5s a 2.25s): prima sarebbe una doppia immagine (il vero già
-      // visibile mentre quello del gate sta ancora atterrando)
+      // del titolo del gate impostato sopra
       setTimeout(() => {
         gate.style.opacity = '0';
         if (isMobileNow && realMark) realMark.style.opacity = '1';
-      }, isMobileNow ? 800 : 1750);
+      }, isMobileNow ? 800 : 1000);
 
-      setTimeout(() => {
-        gate.style.display = 'none';
-        if (!isMobileNow && realMark) realMark.style.opacity = '1';
-      }, isMobileNow ? 1500 : 2250);
+      if (!isMobileNow){
+        // il titolo vero compare in fade PRIMA che il pulsante finisca di atterrare
+        // (non più uno scambio istantaneo): resta visibile sopra di lui per l'ultimo
+        // pezzo di viaggio, poi è il pulsante a sfumare via, rivelando che il titolo
+        // vero era già arrivato
+        setTimeout(() => {
+          if (realMark) realMark.style.opacity = '1';
+        }, 1000);
+        setTimeout(() => {
+          gateMark.style.transition = 'opacity 0.4s ease';
+          gateMark.style.opacity = '0';
+        }, 1500);
+        setTimeout(() => {
+          gate.style.display = 'none';
+        }, 1900);
+      } else {
+        setTimeout(() => {
+          gate.style.display = 'none';
+        }, 1500);
+      }
     });
   }
   initIntroGate();
