@@ -3644,17 +3644,22 @@
       }, isMobileNow ? 800 : 1000);
 
       if (!isMobileNow){
-        // il pulsante viaggia 1.5s senza mai sfumare (solo posizione/scala). Arrivato,
-        // il titolo vero compare istantaneo al suo posto (niente fade in) — solo ORA
-        // il pulsante, ormai ridondante, può sfumare via con calma sopra di lui
+        // il titolo vero compare istantaneo (niente fade in) esattamente a 1.5s,
+        // quando il pulsante ha finito il suo viaggio (solo posizione/scala, mai
+        // sfumato durante il tragitto)
         setTimeout(() => {
           if (realMark) realMark.style.opacity = '1';
+        }, 1500);
+        // il pulsante, ormai ridondante, inizia a sfumare via un attimo DOPO essere
+        // arrivato — mai nello stesso istante: un margine reale, non solo sulla carta,
+        // altrimenti il fade rischia di partire mentre il viaggio sta ancora finendo
+        setTimeout(() => {
           gateMark.style.transition = 'opacity 1s ease';
           gateMark.style.opacity = '0';
-        }, 1500);
+        }, 1800);
         setTimeout(() => {
           gate.style.display = 'none';
-        }, 2500);
+        }, 2800);
       } else {
         setTimeout(() => {
           gate.style.display = 'none';
