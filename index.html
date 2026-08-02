@@ -116,6 +116,7 @@
     text-align: center;
     padding: 1.5rem;
     box-sizing: border-box;
+    transition: opacity 0.6s ease;
   }
   #introGateMark{
     cursor: pointer;
@@ -1157,7 +1158,8 @@
       right: 1.5rem;
       font-size: clamp(2.1rem, 9.625vw, 2.8rem);
       max-width: 100%;
-      opacity: 0; /* diventa visibile solo quando il titolo del gate finisce di atterrare qui sopra (vedi initIntroGate) */
+      opacity: 0; /* diventa visibile quando il gate finisce (vedi initIntroGate); fade, non scatto */
+      transition: opacity 0.7s ease;
     }
     #introGateMark{ font-size: clamp(1.8rem, 11vw, 3rem); white-space: nowrap; }
     .intro-gate-note-desktop{ display: none; }
@@ -1471,8 +1473,8 @@
       margin: 0 auto;
     }
     .subtitle, .nav-column{
-      opacity: 0; /* fade in di 0.5s appena i font sono pronti: vedi handleEratoIntro */
-      transition: opacity 0.5s ease;
+      opacity: 0; /* fade in appena i font sono pronti: vedi handleEratoIntro */
+      transition: opacity 0.9s ease;
     }
     .title-row .mark{
       opacity: 0; /* diventa visibile solo quando il titolo del gate finisce di atterrare qui sopra (vedi initIntroGate), non nel gruppo di fade qui sopra: eviterebbe la doppia immagine durante l'atterraggio */
@@ -3632,12 +3634,20 @@
       measureEratoHeight();
       render();
 
-      // al termine dell'atterraggio: il titolo del gate sparisce esattamente
-      // nell'istante in cui il titolo vero diventa visibile, stessa posizione,
-      // nessuna doppia immagine
+      // lo sfondo del gate si dissolve con un pelino di anticipo sul taglio finale
+      // (stessa tempistica di arrivo, solo un ingresso più morbido invece di uno scatto).
+      // Su mobile il titolo vero parte a dissolversi insieme, in sincrono col fade out
+      // del titolo del gate impostato sopra. Su desktop il titolo vero resta sincronizzato
+      // ESATTAMENTE con la fine del viaggio del titolo del gate: prima sarebbe una doppia
+      // immagine (il vero già visibile mentre quello del gate sta ancora atterrando)
+      setTimeout(() => {
+        gate.style.opacity = '0';
+        if (isMobileNow && realMark) realMark.style.opacity = '1';
+      }, isMobileNow ? 800 : 1000);
+
       setTimeout(() => {
         gate.style.display = 'none';
-        if (realMark) realMark.style.opacity = '1';
+        if (!isMobileNow && realMark) realMark.style.opacity = '1';
       }, 1500);
     });
   }
