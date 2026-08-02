@@ -1159,7 +1159,7 @@
       max-width: 100%;
       opacity: 0; /* diventa visibile solo quando il titolo del gate finisce di atterrare qui sopra (vedi initIntroGate) */
     }
-    #introGateMark{ font-size: clamp(3rem, 16vw, 4.5rem); }
+    #introGateMark{ font-size: clamp(1.8rem, 11vw, 3rem); white-space: nowrap; }
     .intro-gate-note-desktop{ display: none; }
     .intro-gate-note-mobile{ display: inline; }
     #snapIntro .subtitle{
@@ -3072,7 +3072,7 @@
   function positionIndexSoundBtn(){
     if (window.innerWidth <= 900) return;
     const btn = document.getElementById('indexSoundBtn');
-    const title = document.querySelector('.mark');
+    const title = document.querySelector('.title-row .mark');
     const grid = document.getElementById('gamesGrid');
     if (!btn || !title || !grid) return;
 
@@ -3597,24 +3597,32 @@
         ? document.querySelector('#snapIntro .mark')
         : document.querySelector('.title-row .mark');
 
-      const fromRect = gateMark.getBoundingClientRect();
-      const toRect = (realMark && realMark.offsetParent !== null) ? realMark.getBoundingClientRect() : null;
+      if (isMobileNow){
+        // su mobile niente viaggio verso la sua controparte: solo un fade out del
+        // titolo del gate, il titolo vero sotto compare con la sua stessa dissolvenza
+        void gateMark.offsetWidth;
+        gateMark.style.transition = 'opacity 1.5s ease';
+        gateMark.style.opacity = '0';
+      } else {
+        const fromRect = gateMark.getBoundingClientRect();
+        const toRect = (realMark && realMark.offsetParent !== null) ? realMark.getBoundingClientRect() : null;
 
-      if (toRect && toRect.width > 0 && fromRect.width > 0){
-        const scale = toRect.width / fromRect.width;
-        const dx = (toRect.left + toRect.width / 2) - (fromRect.left + fromRect.width / 2);
-        const dy = (toRect.top + toRect.height / 2) - (fromRect.top + fromRect.height / 2);
+        if (toRect && toRect.width > 0 && fromRect.width > 0){
+          const scale = toRect.width / fromRect.width;
+          const dx = (toRect.left + toRect.width / 2) - (fromRect.left + fromRect.width / 2);
+          const dy = (toRect.top + toRect.height / 2) - (fromRect.top + fromRect.height / 2);
 
-        // esce dal flusso flex del gate (posizione fissata sui pixel reali attuali,
-        // nessun salto) per poter viaggiare in linea retta fino al titolo vero
-        gateMark.style.position = 'fixed';
-        gateMark.style.left = fromRect.left + 'px';
-        gateMark.style.top = fromRect.top + 'px';
-        gateMark.style.width = fromRect.width + 'px';
-        gateMark.style.margin = '0';
-        void gateMark.offsetWidth; // forza il reflow prima di far partire la transizione
-        gateMark.style.transition = 'transform 1.5s ease';
-        gateMark.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+          // esce dal flusso flex del gate (posizione fissata sui pixel reali attuali,
+          // nessun salto) per poter viaggiare in linea retta fino al titolo vero
+          gateMark.style.position = 'fixed';
+          gateMark.style.left = fromRect.left + 'px';
+          gateMark.style.top = fromRect.top + 'px';
+          gateMark.style.width = fromRect.width + 'px';
+          gateMark.style.margin = '0';
+          void gateMark.offsetWidth; // forza il reflow prima di far partire la transizione
+          gateMark.style.transition = 'transform 1.5s ease';
+          gateMark.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+        }
       }
 
       // da qui in poi può davvero partire tutto quello che prima partiva al semplice
