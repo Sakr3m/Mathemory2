@@ -243,11 +243,11 @@
     });
   });
 
-  // esposto globalmente: le pagine di gioco lo usano per gli effetti sonori (Web Audio API).
-  // "init" e "startMuted" servono solo a index.html: il gate d'ingresso chiama SEMPRE
-  // startMuted (mai init), perché ogni caricamento fresco dell'index deve ripartire muto
-  // a prescindere dalla preferenza salvata altrove — quella resta valida solo spostandosi
-  // tra le pagine di gioco, mai su un nuovo arrivo sull'index
+  // esposto globalmente: le pagine di gioco lo usano per gli effetti sonori (Web Audio API);
+  // "init" serve solo a index.html, per avviare l'audio nel momento esatto in cui si preme
+  // il titolo Mathemory, con un vero gesto dell'utente alle spalle — rispetta la preferenza
+  // già salvata (riparte attivo se l'utente l'aveva attivato prima), muto solo se non c'è
+  // ancora nessuna scelta esplicita
   window.MathemoryAudio = {
     isMuted,
     setMuted,
@@ -258,7 +258,6 @@
     setSfxVol,
     duckMusic,
     init: initAudioState,
-    startMuted: forceMutedStart,
   };
 
   // MATHEMORY_DEFER_AUDIO_INIT: solo index.html lo imposta, per rimandare l'avvio a dopo
