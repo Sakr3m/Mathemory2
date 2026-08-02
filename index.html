@@ -3621,6 +3621,14 @@
           gateMark.style.top = fromRect.top + 'px';
           gateMark.style.width = fromRect.width + 'px';
           gateMark.style.margin = '0';
+          // sganciato da #introGate: anche con position:fixed, un figlio eredita
+          // l'opacità del genitore (l'elemento con opacity<1 diventa il containing
+          // block dei suoi discendenti fixed) — la dissolvenza separata dello sfondo
+          // del gate lo faceva sparire a metà viaggio, indipendentemente da qualunque
+          // timer impostato qui sotto. Spostandolo su body, il viaggio resta suo e
+          // basta, indipendente da qualunque altra dissolvenza
+          document.body.appendChild(gateMark);
+          gateMark.style.zIndex = '41';
           void gateMark.offsetWidth; // forza il reflow prima di far partire la transizione
           gateMark.style.transition = 'transform 1.5s ease';
           gateMark.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
