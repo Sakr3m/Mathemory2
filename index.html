@@ -1161,7 +1161,9 @@
       opacity: 0; /* diventa visibile quando il gate finisce (vedi initIntroGate); fade, non scatto */
       transition: opacity 0.7s ease;
     }
-    #introGateMark{ font-size: clamp(1.8rem, 11vw, 3rem); white-space: nowrap; }
+    #introGate{ text-align: center; }
+    #introGateMark{ font-size: clamp(1.8rem, 11vw, 3rem); white-space: nowrap; width: 100%; text-align: center; }
+    #introGateNote{ width: 100%; text-align: center; }
     .intro-gate-note-desktop{ display: none; }
     .intro-gate-note-mobile{ display: inline; }
     #snapIntro .subtitle{
@@ -1481,6 +1483,7 @@
       transform: translateY(0.28125px); /* per portare il centro del titolo esattamente a 127px dal bordo alto */
     }
     #introGateMark{ font-size: clamp(5rem, 11vw, 11rem); }
+    #introGateNote{ font-size: 1.7rem; }
     .index-sound-btn{
       position: absolute;
       flex-shrink: 0;
