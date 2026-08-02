@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="intro-gate-active">
 <head>
 <meta charset="UTF-8">
 <meta name="color-scheme" content="dark">
@@ -91,6 +91,53 @@
     font-size: 0.8em;
     vertical-align: 0.01em;
   }
+
+  /* --- gate d'ingresso: prima cosa che si vede, sopra tutto tranne i banner. Nessuno
+     sfondo opaco necessario: tutto il resto della pagina (sottotitolo, nav, card) parte
+     già invisibile di default (vedi opacity:0 più sotto e i segnaposto della griglia),
+     quindi qui sotto non c'è nulla da coprire finché non si preme il titolo */
+  /* --- gate d'ingresso: prima cosa che si vede. Assoluto DENTRO content-col (che ha
+     già position:relative), non a schermo intero: i banner nelle colonne laterali di
+     .page-shell restano sempre visibili, mai coperti. Sfondo opaco esplicito e altezza
+     di un viewport, perché content-col può essere molto più alto (tutto il resto della
+     pagina esiste già, solo invisibile) — senza un'altezza propria il gate si sarebbe
+     steso su tutta quell'altezza, centrando il titolo molto più in basso del dovuto */
+  #introGate{
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 100vh;
+    z-index: 40;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    text-align: center;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+  #introGateMark{
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    color: var(--ink);
+  }
+  #introGateNote{
+    font-family:'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    transition: opacity 0.3s ease;
+  }
+  .intro-gate-note-mobile{ display: none; }
+  /* simboli fluttuanti di sfondo: nascosti finché non si supera il gate, stesso
+     trattamento del resto della chrome (vedi revealPageChrome/initIntroGate) */
+  .math-constellation{ opacity: 0; transition: opacity 0.5s ease; }
+  /* blocco scroll finché il gate è in vista, tolto da initIntroGate al click —
+     su desktop impedisce di scorrere oltre il gate senza premere il titolo, su
+     mobile è una rete di sicurezza in più oltre al blocco dello swipe verticale */
+  html.intro-gate-active, body.intro-gate-active{ overflow: hidden; height: 100%; }
 
   .subtitle{
     font-family:'Work Sans', sans-serif;
@@ -1110,7 +1157,11 @@
       right: 1.5rem;
       font-size: clamp(2.1rem, 9.625vw, 2.8rem);
       max-width: 100%;
+      opacity: 0; /* diventa visibile solo quando il titolo del gate finisce di atterrare qui sopra (vedi initIntroGate) */
     }
+    #introGateMark{ font-size: clamp(3rem, 16vw, 4.5rem); }
+    .intro-gate-note-desktop{ display: none; }
+    .intro-gate-note-mobile{ display: inline; }
     #snapIntro .subtitle{
       position: absolute;
       top: 30%;
@@ -1419,13 +1470,15 @@
       display: table;
       margin: 0 auto;
     }
-    .title-row .mark, .subtitle, .nav-column{
+    .subtitle, .nav-column{
       opacity: 0; /* fade in di 0.5s appena i font sono pronti: vedi handleEratoIntro */
       transition: opacity 0.5s ease;
     }
     .title-row .mark{
+      opacity: 0; /* diventa visibile solo quando il titolo del gate finisce di atterrare qui sopra (vedi initIntroGate), non nel gruppo di fade qui sopra: eviterebbe la doppia immagine durante l'atterraggio */
       transform: translateY(0.28125px); /* per portare il centro del titolo esattamente a 127px dal bordo alto */
     }
+    #introGateMark{ font-size: clamp(5rem, 11vw, 11rem); }
     .index-sound-btn{
       position: absolute;
       flex-shrink: 0;
@@ -1537,7 +1590,7 @@
   }
 </style>
 </head>
-<body>
+<body class="intro-gate-active">
 
 <audio id="bgMusic" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_index.mp3" loop preload="none"></audio>
 
@@ -1604,6 +1657,10 @@
   <div class="ad-slot ad-a" aria-hidden="true">Ad space</div>
 
   <div class="content-col">
+  <div id="introGate">
+    <button type="button" id="introGateMark" class="mark" aria-label="Enter Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></button>
+    <p id="introGateNote"><span class="intro-gate-note-desktop">Click the title to enter the hub.</span><span class="intro-gate-note-mobile">Tap the title to enter the hub.</span></p>
+  </div>
   <div class="wrap">
   <header>
     <div class="title-row">
@@ -1906,6 +1963,7 @@
   // SEZIONE: STATO GLOBALE — carosello, cache altezza/classifiche
   // ============================================================
   let currentIndex = 0;
+  let hubEntered = false; // diventa true al click sul titolo-pulsante del gate: solo da quel momento le sequenze normalmente legate al caricamento pagina (handleEratoIntro, mini-sieve mobile, swipe del carosello mobile) possono davvero partire
   let lastMobileGameIndex = null; // null forza la prima costruzione; da lì in poi si ricostruisce solo se currentIndex cambia davvero
   const maxIndex = games.length - 1;
   // per ora si può navigare solo fino a Game 2: niente promesse sugli altri 10 finché non vediamo come va
@@ -2371,7 +2429,7 @@
       // ingresso/uscita dalla schermata di Eratostene su mobile: ora che il DOM sopra
       // non viene più ricostruito se currentIndex resta lo stesso, questo scatta solo
       // su una vera navigazione, mai su un render() incidentale
-      const nowInMobileErato = window.innerWidth <= 900 && currentIndex === 0 && gameState(g) === 'open';
+      const nowInMobileErato = hubEntered && window.innerWidth <= 900 && currentIndex === 0 && gameState(g) === 'open';
       if (nowInMobileErato && !mobileEratoInView){
         mobileEratoInView = true;
         startMobileMiniSievePreview();
@@ -2530,6 +2588,7 @@
 
   function handleEratoIntro(grid, g, number){
     if (window.innerWidth <= 900) return;
+    if (!hubEntered) return; // niente flag eratoIntroPlayed qui: deve poter ripartire quando hubEntered diventa vero
     if (grid.dataset.eratoIntroPlayed === 'true') return;
     grid.dataset.eratoIntroPlayed = 'true';
 
@@ -3491,6 +3550,7 @@
 
     snapScrollEl.addEventListener('touchend', (e) => {
       if (touchStartY === null) return;
+      if (!hubEntered){ touchStartY = null; return; } // schermata Intro bloccata finché non si preme il titolo
       const endY = e.changedTouches[0].clientY;
       const delta = touchStartY - endY;
       const threshold = 50; // px minimi di trascinamento per far scattare il cambio pagina
@@ -3499,9 +3559,84 @@
       touchStartY = null;
     });
   }
+
+  // ============================================================
+  // SEZIONE: GATE D'INGRESSO — titolo grande come pulsante, un solo uso
+  // ============================================================
+  function initIntroGate(){
+    const gate = document.getElementById('introGate');
+    const gateMark = document.getElementById('introGateMark');
+    const gateNote = document.getElementById('introGateNote');
+    if (!gate || !gateMark) return;
+
+    let used = false;
+    gateMark.addEventListener('click', () => {
+      if (used) return;
+      used = true;
+      gateMark.style.cursor = 'default';
+      gateMark.style.pointerEvents = 'none'; // un solo uso: da qui in poi non è più un pulsante
+
+      // vero gesto dell'utente, proprio ora: l'audio può partire senza dover indovinare
+      // se il browser lo concede (vedi mathemory-audio.js, MATHEMORY_DEFER_AUDIO_INIT)
+      if (window.MathemoryAudio && window.MathemoryAudio.init) window.MathemoryAudio.init();
+
+      if (gateNote) gateNote.style.opacity = '0';
+
+      // sblocca lo scroll (bloccato di default, vedi html.intro-gate-active) e i
+      // simboli fluttuanti di sfondo, prima nascosti insieme al resto della chrome
+      document.documentElement.classList.remove('intro-gate-active');
+      document.body.classList.remove('intro-gate-active');
+      const constellation = document.querySelector('.math-constellation');
+      if (constellation) constellation.style.opacity = '1';
+
+      // titolo vero (desktop o mobile a seconda dello schermo): misurato ORA, mentre è
+      // ancora invisibile ma già nella sua posizione finale definitiva — il layout non
+      // dipende dall'opacità — così il titolo del gate sa esattamente dove atterrare
+      const isMobileNow = window.innerWidth <= 900;
+      const realMark = isMobileNow
+        ? document.querySelector('#snapIntro .mark')
+        : document.querySelector('.title-row .mark');
+
+      const fromRect = gateMark.getBoundingClientRect();
+      const toRect = (realMark && realMark.offsetParent !== null) ? realMark.getBoundingClientRect() : null;
+
+      if (toRect && toRect.width > 0 && fromRect.width > 0){
+        const scale = toRect.width / fromRect.width;
+        const dx = (toRect.left + toRect.width / 2) - (fromRect.left + fromRect.width / 2);
+        const dy = (toRect.top + toRect.height / 2) - (fromRect.top + fromRect.height / 2);
+
+        // esce dal flusso flex del gate (posizione fissata sui pixel reali attuali,
+        // nessun salto) per poter viaggiare in linea retta fino al titolo vero
+        gateMark.style.position = 'fixed';
+        gateMark.style.left = fromRect.left + 'px';
+        gateMark.style.top = fromRect.top + 'px';
+        gateMark.style.width = fromRect.width + 'px';
+        gateMark.style.margin = '0';
+        void gateMark.offsetWidth; // forza il reflow prima di far partire la transizione
+        gateMark.style.transition = 'transform 1.5s ease';
+        gateMark.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+      }
+
+      // da qui in poi può davvero partire tutto quello che prima partiva al semplice
+      // caricamento della pagina: fade-in della chrome desktop, sequenza della card,
+      // mini-sieve mobile, swipe verticale tra Intro/Gioco/Classifica
+      hubEntered = true;
+      measureEratoHeight();
+      render();
+
+      // al termine dell'atterraggio: il titolo del gate sparisce esattamente
+      // nell'istante in cui il titolo vero diventa visibile, stessa posizione,
+      // nessuna doppia immagine
+      setTimeout(() => {
+        gate.style.display = 'none';
+        if (realMark) realMark.style.opacity = '1';
+      }, 1500);
+    });
+  }
+  initIntroGate();
 </script>
 
-<script>window.MATHEMORY_FORCE_MUTED_ON_LOAD = true;</script>
+<script>window.MATHEMORY_DEFER_AUDIO_INIT = true;</script>
 <script>window.MATHEMORY_MUSIC_VOLUME_MULTIPLIER = { desktop: 1.25, mobile: 1.875 };</script>
 <script src="mathemory-audio.js"></script>
 
