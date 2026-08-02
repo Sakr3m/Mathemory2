@@ -2613,7 +2613,7 @@
       positionReportBtn();
       const geometry = computeCardGeometry(g, number);
       centerNavColumns(geometry.top, geometry.height); // stessa logica: calcolo PRIMA di mostrare, mai dopo
-      document.querySelectorAll('.title-row .mark, .subtitle, .nav-column').forEach(el => {
+      document.querySelectorAll('.subtitle, .nav-column').forEach(el => {
         el.style.opacity = '1';
       });
       const soundBtn = document.getElementById('indexSoundBtn');
