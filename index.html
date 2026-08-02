@@ -1339,18 +1339,16 @@
       font-size: 0.54rem;
     }
 
-    /* --- popup regolamento su mobile: finestra fissa tra 15% e 85% dello schermo, scorrevole --- */
-    #rulesModal{ align-items: stretch; justify-content: stretch; }
+    /* --- popup regolamento su mobile: dimensione naturale in base al contenuto,
+       come modeModal/reportModal/finishModal — la vecchia gabbia fissa (15%/85%)
+       lasciava uno spazio vuoto sotto la testolina quando il testo era più corto
+       della finestra --- */
     #rulesModal .rules-modal-card{
-      position: fixed;
-      top: 15%;
-      bottom: 15%;
-      left: 1rem;
-      right: 1rem;
-      max-width: none;
+      max-width: calc(100% - 2rem);
       width: auto;
-      max-height: none;
-      margin: 0;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-sizing: border-box;
     }
     #rulesModal .rules-modal-card h3{ font-size: 1.53rem; }
 
