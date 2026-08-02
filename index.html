@@ -1355,7 +1355,7 @@
     #rulesModal .rules-modal-card h3{ font-size: 1.2rem; margin: 0 1.3rem 0.8rem 0; }
     #rulesModal .rules-modal-card p{ font-size: 0.8rem; line-height: 1.45; margin: 0 0 0.7rem; }
     #rulesModal .rules-close-btn{ width: 32px; height: 32px; font-size: 1rem; }
-    #rulesModal .rules-modal-face-img{ max-height: 5rem; right: auto; left: 75%; transform: translateX(-50%); }
+    #rulesModal .rules-modal-face-img{ max-height: 4.2rem; }
 
     /* popup scelta modalità su mobile: dimensione naturale in base al contenuto
        (non più una gabbia fissa tra due percentuali), centrato dall'overlay come
@@ -2797,6 +2797,14 @@
           // regola CSS condivisa) è statico nel CSS, non serve calcolarlo
           void lbHalf.offsetWidth; // forzo il reflow prima di far ripartire la dissolvenza
           lbHalf.style.opacity = '1';
+          // la testolina, normalmente sul divisore centrale (condivisa con la vista
+          // classifica), si sposta al centro esatto del box Rules finché resta in vista
+          const faceImg = overlay.querySelector('.erato-face-img');
+          if (faceImg){
+            const lbHalfRect = lbHalf.getBoundingClientRect();
+            const overlayRect = overlay.getBoundingClientRect();
+            faceImg.style.left = (lbHalfRect.left + lbHalfRect.width / 2 - overlayRect.left) + 'px';
+          }
         }, fadeMs);
       });
       rulesBtn.addEventListener('mouseleave', () => {
@@ -2810,6 +2818,9 @@
           // l'allineamento a destra è statico nel CSS, non serve riapplicarlo a mano
           void lbHalf.offsetWidth;
           lbHalf.style.opacity = '1';
+          // torna sul divisore centrale, la sua posizione condivisa normale
+          const faceImg = overlay.querySelector('.erato-face-img');
+          if (faceImg) faceImg.style.left = dividerX + 'px';
         }, fadeMs);
       });
     }
