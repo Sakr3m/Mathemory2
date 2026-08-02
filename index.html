@@ -3578,7 +3578,7 @@
 
       // vero gesto dell'utente, proprio ora: l'audio può partire senza dover indovinare
       // se il browser lo concede (vedi mathemory-audio.js, MATHEMORY_DEFER_AUDIO_INIT)
-      if (window.MathemoryAudio && window.MathemoryAudio.startMuted) window.MathemoryAudio.startMuted();
+      if (window.MathemoryAudio && window.MathemoryAudio.init) window.MathemoryAudio.init();
 
       if (gateNote) gateNote.style.opacity = '0';
 
