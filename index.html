@@ -1477,7 +1477,7 @@
       transition: opacity 0.9s ease;
     }
     .title-row .mark{
-      opacity: 0; /* compare in fade un po' prima che il titolo del gate finisca di atterrare (vedi initIntroGate): il pulsante resta visibile sopra, poi sfuma via lui, rivelando che il titolo vero era già arrivato */
+      opacity: 0; /* compare in fade esattamente quando il pulsante del gate ha finito di atterrare qui sopra (vedi initIntroGate), non prima: solo allora il pulsante inizia a sua volta a sfumare via */
       transition: opacity 0.5s ease;
       transform: translateY(0.28125px); /* per portare il centro del titolo esattamente a 127px dal bordo alto */
     }
@@ -3645,14 +3645,11 @@
       }, isMobileNow ? 800 : 1000);
 
       if (!isMobileNow){
-        // il titolo vero compare in fade PRIMA che il pulsante finisca di atterrare
-        // (non più uno scambio istantaneo): resta visibile sopra di lui per l'ultimo
-        // pezzo di viaggio, poi è il pulsante a sfumare via, rivelando che il titolo
-        // vero era già arrivato
+        // il pulsante deve arrivare del tutto nella posizione del titolo (1.5s)
+        // PRIMA che parta qualunque fade out: solo a quel punto il titolo vero
+        // appare e il pulsante sfuma via sopra di lui
         setTimeout(() => {
           if (realMark) realMark.style.opacity = '1';
-        }, 1000);
-        setTimeout(() => {
           gateMark.style.transition = 'opacity 0.4s ease';
           gateMark.style.opacity = '0';
         }, 1500);
