@@ -1348,9 +1348,14 @@
       width: auto;
       max-height: 85vh;
       overflow-y: auto;
+      padding: 1.2rem;
+      padding-bottom: 5.2rem;
       box-sizing: border-box;
     }
-    #rulesModal .rules-modal-card h3{ font-size: 1.53rem; }
+    #rulesModal .rules-modal-card h3{ font-size: 1.2rem; margin: 0 1.3rem 0.8rem 0; }
+    #rulesModal .rules-modal-card p{ font-size: 0.8rem; line-height: 1.45; margin: 0 0 0.7rem; }
+    #rulesModal .rules-close-btn{ width: 32px; height: 32px; font-size: 1rem; }
+    #rulesModal .rules-modal-face-img{ max-height: 4.2rem; }
 
     /* popup scelta modalità su mobile: dimensione naturale in base al contenuto
        (non più una gabbia fissa tra due percentuali), centrato dall'overlay come
@@ -1687,7 +1692,6 @@
     <button type="button" class="rules-close-btn" id="rulesCloseBtn" aria-label="Close">✕</button>
     <h3>Rules — Eratosthenes</h3>
     <p><strong>How to play:</strong> find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</p>
-    <p><strong>Modes:</strong> The Sieve, Prime Rush, Scholar's Glance, and Infinite Primes — each has its own rules, check them as you unlock and pick a mode.</p>
     <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
     <p><em>Happy prime hunting.</em></p>
     <img class="rules-modal-face-img" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_face.png" alt="">
@@ -2768,7 +2772,6 @@
         <div class="erato-rules-preview">
           <h3>Rules</h3>
           <p><strong>How to play:</strong> find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</p>
-          <p><strong>Modes:</strong> The Sieve, Prime Rush, Scholar's Glance, and Infinite Primes — each has its own rules, check them as you unlock and pick a mode.</p>
           <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
           <p>Happy prime hunting.</p>
           <p class="device-note-old">Progress is saved per device — switching devices restarts from level 1.</p>
