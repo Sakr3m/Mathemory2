@@ -3585,7 +3585,13 @@
       // se il browser lo concede (vedi mathemory-audio.js, MATHEMORY_DEFER_AUDIO_INIT)
       if (window.MathemoryAudio && window.MathemoryAudio.init) window.MathemoryAudio.init();
 
-      if (gateNote) gateNote.style.opacity = '0';
+      const isMobileNow = window.innerWidth <= 900;
+      // su desktop la nota scompare subito, senza dissolvenza, appena si preme il
+      // titolo; su mobile resta com'era (sfuma insieme al titolo del gate)
+      if (gateNote){
+        if (isMobileNow) gateNote.style.opacity = '0';
+        else gateNote.style.display = 'none';
+      }
 
       // sblocca lo scroll (bloccato di default, vedi html.intro-gate-active) e i
       // simboli fluttuanti di sfondo, prima nascosti insieme al resto della chrome
@@ -3597,7 +3603,6 @@
       // titolo vero (desktop o mobile a seconda dello schermo): misurato ORA, mentre è
       // ancora invisibile ma già nella sua posizione finale definitiva — il layout non
       // dipende dall'opacità — così il titolo del gate sa esattamente dove atterrare
-      const isMobileNow = window.innerWidth <= 900;
       const realMark = isMobileNow
         ? document.querySelector('#snapIntro .mark')
         : document.querySelector('.title-row .mark');
