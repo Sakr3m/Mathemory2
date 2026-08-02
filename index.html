@@ -634,7 +634,7 @@
      align-items:center (già impostato su .mode-option) le centra dentro.
      Solo desktop */
   @media (min-width: 901px){
-    .mode-option{ min-height: 8.6rem; box-sizing: border-box; }
+    .mode-option{ min-height: 9.2rem; box-sizing: border-box; }
   }
   .mode-modal-footnote{
     font-family:'Space Mono', monospace;
@@ -686,6 +686,20 @@
     margin: 0 0 1rem;
   }
   .rules-modal-card p strong{ color: var(--ink); }
+  /* testolina di Eratostene nel popup Rules: stessa immagine della versione desktop
+     (nell'anteprima a comparsa sopra la classifica), qui però ancorata in basso a
+     DESTRA invece che al centro del divisore, perché il popup non ha due colonne.
+     padding-bottom riservato sulla card, altrimenti il testo (in particolare l'ultimo
+     paragrafo) ci finirebbe sotto */
+  #rulesModal .rules-modal-card{ padding-bottom: 6.5rem; }
+  #rulesModal .rules-modal-face-img{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    max-height: 5.5rem;
+    width: auto;
+    pointer-events: none;
+  }
 
   /* --- popup di segnalazione bug --- */
   .modal-buttons{
@@ -1340,69 +1354,59 @@
     }
     #rulesModal .rules-modal-card h3{ font-size: 1.53rem; }
 
-    #modeModal{ align-items: stretch; justify-content: stretch; }
+    /* popup scelta modalità su mobile: dimensione naturale in base al contenuto
+       (non più una gabbia fissa tra due percentuali), centrato dall'overlay come
+       fa già di default. max-height/overflow-y restano come rete di sicurezza per
+       schermi molto piccoli o testo eccezionalmente lungo, non come soluzione
+       primaria per farcelo entrare */
     #modeModal .mode-modal-card{
-      position: fixed;
-      top: 9%;
-      bottom: 9%;
-      left: 1rem;
-      right: 1rem;
-      max-width: none;
+      max-width: calc(100% - 2rem);
       width: auto;
-      margin: 0;
+      max-height: 85vh;
+      overflow-y: auto;
       padding: 1.1115rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      overflow: hidden;
+      box-sizing: border-box;
     }
     #modeModal .mode-modal-card h3{ font-size: 1.06875rem; margin: 0 0 0.7695rem; }
     #modeModal .mode-options{ gap: 0.513rem; }
-    #modeModal .mode-option{ padding: 0.5985rem 0.7695rem; gap: 0.513rem; }
+    #modeModal .mode-option{ min-height: 6rem; padding: 0.5985rem 0.7695rem; gap: 0.513rem; box-sizing: border-box; }
     #modeModal .mode-option-text h4{ font-size: 0.8721rem; margin: 0 0 0.12825rem; }
     #modeModal .mode-option-text p{ font-size: 0.64125rem; line-height: 1.25; }
     #modeModal .mode-option-text p.mode-option-details{
       font-family:'Space Mono', monospace;
       font-size: 0.55575rem;
       color: rgba(243,239,228,0.5);
+      margin-top: 0.245rem;
       line-height: 1.25;
     }
     #modeModal .mode-modal-footnote{ font-size: 0.55575rem; margin-top: 0.5985rem; }
 
-    /* --- popup report bug su mobile: stessa finestra fissa del popup modalità, tutto
-       rimpicciolito quel poco che basta per entrarci senza scroll --- */
-    #reportModal{ align-items: stretch; justify-content: stretch; }
+    /* popup report bug su mobile: stessa filosofia di modeModal, dimensione naturale
+       invece della gabbia fissa. Nota e footnote (con la sua linea separatrice) avevano
+       margine azzerato ed erano incollate ai pulsanti sopra — restituito un po' di
+       spazio a entrambe */
     #reportModal .rules-modal-card{
-      position: fixed;
-      top: 15%;
-      bottom: 15%;
-      left: 1rem;
-      right: 1rem;
-      max-width: none;
+      max-width: calc(100% - 2rem);
       width: auto;
-      max-height: none;
-      margin: 0;
+      max-height: 85vh;
+      overflow-y: auto;
       padding: 1.17rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
       box-sizing: border-box;
     }
-    #reportModal .rules-modal-card h3{ font-size: 1.125rem; margin: 0; }
-    #reportModal .rules-modal-card p{ font-size: 0.72rem; line-height: 1.3; margin: 0; }
-    #reportModal .report-field{ margin: 0; }
+    #reportModal .rules-modal-card h3{ font-size: 1.125rem; margin: 0 0 0.6rem; }
+    #reportModal .rules-modal-card p{ font-size: 0.72rem; line-height: 1.3; margin: 0 0 0.6rem; }
+    #reportModal .report-field{ margin-bottom: 0.6rem; }
     #reportModal .report-field-label{ font-size: 0.6rem; margin-bottom: 0.3rem; }
     #reportModal .report-textarea{ min-height: 3.4rem; font-size: 0.78rem; padding: 0.5rem; margin: 0; }
     #reportModal .report-file-row{ gap: 0.5rem; }
     #reportModal .report-file-trigger{ font-size: 0.68rem; padding: 0.4rem 0.7rem; }
     #reportModal .report-file-name{ font-size: 0.62rem; }
     #reportModal .report-image-preview{ max-height: 60px; margin: 0.4rem 0 0; }
-    #reportModal .modal-buttons{ gap: 0.6rem; margin: 0; }
+    #reportModal .modal-buttons{ gap: 0.6rem; margin: 0.6rem 0 0; }
     #reportModal .modal-btn{ font-size: 0.82rem; padding: 0.5rem 1.2rem; }
-    #reportModal .modal-footnotes{ margin: 0; padding-top: 0.5rem; }
+    #reportModal #reportNote{ font-size: 0.62rem; margin: 0.5rem 0 0; }
+    #reportModal .modal-footnotes{ margin-top: 0.5rem; padding-top: 0.5rem; }
     #reportModal .modal-footnotes p{ font-size: 0.62rem; line-height: 1.25; }
-    #reportModal #reportNote{ font-size: 0.62rem; margin: 0; }
   }
 
   /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
@@ -1688,6 +1692,7 @@
     <p><strong>Modes:</strong> The Sieve, Prime Rush, Scholar's Glance, and Infinite Primes — each has its own rules, check them as you unlock and pick a mode.</p>
     <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
     <p><em>Happy prime hunting.</em></p>
+    <img class="rules-modal-face-img" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_face.png" alt="">
   </div>
 </div>
 
