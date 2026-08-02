@@ -3622,7 +3622,7 @@
           gateMark.style.width = fromRect.width + 'px';
           gateMark.style.margin = '0';
           void gateMark.offsetWidth; // forza il reflow prima di far partire la transizione
-          gateMark.style.transition = 'transform 1.75s ease';
+          gateMark.style.transition = 'transform 2.25s ease';
           gateMark.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
         }
       }
@@ -3638,18 +3638,18 @@
       // (stessa tempistica di arrivo, solo un ingresso più morbido invece di uno scatto).
       // Su mobile il titolo vero parte a dissolversi insieme, in sincrono col fade out
       // del titolo del gate impostato sopra. Su desktop il titolo vero resta sincronizzato
-      // ESATTAMENTE con la fine del viaggio del titolo del gate (rallentato di 0.25s su
-      // richiesta, da 1.5s a 1.75s): prima sarebbe una doppia immagine (il vero già
+      // ESATTAMENTE con la fine del viaggio del titolo del gate (rallentato di 0.75s su
+      // richiesta, da 1.5s a 2.25s): prima sarebbe una doppia immagine (il vero già
       // visibile mentre quello del gate sta ancora atterrando)
       setTimeout(() => {
         gate.style.opacity = '0';
         if (isMobileNow && realMark) realMark.style.opacity = '1';
-      }, isMobileNow ? 800 : 1250);
+      }, isMobileNow ? 800 : 1750);
 
       setTimeout(() => {
         gate.style.display = 'none';
         if (!isMobileNow && realMark) realMark.style.opacity = '1';
-      }, isMobileNow ? 1500 : 1750);
+      }, isMobileNow ? 1500 : 2250);
     });
   }
   initIntroGate();
