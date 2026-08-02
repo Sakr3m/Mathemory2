@@ -2288,9 +2288,8 @@
         const geometry = computeCardGeometry(g, number);
         const dividerLine = eratoOverlayEl.querySelector('.erato-mid-divider');
         const gamexTag = eratoOverlayEl.querySelector('.erato-gamex-tag');
-        const faceImg = eratoOverlayEl.querySelector('.erato-face-img');
         const lbHalfNav = eratoOverlayEl.querySelector('.erato-leaderboard-half');
-        [dividerLine, gamexTag, faceImg].forEach(el => {
+        [dividerLine, gamexTag].forEach(el => {
           if (!el) return;
           el.style.transition = 'none';
           el.style.opacity = '0';
@@ -2298,7 +2297,7 @@
         if (lbHalfNav){ lbHalfNav.style.transition = 'none'; lbHalfNav.style.opacity = '0'; }
         if (gamexTag) gamexTag.style.pointerEvents = 'none'; // non hoverabile finché non è del tutto comparso
         playCardNavAnimation(eratoOverlayEl, geometry.top, geometry.left, geometry.width, geometry.height, () => {
-          [dividerLine, gamexTag, faceImg].forEach(el => {
+          [dividerLine, gamexTag].forEach(el => {
             if (!el) return;
             void el.offsetWidth;
             el.style.transition = 'opacity 1s ease';
@@ -2306,7 +2305,9 @@
           });
           if (gamexTag) setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
           // stessa sezione leaderboard (titoli + tabelle): fade omogeneo di 0.5s, separato
-          // dal secondo di dividerLine/gamexTag/faceImg
+          // dal secondo di dividerLine/gamexTag. La testolina (.erato-face-img) resta
+          // fuori da questo fade apposta: deve restare nascosta finché non si passa il
+          // mouse su RULES, non ricomparire a ogni cambio di card del carosello
           if (lbHalfNav){
             void lbHalfNav.offsetWidth;
             lbHalfNav.style.transition = 'opacity 500ms ease';
@@ -2742,8 +2743,9 @@
         setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
       }
 
-      // piccola immagine di Eratostene, dalla parte opposta di Game X: stessa X della
-      // riga, ma attaccata al bordo INFERIORE della card invece che a quello superiore
+      // piccola immagine di Eratostene: non più visibile di default sulla card, compare
+      // solo al passaggio del mouse su RULES (vedi rulesBtn qui sotto). Qui la creo e la
+      // preposiziono sul divisore, ma resta a opacity:0 finché RULES non è in hover
       let faceImg = overlay.querySelector('.erato-face-img');
       if (!faceImg){
         faceImg = document.createElement('img');
@@ -2752,9 +2754,6 @@
         faceImg.alt = '';
         faceImg.style.opacity = '0';
         overlay.appendChild(faceImg);
-        void faceImg.offsetWidth; // stesso reflow forzato di gamexTag, stesso motivo
-        faceImg.style.transition = 'opacity 1s ease';
-        faceImg.style.opacity = '1';
       }
       faceImg.style.left = dividerX + 'px';
     }
@@ -2797,13 +2796,16 @@
           // regola CSS condivisa) è statico nel CSS, non serve calcolarlo
           void lbHalf.offsetWidth; // forzo il reflow prima di far ripartire la dissolvenza
           lbHalf.style.opacity = '1';
-          // la testolina, normalmente sul divisore centrale (condivisa con la vista
-          // classifica), si sposta al centro esatto del box Rules finché resta in vista
+          // la testolina, nascosta di default, compare (fade in) solo ora, già
+          // posizionata al centro esatto del box Rules
           const faceImg = overlay.querySelector('.erato-face-img');
           if (faceImg){
             const lbHalfRect = lbHalf.getBoundingClientRect();
             const overlayRect = overlay.getBoundingClientRect();
             faceImg.style.left = (lbHalfRect.left + lbHalfRect.width / 2 - overlayRect.left) + 'px';
+            void faceImg.offsetWidth;
+            faceImg.style.transition = `opacity ${fadeMs}ms ease`;
+            faceImg.style.opacity = '1';
           }
         }, fadeMs);
       });
@@ -2813,13 +2815,15 @@
         clearTimeout(swapTimer);
         lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
         lbHalf.style.opacity = '0';
+        const faceImg = overlay.querySelector('.erato-face-img');
+        if (faceImg){ faceImg.style.transition = `opacity ${fadeMs}ms ease`; faceImg.style.opacity = '0'; }
         swapTimer = setTimeout(() => {
           lbHalf.innerHTML = lbHalf._realLbHtml; // sempre il contenuto vero, mai una copia sporcata
           // l'allineamento a destra è statico nel CSS, non serve riapplicarlo a mano
           void lbHalf.offsetWidth;
           lbHalf.style.opacity = '1';
-          // torna sul divisore centrale, la sua posizione condivisa normale
-          const faceImg = overlay.querySelector('.erato-face-img');
+          // torna sul divisore centrale, pronta per la prossima volta — ma resta
+          // invisibile (opacity:0) finché non si passa di nuovo il mouse su RULES
           if (faceImg) faceImg.style.left = dividerX + 'px';
         }, fadeMs);
       });
