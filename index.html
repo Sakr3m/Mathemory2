@@ -3650,16 +3650,15 @@
         setTimeout(() => {
           if (realMark) realMark.style.opacity = '1';
         }, 1500);
-        // il pulsante, ormai ridondante, inizia a sfumare via un attimo DOPO essere
-        // arrivato — mai nello stesso istante: un margine reale, non solo sulla carta,
-        // altrimenti il fade rischia di partire mentre il viaggio sta ancora finendo
+        // il pulsante, ormai ridondante, inizia a sfumare via 3 secondi DOPO essere
+        // arrivato — margine ampio, per andare sul sicuro
         setTimeout(() => {
           gateMark.style.transition = 'opacity 1s ease';
           gateMark.style.opacity = '0';
-        }, 1800);
+        }, 4500);
         setTimeout(() => {
           gate.style.display = 'none';
-        }, 2800);
+        }, 5500);
       } else {
         setTimeout(() => {
           gate.style.display = 'none';
