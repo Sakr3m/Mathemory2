@@ -158,23 +158,6 @@
   }
 
   function initAudioState(){
-    if (window.MATHEMORY_FORCE_MUTED_ON_LOAD){
-      // index eredita SOLO se la navigazione arriva da un'altra pagina dello stesso sito
-      // (es. tastino Home da un livello): il browser tratta questi casi come "navigazione
-      // continua" e spesso concede l'audio comunque. Da una visita esterna/fresca, forza muto.
-      let referrerIsInternal = false;
-      try {
-        referrerIsInternal = !!document.referrer && new URL(document.referrer).origin === window.location.origin;
-      } catch(e){}
-
-      if (referrerIsInternal && hasUserChoice()){
-        tryResumeInherited();
-      } else {
-        forceMutedStart();
-      }
-      return;
-    }
-
     if (hasUserChoice()){
       tryResumeInherited();
       return;
@@ -260,7 +243,10 @@
     });
   });
 
-  // esposto globalmente: le pagine di gioco lo usano per gli effetti sonori (Web Audio API)
+  // esposto globalmente: le pagine di gioco lo usano per gli effetti sonori (Web Audio API);
+  // "init" serve solo a index.html, per avviare l'audio nel momento esatto in cui si preme
+  // il titolo Mathemory, con un vero gesto dell'utente alle spalle — niente più bisogno di
+  // indovinare dal referrer se il browser concederà l'autoplay o no
   window.MathemoryAudio = {
     isMuted,
     setMuted,
@@ -270,7 +256,11 @@
     setMusicVol,
     setSfxVol,
     duckMusic,
+    init: initAudioState,
   };
 
-  initAudioState();
+  // MATHEMORY_DEFER_AUDIO_INIT: solo index.html lo imposta, per rimandare l'avvio a dopo
+  // il click sul gate d'ingresso invece che a caricamento pagina. Tutte le altre pagine
+  // (qui la variabile resta undefined) si comportano esattamente come prima
+  if (!window.MATHEMORY_DEFER_AUDIO_INIT) initAudioState();
 })();
