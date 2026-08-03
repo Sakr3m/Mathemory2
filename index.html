@@ -1069,6 +1069,11 @@
     top: 50vh;
     width: 160px;
     height: 300px;
+    /* spazio riservato sopra pari all'ingombro di .ad-top-rect (top:3.5vh + 250px di
+       altezza), più un margine: prima di questo, partiva dalla cima del contenitore
+       e si sovrapponeva al banner rettangolare sopra di sé (z-index più alto, ci si
+       vedeva sopra, sembrava un secondo box dietro quello vero) */
+    margin-top: calc(3.5vh + 250px + 24px);
   }
   .content-col{ grid-area: content; min-width:0; max-width: 1600px; margin: 0 auto; width: 100%; position: relative; z-index: 1; }
   .mobile-snap-wrap{ display: none; }
