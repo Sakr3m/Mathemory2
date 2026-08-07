@@ -948,12 +948,22 @@
     .nav-arrow.rotate{ transform: rotate(90deg); }
     .index-sound-btn{ display: none; }
     .index-report-btn{ display: none; }
-    .mobile-index-sound-btn{
-      display: flex;
+    .index-kofi-btn{ display: none; }
+    /* pulsante volume e switch lingua trattati come UN blocco solo: il contenitore
+       flessibile si centra per intero (translateX(-50%) sulla sua vera larghezza,
+       non su un punto medio arbitrario), lo spazio tra i due viene impostato via JS
+       (--mobile-audio-lang-gap) pari alla larghezza reale del pulsante Segnala bug */
+    .mobile-audio-lang-row{
       position: absolute;
       top: calc(47% + 89px); /* punto medio stimato tra fine sottotitolo e inizio REPORT BUG, alzato del 3% su richiesta */
       left: 50%;
       transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: var(--mobile-audio-lang-gap, 24px);
+    }
+    .mobile-index-sound-btn{
+      display: flex;
       align-items: center;
       justify-content: center;
       width: 50.6px;
@@ -967,6 +977,33 @@
       cursor: pointer;
     }
     .mobile-index-sound-btn svg{ width: 30.475px; height: 30.475px; }
+    .mobile-lang-switch{
+      display: flex;
+      height: 50.6px;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      background: var(--bg-panel);
+      overflow: hidden;
+    }
+    .mobile-lang-switch .lang-switch-btn{
+      font-size: 0.95rem;
+      padding: 0 1rem;
+    }
+    /* pulsante Ko-fi mobile: stessa dimensione del pulsante volume mobile, dentro
+       allo stesso contenitore flessibile — eredita lo stesso gap dallo switch lingua */
+    .mobile-kofi-btn{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50.6px;
+      height: 50.6px;
+      border: 1px solid var(--rule);
+      border-radius: 50%;
+      background: var(--bg-panel);
+      color: var(--ink-dim);
+      text-decoration: none;
+    }
+    .mobile-kofi-btn svg{ width: 28px; height: 28px; }
     .mobile-report-btn{
       display: flex;
       position: absolute;
@@ -1499,6 +1536,7 @@
       transition: border-color 0.15s ease, color 0.15s ease, opacity 0.5s ease, background 0.15s ease, box-shadow 0.2s ease;
       z-index: 50;
       opacity: 0; /* stesso fade in sincronizzato di titolo/sottotitolo */
+      pointer-events: none; /* niente click finché non è davvero rivelato (vedi revealPageChrome) */
     }
     .index-sound-btn:hover{
       color: var(--yellow);
@@ -1526,6 +1564,7 @@
       transition: border-color 0.15s ease, color 0.15s ease, opacity 0.5s ease, background 0.15s ease, box-shadow 0.2s ease;
       z-index: 50;
       opacity: 0; /* stesso fade in sincronizzato di titolo/sottotitolo/pulsante volume */
+      pointer-events: none;
     }
     .index-report-btn:hover{
       color: var(--yellow);
@@ -1533,7 +1572,7 @@
       background: rgba(232,196,104,0.22);
       box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
     }
-    .mobile-index-sound-btn{ display: none; }
+    .mobile-audio-lang-row{ display: none; }
     .mobile-report-btn{ display: none; }
     #reportModal .modal-buttons{ margin-top: 1.2rem; }
     #reportModal .modal-footnotes{ margin-top: 1.8rem; }
@@ -1579,6 +1618,7 @@
     z-index: 50;
     opacity: 0; /* stesso fade in sincronizzato di titolo/sottotitolo/pulsante volume */
     transition: opacity 0.5s ease;
+    pointer-events: none;
   }
   .lang-switch-btn{
     border: none;
@@ -1599,6 +1639,31 @@
   .lang-switch-btn:not(.lang-active):hover{
     color: var(--yellow);
   }
+  /* pulsante Ko-fi: stesso identico stile del pulsante volume (stessa forma, stessi
+     colori/hover), solo che è un link invece che un toggle */
+  .index-kofi-btn{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    background: var(--bg-panel);
+    color: var(--ink-dim);
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.15s ease, color 0.15s ease, opacity 0.5s ease, background 0.15s ease, box-shadow 0.2s ease;
+    z-index: 50;
+    opacity: 0; /* stesso fade in sincronizzato di titolo/sottotitolo/pulsante volume */
+    pointer-events: none;
+  }
+  .index-kofi-btn:hover{
+    color: var(--yellow);
+    border-color: rgba(232,196,104,0.75);
+    background: rgba(232,196,104,0.22);
+    box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
+  }
+  .index-kofi-btn svg{ width: 26.5px; height: 26.5px; }
   /* stato "acceso" del volume (audio non muto): stessa illuminazione dei numeri
      selezionati nella griglia, l'icona resta sempre la stessa, cambia solo questo */
   .audio-toggle-btn.audio-on{
@@ -1707,6 +1772,7 @@
         <button type="button" class="lang-switch-btn" id="langBtnEn" data-lang="en">EN</button>
         <button type="button" class="lang-switch-btn" id="langBtnIt" data-lang="it">IT</button>
       </div>
+      <a class="index-kofi-btn" id="indexKofiBtn" href="https://ko-fi.com/the_forgotten_shelf" target="_blank" rel="noopener" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></a>
       <button type="button" class="index-report-btn" id="indexReportBtn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
       <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
     </div>
@@ -1755,7 +1821,14 @@
           <div class="mobile-shifted-content">
             <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
             <p class="subtitle">A collection of math games, unlocking one after another over time.<br><br>Each game has timed leaderboard modes and more relaxed modes just for fun.<br><br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
-            <button type="button" class="mobile-index-sound-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></button>
+            <div class="mobile-audio-lang-row" id="mobileAudioLangRow">
+              <button type="button" class="mobile-index-sound-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></button>
+              <div class="mobile-lang-switch" role="group" aria-label="Language">
+                <button type="button" class="lang-switch-btn" data-lang="en">EN</button>
+                <button type="button" class="lang-switch-btn" data-lang="it">IT</button>
+              </div>
+              <a class="mobile-kofi-btn" href="https://ko-fi.com/the_forgotten_shelf" target="_blank" rel="noopener" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></a>
+            </div>
             <button type="button" class="mobile-report-btn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
             <p class="scroll-hint">↓ Scroll down to explore the games and the rest of the site. ↓</p>
           </div>
@@ -2376,6 +2449,7 @@
     positionIndexSoundBtn();
     positionReportBtn();
     positionLangSwitch();
+    positionKofiBtn();
     applyLanguage();
     centerEratoRightEdge();
     if (gameState(g) === 'open'){
@@ -2533,6 +2607,7 @@
   let indexSoundBtnMovedToBody = false;
   let indexReportBtnMovedToBody = false;
   let langSwitchMovedToBody = false;
+  let kofiBtnMovedToBody = false;
   // sposta l'intera griglia dei 2 giochi in modo che il lato destro della card di
   // Eratostene (il confine tra le 2 card) cada esattamente al centro reale della finestra,
   // non solo al centro della sua colonna. Misurato dal vero, non un valore fisso.
@@ -2664,17 +2739,20 @@
       positionIndexSoundBtn(); // ricalcolo qui: ora i font sono DAVVERO pronti
       positionReportBtn();
       positionLangSwitch();
+      positionKofiBtn();
       const geometry = computeCardGeometry(g, number);
       centerNavColumns(geometry.top, geometry.height); // stessa logica: calcolo PRIMA di mostrare, mai dopo
       document.querySelectorAll('.subtitle, .nav-column').forEach(el => {
         el.style.opacity = '1';
       });
       const soundBtn = document.getElementById('indexSoundBtn');
-      if (soundBtn) soundBtn.style.opacity = '1';
+      if (soundBtn){ soundBtn.style.opacity = '1'; soundBtn.style.pointerEvents = 'auto'; }
       const reportBtn = document.getElementById('indexReportBtn');
-      if (reportBtn) reportBtn.style.opacity = '1';
+      if (reportBtn){ reportBtn.style.opacity = '1'; reportBtn.style.pointerEvents = 'auto'; }
       const langSwitch = document.getElementById('langSwitch');
-      if (langSwitch) langSwitch.style.opacity = '1';
+      if (langSwitch){ langSwitch.style.opacity = '1'; langSwitch.style.pointerEvents = 'auto'; }
+      const kofiBtn = document.getElementById('indexKofiBtn');
+      if (kofiBtn){ kofiBtn.style.opacity = '1'; kofiBtn.style.pointerEvents = 'auto'; }
     }
 
     function playCardSequence(){
@@ -3185,6 +3263,29 @@
   }
   window.addEventListener('resize', positionLangSwitch);
 
+  // pulsante Ko-fi: stessa dimensione del pulsante volume, subito a destra dello
+  // switch lingua — solo desktop per ora, come gli altri due
+  function positionKofiBtn(){
+    if (window.innerWidth <= 900) return;
+    const el = document.getElementById('indexKofiBtn');
+    const langEl = document.getElementById('langSwitch');
+    if (!el || !langEl) return;
+
+    if (!kofiBtnMovedToBody){
+      document.body.appendChild(el);
+      kofiBtnMovedToBody = true;
+    }
+
+    const langRect = langEl.getBoundingClientRect();
+    const diameter = 55;
+    const gap = 22;
+    el.style.width = diameter + 'px';
+    el.style.height = diameter + 'px';
+    el.style.left = (langRect.right + window.scrollX + gap) + 'px';
+    el.style.top = (langRect.top + window.scrollY) + 'px';
+  }
+  window.addEventListener('resize', positionKofiBtn);
+
   // ============================================================
   // SEZIONE: LINGUA — switch EN/IT, solo su index, solo desktop per ora
   // ============================================================
@@ -3211,7 +3312,20 @@
     document.querySelectorAll('.lang-switch-btn').forEach(btn => {
       btn.classList.toggle('lang-active', btn.dataset.lang === lang);
     });
+    syncMobileAudioLangGap(); // il testo di "Segnala bug"/"Report bug" cambia larghezza da una lingua all'altra
   }
+  // distanza tra pulsante volume e switch lingua (mobile) = larghezza vera del
+  // pulsante Segnala bug in questo preciso istante — misurata dal vero perché
+  // cambia con la lingua (niente valore fisso, si adatta sempre)
+  function syncMobileAudioLangGap(){
+    if (window.innerWidth > 900) return;
+    const row = document.getElementById('mobileAudioLangRow');
+    const reportBtn = document.querySelector('.mobile-report-btn');
+    if (!row || !reportBtn) return;
+    const width = reportBtn.getBoundingClientRect().width;
+    if (width > 0) row.style.setProperty('--mobile-audio-lang-gap', (width / 2) + 'px');
+  }
+  window.addEventListener('resize', syncMobileAudioLangGap);
   function setLang(lang){
     if (lang !== 'it' && lang !== 'en') return;
     localStorage.setItem('mathemory_lang', lang);
