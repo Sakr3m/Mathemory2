@@ -175,36 +175,32 @@
     else if (!isMuted()) bgMusic.play().catch(() => {});
   });
 
-  // --- popup volumi, solo PC: 2 slider (musica sopra, effetti sotto), step del 10% ---
-  function buildVolumePopup(){
-    if (document.getElementById('audioSettingsModal')) return;
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.id = 'audioSettingsModal';
-    overlay.innerHTML = `
-        <div class="modal-card" style="position:relative; text-align:left; background:var(--bg-panel); border:1px solid var(--rule); border-radius:10px; padding:2.4rem; max-width:576px; width:100%; box-sizing:border-box;">
-        <button type="button" id="audioSettingsCloseBtn" aria-label="Close" style="position:absolute; top:0.7rem; right:0.7rem; width:2rem; height:2rem; border-radius:50%; border:none; background:var(--bg); color:var(--ink); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
-        <h3 style="text-align:center; font-size:1.76rem;">🔊 Audio settings</h3>
-        <div class="audio-slider-row">
-          <label>Music</label>
-          <input type="range" id="musicVolSlider" min="0" max="100" step="10" value="${getMusicVol()}">
-          <span id="musicVolLabel">${getMusicVol()}%</span>
-        </div>
-        <div class="audio-slider-row">
-          <label>Sound effects</label>
-          <input type="range" id="sfxVolSlider" min="0" max="100" step="10" value="${getSfxVol()}">
-          <span id="sfxVolLabel">${getSfxVol()}%</span>
-        </div>
-        <p style="font-family:'Space Mono', monospace; font-size:0.88rem; color:var(--ink-dim); margin-top:0.8rem; text-align:center;">Double-click the speaker icon to mute or unmute.</p>
+  // --- pannello volumi, solo PC: ancorato al pulsante, compare in hover (non al click) e
+  // resta visibile finché il mouse è sopra di lui o sul pulsante stesso. 2 slider (musica
+  // sopra, effetti sotto), step del 10% — costruito una sola volta, riposizionato ad ogni
+  // comparsa in base al pulsante che l'ha aperto (la pagina può averne più di uno: PC/mobile) */
+  function buildVolumePanel(){
+    if (document.getElementById('volumePanel')) return;
+    const panel = document.createElement('div');
+    panel.id = 'volumePanel';
+    panel.style.cssText = 'position:fixed; z-index:2000; background:var(--bg-panel); border:1px solid var(--rule); border-radius:10px; padding:1rem 1.2rem; box-sizing:border-box; width:300px; opacity:0; visibility:hidden; pointer-events:none; transition:opacity 0.15s ease;';
+    panel.innerHTML = `
+      <div class="audio-slider-row" style="margin-bottom:0.7rem; gap:0.9rem;">
+        <label style="width:auto; flex-shrink:0;">Music</label>
+        <input type="range" id="musicVolSlider" min="0" max="100" step="10" value="${getMusicVol()}" style="flex:1; min-width:0;">
+        <span id="musicVolLabel" style="width:2.6rem; flex-shrink:0;">${getMusicVol()}%</span>
+      </div>
+      <div class="audio-slider-row" style="margin-bottom:0; gap:0.9rem;">
+        <label style="width:auto; flex-shrink:0;">SFX</label>
+        <input type="range" id="sfxVolSlider" min="0" max="100" step="10" value="${getSfxVol()}" style="flex:1; min-width:0;">
+        <span id="sfxVolLabel" style="width:2.6rem; flex-shrink:0;">${getSfxVol()}%</span>
       </div>
     `;
-    document.body.appendChild(overlay);
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) overlay.classList.remove('visible');
-    });
-    document.getElementById('audioSettingsCloseBtn').addEventListener('click', () => {
-      overlay.classList.remove('visible');
-    });
+    document.body.appendChild(panel);
+    // il mouse resta "dentro" il gruppo pulsante+pannello anche attraversando il piccolo
+    // spazio tra i due: hover sul pannello stesso lo tiene aperto allo stesso modo
+    panel.addEventListener('mouseenter', () => { clearTimeout(hidePanelTimer); });
+    panel.addEventListener('mouseleave', scheduleHidePanel);
     document.getElementById('musicVolSlider').addEventListener('input', (e) => {
       setMusicVol(parseInt(e.target.value));
       document.getElementById('musicVolLabel').textContent = e.target.value + '%';
@@ -214,32 +210,55 @@
       document.getElementById('sfxVolLabel').textContent = e.target.value + '%';
     });
   }
-  function openVolumePopup(){
-    buildVolumePopup();
-    document.getElementById('audioSettingsModal').classList.add('visible');
+  let hidePanelTimer = null;
+  function showVolumePanel(btn){
+    // niente pannello se il pulsante non è davvero visibile ancora (es. prima che il gate
+    // d'ingresso lo riveli, o prima che positionIndexSoundBtn() lo posizioni sul serio):
+    // altrimenti si apre ancorato a una posizione ancora provvisoria/sbagliata
+    const style = getComputedStyle(btn);
+    const rect = btn.getBoundingClientRect();
+    if (btn.offsetParent === null || style.opacity === '0' || style.visibility === 'hidden' || (rect.width === 0 && rect.height === 0)){
+      return;
+    }
+    buildVolumePanel();
+    const panel = document.getElementById('volumePanel');
+    // di fianco al pulsante, con un margine reale (non attaccato) e centrato verticalmente
+    // rispetto a lui — misuro l'altezza del pannello ORA che esiste già nel DOM, per
+    // calcolare il centro esatto invece di allinearlo al bordo superiore del pulsante
+    const panelHeight = panel.offsetHeight;
+    panel.style.top = (rect.top + rect.height / 2 - panelHeight / 2) + 'px';
+    panel.style.right = 'auto';
+    panel.style.left = (rect.right + 18) + 'px';
+    clearTimeout(hidePanelTimer);
+    panel.style.opacity = '1';
+    panel.style.visibility = 'visible';
+    panel.style.pointerEvents = 'auto';
+  }
+  function scheduleHidePanel(){
+    clearTimeout(hidePanelTimer);
+    hidePanelTimer = setTimeout(() => {
+      const panel = document.getElementById('volumePanel');
+      if (!panel) return;
+      panel.style.opacity = '0';
+      panel.style.visibility = 'hidden';
+      panel.style.pointerEvents = 'none';
+    }, 150); // piccolo margine per attraversare lo spazio tra pulsante e pannello senza che si chiuda
   }
 
   // --- collego i pulsanti audio della pagina (index ne ha 2: PC e mobile) ---
   buttons.forEach(btn => {
-    let clickTimer = null;
+    // PC: click singolo alterna sempre muto/smutato, come su mobile — il pannello volumi
+    // si apre e si chiude solo con l'hover, mai col click
     btn.addEventListener('click', () => {
-      if (isMobile()){
-        // mobile: tap singolo, alterna muto/smutato, nessun popup
-        setMuted(!isMuted());
-        return;
-      }
-      // PC: click singolo apre il popup volumi (dopo mezzo secondo, per lasciare spazio al doppio click)
-      // doppio click entro mezzo secondo: alterna muto/smutato, il popup non si apre affatto
-      if (clickTimer){
-        clearTimeout(clickTimer);
-        clickTimer = null;
-        setMuted(!isMuted());
-      } else {
-        clickTimer = setTimeout(() => {
-          clickTimer = null;
-          openVolumePopup();
-        }, 500);
-      }
+      setMuted(!isMuted());
+    });
+    btn.addEventListener('mouseenter', () => {
+      if (isMobile()) return; // il touch non deve mai aprire il pannello
+      showVolumePanel(btn);
+    });
+    btn.addEventListener('mouseleave', () => {
+      if (isMobile()) return;
+      scheduleHidePanel();
     });
   });
 
