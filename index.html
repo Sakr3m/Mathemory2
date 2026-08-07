@@ -230,9 +230,10 @@
     font-family:'Work Sans', sans-serif;
     font-weight:700;
     color: var(--ink);
-    font-size: 1.265rem;
+    font-size: 1.05rem;
     margin: 0 0 0.5rem;
     display:block;
+    white-space: nowrap;
   }
 
   .unlock-date{
@@ -1565,6 +1566,39 @@
   }
   .audio-toggle-btn{ cursor: pointer; }
   .index-sound-btn svg{ width: 26.5px; height: 26.5px; }
+  /* switch lingua EN/IT: stessa altezza del pulsante volume (55px, impostata via JS in
+     positionLangSwitch), pillola con le due lingue sempre entrambe visibili — solo
+     quella selezionata resta "accesa", stessa illuminazione del volume attivo */
+  .lang-switch{
+    position: absolute;
+    display: flex;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--bg-panel);
+    overflow: hidden;
+    z-index: 50;
+    opacity: 0; /* stesso fade in sincronizzato di titolo/sottotitolo/pulsante volume */
+    transition: opacity 0.5s ease;
+  }
+  .lang-switch-btn{
+    border: none;
+    background: transparent;
+    color: var(--ink-dim);
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    padding: 0 1.1rem;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .lang-switch-btn.lang-active{
+    color: #1C1F16;
+    background: var(--yellow);
+  }
+  .lang-switch-btn:not(.lang-active):hover{
+    color: var(--yellow);
+  }
   /* stato "acceso" del volume (audio non muto): stessa illuminazione dei numeri
      selezionati nella griglia, l'icona resta sempre la stessa, cambia solo questo */
   .audio-toggle-btn.audio-on{
@@ -1663,13 +1697,17 @@
   <div class="content-col">
   <div id="introGate">
     <button type="button" id="introGateMark" class="mark" aria-label="Enter Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></button>
-    <p id="introGateNote"><span class="intro-gate-note-desktop">Click the title to enter the hub.</span><span class="intro-gate-note-mobile">Tap the title to enter the hub.</span></p>
+    <p id="introGateNote"><span class="intro-gate-note-desktop" data-en="Click the title to enter the hub." data-it="Clicca sul titolo per entrare nell'hub.">Click the title to enter the hub.</span><span class="intro-gate-note-mobile" data-en="Tap the title to enter the hub." data-it="Tocca il titolo per entrare nell'hub.">Tap the title to enter the hub.</span></p>
   </div>
   <div class="wrap">
   <header>
     <div class="title-row">
       <button type="button" class="index-sound-btn audio-toggle-btn" id="indexSoundBtn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></button>
-      <button type="button" class="index-report-btn" id="indexReportBtn" aria-label="Report a bug">Report bug</button>
+      <div class="lang-switch" id="langSwitch" role="group" aria-label="Language">
+        <button type="button" class="lang-switch-btn" id="langBtnEn" data-lang="en">EN</button>
+        <button type="button" class="lang-switch-btn" id="langBtnIt" data-lang="it">IT</button>
+      </div>
+      <button type="button" class="index-report-btn" id="indexReportBtn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
       <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
     </div>
     <p class="subtitle">A collection of math games, unlocking one after another over time.<br>Each game has timed leaderboard modes and more relaxed modes just for fun.<br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
@@ -1718,7 +1756,7 @@
             <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
             <p class="subtitle">A collection of math games, unlocking one after another over time.<br><br>Each game has timed leaderboard modes and more relaxed modes just for fun.<br><br>Your progress is saved automatically, so you can always pick up right where you left off.</p>
             <button type="button" class="mobile-index-sound-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8 8 0 0 1 0 12"/></svg></button>
-            <button type="button" class="mobile-report-btn" aria-label="Report a bug">Report bug</button>
+            <button type="button" class="mobile-report-btn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
             <p class="scroll-hint">↓ Scroll down to explore the games and the rest of the site. ↓</p>
           </div>
         </section>
@@ -1751,10 +1789,10 @@
 <div class="modal-overlay" id="rulesModal">
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="rulesCloseBtn" aria-label="Close">✕</button>
-    <h3>Rules — Eratosthenes</h3>
-    <p><strong>How to play:</strong> find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</p>
-    <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
-    <p><em>Happy prime hunting.</em></p>
+    <h3><span data-en="Rules" data-it="Regole">Rules</span> — Eratosthenes</h3>
+    <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level." data-it="trova i 5 numeri primi nascosti nella griglia 5×5, somma i loro valori, inserisci il totale. Risposta corretta = livello successivo.">find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</span></p>
+    <p><strong data-en="Fair play:" data-it="Correttezza:">Fair play:</strong> <span data-en="out of respect for all participants, please don't cheat." data-it="per rispetto verso tutti i partecipanti, non barare.">out of respect for all participants, please don't cheat.</span></p>
+    <p><em data-en="Happy prime hunting." data-it="Buona caccia ai numeri primi.">Happy prime hunting.</em></p>
     <img class="rules-modal-face-img" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_face.png" alt="">
   </div>
 </div>
@@ -1762,28 +1800,28 @@
 <div class="modal-overlay" id="reportModal">
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="reportCloseBtn" aria-label="Close">✕</button>
-    <h3>Report a bug</h3>
-    <p class="report-intro">Found something broken? Describe what happened below — a description is required even if you attach an image, which is optional but helps a lot.</p>
+    <h3 data-en="Report a bug" data-it="Segnala un bug">Report a bug</h3>
+    <p class="report-intro" data-en="Found something broken? Describe what happened below — a description is required even if you attach an image, which is optional but helps a lot." data-it="Hai trovato qualcosa che non funziona? Descrivi cosa è successo qui sotto — la descrizione è obbligatoria anche se alleghi un'immagine, che è facoltativa ma aiuta molto.">Found something broken? Describe what happened below — a description is required even if you attach an image, which is optional but helps a lot.</p>
     <div class="report-field">
-      <label class="report-field-label" for="reportDescription">Description</label>
-      <textarea class="report-textarea" id="reportDescription" maxlength="1000" placeholder="What happened, and on which page?"></textarea>
+      <label class="report-field-label" for="reportDescription" data-en="Description" data-it="Descrizione">Description</label>
+      <textarea class="report-textarea" id="reportDescription" maxlength="1000" placeholder="What happened, and on which page?" data-placeholder-en="What happened, and on which page?" data-placeholder-it="Cosa è successo, e in quale pagina?"></textarea>
     </div>
     <div class="report-field">
-      <label class="report-field-label" for="reportImageInput">Image (optional)</label>
+      <label class="report-field-label" for="reportImageInput" data-en="Image (optional)" data-it="Immagine (facoltativa)">Image (optional)</label>
       <div class="report-file-row">
-        <label class="report-file-trigger" for="reportImageInput">Choose file</label>
-        <span class="report-file-name" id="reportFileName">No file chosen</span>
+        <label class="report-file-trigger" for="reportImageInput" data-en="Choose file" data-it="Scegli file">Choose file</label>
+        <span class="report-file-name" id="reportFileName" data-en="No file chosen" data-it="Nessun file scelto">No file chosen</span>
         <input type="file" id="reportImageInput" accept="image/*" class="report-file-input">
       </div>
       <img class="report-image-preview" id="reportImagePreview" alt="">
     </div>
     <div class="modal-buttons">
-      <button type="button" class="modal-btn yes" id="reportSubmitBtn">Send</button>
-      <button type="button" class="modal-btn no" id="reportCancelBtn">Cancel</button>
+      <button type="button" class="modal-btn yes" id="reportSubmitBtn" data-en="Send" data-it="Invia">Send</button>
+      <button type="button" class="modal-btn no" id="reportCancelBtn" data-en="Cancel" data-it="Annulla">Cancel</button>
     </div>
     <p class="modal-note" id="reportNote"></p>
     <div class="modal-footnotes">
-      <p>If this is about a race time missing from the leaderboard, include the nickname you used — without it, the report can't be looked into.</p>
+      <p data-en="If this is about a race time missing from the leaderboard, include the nickname you used — without it, the report can't be looked into." data-it="Se riguarda un tempo di gara mancante dalla classifica, includi il nickname che hai usato — senza, la segnalazione non può essere presa in considerazione.">If this is about a race time missing from the leaderboard, include the nickname you used — without it, the report can't be looked into.</p>
     </div>
   </div>
 </div>
@@ -1864,15 +1902,18 @@
     {
       title: 'Eratosthenes',
       descTitle: 'Prime Numbers Game',
+      descTitleIT: 'Il gioco dei numeri primi',
       desc: 'Find the primes hidden in the grid and add them up. Simple rules, a growing memory challenge as the numbers climb higher and higher. Every level tests how many you can still remember.',
+      descIT: 'Trova i numeri primi nascosti nella griglia e sommali. Regole semplici, una sfida di memoria che cresce man mano che i numeri salgono sempre più in alto. Ogni livello mette alla prova quanti ne riesci ancora a ricordare.',
       mobileDesc: 'Find the primes hidden in the grid and add them up. Every level tests how many you can still remember.',
+      mobileDescIT: 'Trova i numeri primi nascosti nella griglia e sommali. Ogni livello mette alla prova quanti ne riesci ancora a ricordare.',
       hrefKey: 'erato_basic_last', hrefBase: 'eratostene_thesieve.html',
       preview: buildMiniSieve(),
       modes: [
-        { name: "Scholar's Glance", desc: '50 levels of total concentration.', details: 'No time limit · progress saved · podium once per device.', file: 'eratostene_scholarsglance.html', normalFile: 'eratostene_scholarsglance_normal.html', hrefKey: 'erato_scholarsglance_last', accent: 'red', requiresSieveFinish: true },
-        { name: 'Prime Rush', desc: '100 levels of pure racing against the clock, against other players.', details: 'No time limit · no progress saved · podium once per device.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true },
-        { name: 'The Sieve', desc: 'The full 200-level race, at your own pace, ranked on the main leaderboard.', details: 'Time-limited race · progress saved · podium once per device · anti-cheat active.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_last', accent: 'yellow' },
-        { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', details: 'No leaderboard · progress saved.', file: 'eratostene_infiniteprimes.html', normalFile: 'eratostene_infiniteprimes_normal.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true },
+        { name: "Scholar's Glance", desc: '50 levels of total concentration.', descIT: '50 livelli di pura concentrazione.', details: 'No time limit · progress saved · podium once per device.', detailsIT: 'Nessun limite di tempo · progressi salvati · podio una volta per dispositivo.', file: 'eratostene_scholarsglance.html', normalFile: 'eratostene_scholarsglance_normal.html', hrefKey: 'erato_scholarsglance_last', accent: 'red', requiresSieveFinish: true },
+        { name: 'Prime Rush', desc: '100 levels of pure racing against the clock, against other players.', descIT: '100 livelli di pura corsa contro il tempo, contro altri giocatori.', details: 'No time limit · no progress saved · podium once per device.', detailsIT: 'Nessun limite di tempo · progressi non salvati · podio una volta per dispositivo.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true },
+        { name: 'The Sieve', desc: 'The full 200-level race, at your own pace, ranked on the main leaderboard.', descIT: 'La gara completa di 200 livelli, al tuo ritmo, in classifica nella leaderboard principale.', details: 'Time-limited race · progress saved · podium once per device · anti-cheat active.', detailsIT: 'Gara a tempo limitato · progressi salvati · podio una volta per dispositivo · anti-cheat attivo.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_last', accent: 'yellow' },
+        { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', descIT: 'Livelli infiniti, nessuna classifica, solo tu e i numeri.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'eratostene_infiniteprimes.html', normalFile: 'eratostene_infiniteprimes_normal.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true },
       ]
     },
   ];
@@ -2032,6 +2073,12 @@
       .then(r => r.json())
       .then(data => {
         cachedPodium = data.podium || [];
+        // il Worker calcola lui la scadenza (20 giorni da oggi finché nessuno ha ancora
+        // vinto, congelata per sempre al primo vincitore vero): sostituisce il valore
+        // scritto a mano appena arriva, games[0].raceEnd resta come ripiego iniziale
+        // per il brevissimo istante prima che questa fetch risponda
+        if (data.raceEnd && data.raceEnd.label) games[0].raceEnd = data.raceEnd.label;
+        if (data.raceEnd && data.raceEnd.labelIT) games[0].raceEndIT = data.raceEnd.labelIT;
         render();
         refreshEratoLeaderboard();
       })
@@ -2171,18 +2218,18 @@
   function eratoContentHtml(g){
     return `
       <div class="erato-title-row">
-        <div class="erato-gamex-label">GAME 1</div>
+        <div class="erato-gamex-label" data-en="GAME 1" data-it="GIOCO 1">GAME 1</div>
         <h2 class="game-title-centered">${g.title}</h2>
       </div>
       <div class="play-preview-block">
         <div class="play-now-split">
-          <button type="button" class="cta-inline cta-split" onclick="openModeModal(0, false)">Play now<span class="cta-split-sub">Normal (locked)</span></button>
-          <button type="button" class="cta-inline cta-split" onclick="openModeModal(0, true)">Play now<span class="cta-split-sub">All unlocked</span></button>
+          <button type="button" class="cta-inline cta-split" onclick="openModeModal(0, false)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="cta-split-sub">Normal (locked)</span></button>
+          <button type="button" class="cta-inline cta-split" onclick="openModeModal(0, true)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="cta-split-sub">All unlocked</span></button>
         </div>
         <div class="preview-row">
           ${g.preview || ''}
           <div class="preview-text-col">
-            <p class="desc"><span class="desc-title">${g.descTitle}</span>${g.desc}</p>
+            <p class="desc"><span class="desc-title" data-en="${g.descTitle}" data-it="${g.descTitleIT}">${g.descTitle}</span><span data-en="${g.desc}" data-it="${g.descIT}">${g.desc}</span></p>
           </div>
         </div>
       </div>`;
@@ -2192,7 +2239,7 @@
     return `
       <div class="lb-half">
         <h2>The Sieve</h2>
-        <p class="race-end-inline">The race ends on ${g.raceEnd}</p>
+        <p class="race-end-inline">${currentLang() === 'it' ? `La gara termina il ${g.raceEndIT || g.raceEnd}` : `The race ends on ${g.raceEnd}`}</p>
         <div class="lb-section">
           ${podiumRowsHtml(cachedPodium)}
         </div>
@@ -2247,8 +2294,8 @@
         <div class="mobile-shifted-content">
           <h2 class="mobile-game-title">COMING SOON</h2>
           <div class="mobile-game-header">
-            <button type="button" class="mobile-game-number" onclick="openRulesModal()">Game ${number} - Rules</button>
-            <p class="mobile-tap-hint">Tap Game ${number} to read the rules.</p>
+            <button type="button" class="mobile-game-number" onclick="openRulesModal()">${currentLang() === 'it' ? `Gioco ${number} - Regole` : `Game ${number} - Rules`}</button>
+            <p class="mobile-tap-hint">${currentLang() === 'it' ? `Tocca Gioco ${number} per leggere le regole.` : `Tap Game ${number} to read the rules.`}</p>
           </div>
           <p class="mobile-locked-desc">${g.unlockLabel}</p>
           ${mobileNavRowHtml()}
@@ -2259,22 +2306,22 @@
       <div class="mobile-shifted-content">
         <h2 class="mobile-game-title">${g.title}</h2>
         <div class="mobile-game-header">
-          <button type="button" class="mobile-game-number" onclick="openRulesModal()">Game ${number} - Rules</button>
-          <p class="mobile-tap-hint">Tap Game ${number} to read the rules.</p>
+          <button type="button" class="mobile-game-number" onclick="openRulesModal()">${currentLang() === 'it' ? `Gioco ${number} - Regole` : `Game ${number} - Rules`}</button>
+          <p class="mobile-tap-hint">${currentLang() === 'it' ? `Tocca Gioco ${number} per leggere le regole.` : `Tap Game ${number} to read the rules.`}</p>
         </div>
         <div class="mobile-play-preview-block">
           <div class="mobile-play-split">
-            <button type="button" class="mobile-play-btn mobile-play-split-btn" onclick="openModeModal(0, false)">Play now<span class="mobile-play-split-sub">Normal (locked)</span></button>
-            <button type="button" class="mobile-play-btn mobile-play-split-btn" onclick="openModeModal(0, true)">Play now<span class="mobile-play-split-sub">All unlocked</span></button>
+            <button type="button" class="mobile-play-btn mobile-play-split-btn" onclick="openModeModal(0, false)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="mobile-play-split-sub">Normal (locked)</span></button>
+            <button type="button" class="mobile-play-btn mobile-play-split-btn" onclick="openModeModal(0, true)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="mobile-play-split-sub">All unlocked</span></button>
           </div>
           <div class="mobile-preview-block">
             ${g.preview || ''}
             <div class="mobile-desc-block">
               <span class="desc-title">${g.descTitle}</span>
-              <p class="mobile-desc">${g.mobileDesc || g.desc}</p>
+              <p class="mobile-desc" data-en="${g.mobileDesc || g.desc}" data-it="${g.mobileDescIT || g.descIT}">${g.mobileDesc || g.desc}</p>
             </div>
           </div>
-          <p class="mobile-device-note-full">Progress is saved per device — switching devices restarts from level 1.</p>
+          <p class="mobile-device-note-full" data-en="Progress is saved per device — switching devices restarts from level 1." data-it="I progressi sono salvati per dispositivo — cambiare dispositivo fa ripartire dal livello 1.">Progress is saved per device — switching devices restarts from level 1.</p>
         </div>
         ${mobileNavRowHtml()}
       </div>`;
@@ -2293,7 +2340,7 @@
         ${navAndDivider}
         <div class="mobile-lb-block">
           <h2>The Sieve</h2>
-          <p class="race-end-inline">The race ends on ${g.raceEnd}</p>
+          <p class="race-end-inline">${currentLang() === 'it' ? `La gara termina il ${g.raceEndIT || g.raceEnd}` : `The race ends on ${g.raceEnd}`}</p>
           <div class="lb-section">
             ${podiumRowsHtml(cachedPodium)}
           </div>
@@ -2328,6 +2375,8 @@
     grid.innerHTML = gameCardHtml(g, number);
     positionIndexSoundBtn();
     positionReportBtn();
+    positionLangSwitch();
+    applyLanguage();
     centerEratoRightEdge();
     if (gameState(g) === 'open'){
       // la card vera (l'overlay) vive fuori dalla griglia: se era stata nascosta
@@ -2483,6 +2532,7 @@
   // ============================================================
   let indexSoundBtnMovedToBody = false;
   let indexReportBtnMovedToBody = false;
+  let langSwitchMovedToBody = false;
   // sposta l'intera griglia dei 2 giochi in modo che il lato destro della card di
   // Eratostene (il confine tra le 2 card) cada esattamente al centro reale della finestra,
   // non solo al centro della sua colonna. Misurato dal vero, non un valore fisso.
@@ -2613,6 +2663,7 @@
       revealed = true;
       positionIndexSoundBtn(); // ricalcolo qui: ora i font sono DAVVERO pronti
       positionReportBtn();
+      positionLangSwitch();
       const geometry = computeCardGeometry(g, number);
       centerNavColumns(geometry.top, geometry.height); // stessa logica: calcolo PRIMA di mostrare, mai dopo
       document.querySelectorAll('.subtitle, .nav-column').forEach(el => {
@@ -2622,6 +2673,8 @@
       if (soundBtn) soundBtn.style.opacity = '1';
       const reportBtn = document.getElementById('indexReportBtn');
       if (reportBtn) reportBtn.style.opacity = '1';
+      const langSwitch = document.getElementById('langSwitch');
+      if (langSwitch) langSwitch.style.opacity = '1';
     }
 
     function playCardSequence(){
@@ -2832,11 +2885,11 @@
       rulesBtn.dataset.hoverBound = 'true';
       const rulesPreviewHtml = `
         <div class="erato-rules-preview">
-          <h3>Rules</h3>
-          <p><strong>How to play:</strong> find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</p>
-          <p><strong>Fair play:</strong> out of respect for all participants, please don't cheat.</p>
-          <p>Happy prime hunting.</p>
-          <p class="device-note-old">Progress is saved per device — switching devices restarts from level 1.</p>
+          <h3 data-en="Rules" data-it="Regole">Rules</h3>
+          <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level." data-it="trova i 5 numeri primi nascosti nella griglia 5×5, somma i loro valori, inserisci il totale. Risposta corretta = livello successivo.">find the 5 hidden primes in the 5×5 grid, add up their values, enter the total. Correct answer = next level.</span></p>
+          <p><strong data-en="Fair play:" data-it="Correttezza:">Fair play:</strong> <span data-en="out of respect for all participants, please don't cheat." data-it="per rispetto verso tutti i partecipanti, non barare.">out of respect for all participants, please don't cheat.</span></p>
+          <p data-en="Happy prime hunting." data-it="Buona caccia ai numeri primi.">Happy prime hunting.</p>
+          <p class="device-note-old" data-en="Progress is saved per device — switching devices restarts from level 1." data-it="I progressi sono salvati per dispositivo — cambiare dispositivo fa ripartire dal livello 1.">Progress is saved per device — switching devices restarts from level 1.</p>
         </div>`;
       // stato esplicito, mai dedotto leggendo l'HTML attuale: leggere lbHalf.innerHTML
       // per "indovinare" cosa c'è dentro era la causa del blocco — con hover ripetuti
@@ -2855,6 +2908,7 @@
         lbHalf.style.opacity = '0';
         swapTimer = setTimeout(() => {
           lbHalf.innerHTML = rulesPreviewHtml;
+          applyLanguage();
           // l'allineamento a destra (.erato-rules-preview è tra i selettori della
           // regola CSS condivisa) è statico nel CSS, non serve calcolarlo
           void lbHalf.offsetWidth; // forzo il reflow prima di far ripartire la dissolvenza
@@ -2966,7 +3020,7 @@
 
     const overlay = document.createElement('div');
     overlay.innerHTML = `
-      <div class="erato-gamex-tag" id="eratoRulesBtn">RULES</div>
+      <div class="erato-gamex-tag" id="eratoRulesBtn" data-en="RULES" data-it="REGOLE">RULES</div>
       <div class="erato-content-half" style="width:${narrowWidth}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
         ${eratoContentHtml(g)}
       </div>
@@ -2994,6 +3048,7 @@
       pointer-events: none;
     `;
     document.body.appendChild(overlay);
+    applyLanguage(); // subito, mentre è ancora invisibile (opacity:0): niente più lampo di inglese
     eratoOverlayEl = overlay;
     loopMiniSievePreview(overlay);
 
@@ -3107,6 +3162,71 @@
     btn.style.top = (titleCenterY - diameter / 2) + 'px';
   }
   window.addEventListener('resize', positionIndexSoundBtn);
+
+  // switch lingua: stessa altezza del pulsante volume, a distanza fissa alla sua destra
+  // (non attaccato) — solo desktop per ora, come il pulsante volume stesso
+  function positionLangSwitch(){
+    if (window.innerWidth <= 900) return;
+    const el = document.getElementById('langSwitch');
+    const soundBtn = document.getElementById('indexSoundBtn');
+    if (!el || !soundBtn) return;
+
+    if (!langSwitchMovedToBody){
+      document.body.appendChild(el);
+      langSwitchMovedToBody = true;
+    }
+
+    const soundRect = soundBtn.getBoundingClientRect();
+    const diameter = 55; // stessa dimensione del pulsante volume
+    const gap = 22; // "a debita distanza", non attaccato
+    el.style.height = diameter + 'px';
+    el.style.left = (soundRect.left + window.scrollX + diameter + gap) + 'px';
+    el.style.top = (soundRect.top + window.scrollY) + 'px';
+  }
+  window.addEventListener('resize', positionLangSwitch);
+
+  // ============================================================
+  // SEZIONE: LINGUA — switch EN/IT, solo su index, solo desktop per ora
+  // ============================================================
+  function currentLang(){
+    return localStorage.getItem('mathemory_lang') || 'en';
+  }
+  // scorciatoia per i messaggi di stato impostati "al volo" via JS (non testo
+  // statico nel DOM, quindi il meccanismo data-en/data-it qui non si applica)
+  function t(en, it){
+    return currentLang() === 'it' ? it : en;
+  }
+  // applica la lingua corrente a tutti gli elementi già nel DOM con entrambe le
+  // varianti pronte (data-en/data-it) — sia quelli statici sia quelli generati via
+  // JS una tantum (GAME 1, RULES, Play now: vivono nella card vera, mai ricostruita
+  // da render(), quindi una volta creati restano lì e vanno solo "ridipinti" qui
+  function applyLanguage(){
+    const lang = currentLang();
+    document.querySelectorAll('[data-en][data-it]').forEach(el => {
+      el.textContent = lang === 'it' ? el.dataset.it : el.dataset.en;
+    });
+    document.querySelectorAll('[data-placeholder-en][data-placeholder-it]').forEach(el => {
+      el.placeholder = lang === 'it' ? el.dataset.placeholderIt : el.dataset.placeholderEn;
+    });
+    document.querySelectorAll('.lang-switch-btn').forEach(btn => {
+      btn.classList.toggle('lang-active', btn.dataset.lang === lang);
+    });
+  }
+  function setLang(lang){
+    if (lang !== 'it' && lang !== 'en') return;
+    localStorage.setItem('mathemory_lang', lang);
+    applyLanguage();
+    // la frase di fine gara vive dentro alla classifica (rigenerata qui, non da
+    // render() che non la tocca) e legge già currentLang() al suo interno
+    if (typeof refreshEratoLeaderboard === 'function') refreshEratoLeaderboard();
+  }
+  document.querySelectorAll('.lang-switch-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      playSound('tap');
+      setLang(btn.dataset.lang);
+    });
+  });
+  applyLanguage(); // stato iniziale: il contenuto è comunque invisibile finché non si supera il gate
 
   // stesso bordo sinistro del pulsante volume, allineato all'ultima riga del
   // sottotitolo: solo desktop, nessuna versione mobile per ora
@@ -3345,6 +3465,7 @@
   function openModeModal(gameIndex, forceUnlockAll){
     playSound('tap');
     const g = games[gameIndex];
+    const isIT = currentLang() === 'it';
     const sieveFinished = forceUnlockAll || localStorage.getItem('erato_basic_finished_once') === 'true';
     modeOptionsEl.innerHTML = g.modes.map(m => {
       const isLocked = (m.requiresSieveFinish && !sieveFinished) || m.comingSoon;
@@ -3354,9 +3475,13 @@
       // i casi, quindi finire una modalità da un lato sblocca anche l'altro.
       const fileToUse = forceUnlockAll ? m.file : m.normalFile;
       const href = resumeHref(m.hrefKey, fileToUse);
+      const desc = isIT && m.descIT ? m.descIT : m.desc;
+      const details = isIT && m.detailsIT ? m.detailsIT : m.details;
 
       if (isLocked){
-        const lockMessage = m.comingSoon ? m.details : '🔒 Unlocks after finishing The Sieve.';
+        const lockMessage = m.comingSoon
+          ? details
+          : (isIT ? '🔒 Si sblocca finendo The Sieve.' : '🔒 Unlocks after finishing The Sieve.');
         return `
           <div class="mode-option mode-option-locked" style="--mode-color: var(--${m.accent})">
             <div class="mode-option-text">
@@ -3370,8 +3495,8 @@
         <a class="mode-option" href="${href}" onclick="playSound('tap')" style="--mode-color: var(--${m.accent})">
           <div class="mode-option-text">
             <h4>${m.name}</h4>
-            <p>${m.desc}</p>
-            <p class="mode-option-details">${m.details}</p>
+            <p>${desc}</p>
+            <p class="mode-option-details">${details}</p>
           </div>
         </a>`;
     }).join('');
@@ -3402,10 +3527,10 @@
     reportImageBlob = null;
     reportImagePreview.src = '';
     reportImagePreview.classList.remove('visible');
-    reportFileName.textContent = 'No file chosen';
+    reportFileName.textContent = currentLang() === 'it' ? reportFileName.dataset.it : reportFileName.dataset.en;
     reportNote.textContent = '';
     reportSubmitBtn.disabled = false;
-    reportSubmitBtn.textContent = 'Send';
+    reportSubmitBtn.textContent = currentLang() === 'it' ? reportSubmitBtn.dataset.it : reportSubmitBtn.dataset.en;
   }
 
   function openReportModal(){
@@ -3460,20 +3585,20 @@
     const file = reportImageInput.files[0];
     if (!file) return;
     if (!file.type.startsWith('image/')){
-      reportNote.textContent = 'Please select an image file.';
+      reportNote.textContent = t('Please select an image file.', 'Seleziona un file immagine.');
       reportImageInput.value = '';
-      reportFileName.textContent = 'No file chosen';
+      reportFileName.textContent = currentLang() === 'it' ? reportFileName.dataset.it : reportFileName.dataset.en;
       return;
     }
     reportFileName.textContent = file.name;
-    reportNote.textContent = 'Processing image...';
+    reportNote.textContent = t('Processing image...', 'Elaborazione immagine...');
     try {
       reportImageBlob = await compressReportImage(file);
       reportImagePreview.src = URL.createObjectURL(reportImageBlob);
       reportImagePreview.classList.add('visible');
       reportNote.textContent = '';
     } catch (e){
-      reportNote.textContent = 'Could not read that image, try another one.';
+      reportNote.textContent = t('Could not read that image, try another one.', 'Non è stato possibile leggere quell\'immagine, provane un\'altra.');
       reportImageBlob = null;
     }
   });
@@ -3481,11 +3606,11 @@
   reportSubmitBtn.addEventListener('click', async () => {
     const description = reportDescriptionEl.value.trim();
     if (!description){
-      reportNote.textContent = 'Please describe the issue first.';
+      reportNote.textContent = t('Please describe the issue first.', 'Descrivi prima il problema.');
       return;
     }
     reportSubmitBtn.disabled = true;
-    reportSubmitBtn.textContent = 'Sending...';
+    reportSubmitBtn.textContent = t('Sending...', 'Invio in corso...');
     reportNote.textContent = '';
 
     const formData = new FormData();
@@ -3500,12 +3625,12 @@
         body: formData
       });
       if (!res.ok) throw new Error('bad status ' + res.status);
-      reportNote.textContent = 'Thanks, report received.';
+      reportNote.textContent = t('Thanks, report received.', 'Grazie, segnalazione ricevuta.');
       setTimeout(closeReportModal, 1200);
     } catch (e){
-      reportNote.textContent = 'Something went wrong, please try again later.';
+      reportNote.textContent = t('Something went wrong, please try again later.', 'Qualcosa è andato storto, riprova più tardi.');
       reportSubmitBtn.disabled = false;
-      reportSubmitBtn.textContent = 'Send';
+      reportSubmitBtn.textContent = currentLang() === 'it' ? reportSubmitBtn.dataset.it : reportSubmitBtn.dataset.en;
     }
   });
 
