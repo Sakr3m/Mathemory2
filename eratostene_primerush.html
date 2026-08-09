@@ -1160,10 +1160,10 @@
 
   // --- titoli di rango, a salire per livello raggiunto ---
   const RANKS = [
-    { level: 150, title: 'Master of the Sieve', phrase: "You've mastered the sieve itself." },
-    { level: 75,  title: 'Geometer of Primes', phrase: 'Few see the structure beneath the primes as clearly as you.' },
-    { level: 25,  title: 'Pattern Seeker', phrase: 'The patterns are starting to reveal themselves.' },
-    { level: 10,  title: 'Apprentice of Cyrene', phrase: 'A student of Cyrene, taking your first true steps.' },
+    { level: 150, title: 'Master of the Sieve', titleIT: 'Maestro del Setaccio', phrase: "You've mastered the sieve itself.", phraseIT: 'Hai padroneggiato il setaccio stesso.' },
+    { level: 75,  title: 'Geometer of Primes', titleIT: 'Geometra dei Primi', phrase: 'Few see the structure beneath the primes as clearly as you.', phraseIT: 'Pochi vedono la struttura dei primi con la tua stessa chiarezza.' },
+    { level: 25,  title: 'Pattern Seeker', titleIT: 'Cercatore di Schemi', phrase: 'The patterns are starting to reveal themselves.', phraseIT: 'Gli schemi iniziano a rivelarsi.' },
+    { level: 10,  title: 'Apprentice of Cyrene', titleIT: 'Apprendista di Cirene', phrase: 'A student of Cyrene, taking your first true steps.', phraseIT: 'Uno studente di Cirene, ai tuoi primi veri passi.' },
   ];
   function rankForLevel(lvl){
     return RANKS.find(r => lvl >= r.level) || null;
@@ -1272,14 +1272,16 @@
 
     const h1El = document.getElementById('levelTitle');
     h1El.className = 'lv-digits-' + String(levelNum).length;
-    const levelWord = currentLang() === 'it' ? 'Livello' : 'Level';
+    const isIT = currentLang() === 'it';
+    const levelWord = isIT ? 'Livello' : 'Level';
+    const eratoWord = isIT ? 'Eratostene' : 'Eratosthenes';
     h1El.innerHTML =
-      `Eratosthenes <span class="accent">·</span> Prime Rush <span class="accent">·</span> ${levelWord} ${levelNum}`;
+      `${eratoWord} <span class="accent">·</span> Prime Rush <span class="accent">·</span> ${levelWord} ${levelNum}`;
 
     const rankCalloutEl = document.getElementById('rankCallout');
     rankCalloutEl.classList.toggle('no-rank', !rankInfo);
     rankCalloutEl.innerHTML = rankInfo
-      ? `<span class="rank-badge">${rankInfo.title}</span><span class="rank-phrase">${rankInfo.phrase}</span>`
+      ? `<span class="rank-badge">${isIT ? rankInfo.titleIT : rankInfo.title}</span><span class="rank-phrase">${isIT ? rankInfo.phraseIT : rankInfo.phrase}</span>`
       : `<span class="rank-badge">Placeholder rank</span><span class="rank-phrase">Placeholder phrase text goes here.</span>`;
 
     document.getElementById('levelLayout').innerHTML = `
