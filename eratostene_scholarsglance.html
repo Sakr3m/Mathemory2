@@ -1452,9 +1452,11 @@
 
     const h1El = document.getElementById('levelTitle');
     h1El.className = 'lv-digits-' + String(levelNum).length;
-    const levelWord = currentLang() === 'it' ? 'Livello' : 'Level';
+    const isIT = currentLang() === 'it';
+    const levelWord = isIT ? 'Livello' : 'Level';
+    const eratoWord = isIT ? 'Eratostene' : 'Eratosthenes';
     h1El.innerHTML =
-      `Eratosthenes <span class="accent">·</span> Scholar's Glance <span class="accent">·</span> ${levelWord} ${levelNum}`;
+      `${eratoWord} <span class="accent">·</span> Scholar's Glance <span class="accent">·</span> ${levelWord} ${levelNum}`;
 
     document.getElementById('levelLayout').innerHTML = `
       <div class="grid" id="gridEl"></div>
