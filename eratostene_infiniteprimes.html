@@ -833,7 +833,7 @@
       <h1 id="levelTitle">Eratosthenes <span class="accent">·</span> ∞ Primes</h1>
       <a class="mobile-icon-btn" id="homeBtn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
     </div>
-    <p class="instructions">Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total.</p>
+    <p class="instructions" data-en="Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total." data-it="Tocca ogni numero primo che riesci a trovare. Cadranno nella casella laterale per aiutarti a sommarli. Poi scrivi il totale.">Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total.</p>
     <div class="rank-callout no-rank"><span class="rank-badge">Placeholder rank</span><span class="rank-phrase">Placeholder phrase text goes here.</span></div>
     <div class="level-layout" id="levelLayout">
       <p style="color:var(--ink-dim); font-family:'Space Mono', monospace; font-size:0.85rem;">Loading level…</p>
@@ -1204,6 +1204,22 @@
     `;
   }
 
+  // --- lingua: nessuno switch qui (vive solo su index.html), ma legge la stessa
+  // preferenza salvata per tradurre le poche scritte previste su questa pagina ---
+  function currentLang(){
+    return localStorage.getItem('mathemory_lang') || 'en';
+  }
+  function applyLanguage(){
+    const lang = currentLang();
+    document.querySelectorAll('[data-en][data-it]').forEach(el => {
+      el.textContent = lang === 'it' ? el.dataset.it : el.dataset.en;
+    });
+    document.querySelectorAll('[data-placeholder-en][data-placeholder-it]').forEach(el => {
+      el.placeholder = lang === 'it' ? el.dataset.placeholderIt : el.dataset.placeholderEn;
+    });
+  }
+  applyLanguage();
+
   if (levelNum < 1){
     showError(`Level ${levelNum} doesn't exist.`);
   } else {
@@ -1233,7 +1249,7 @@
           <div class="answer-row">
             <div class="answer-input-wrap">
               <span class="answer-bg-hint">${correctSumHint}</span>
-              <input type="number" id="answerInput" placeholder="Sum of the primes" inputmode="numeric">
+              <input type="number" id="answerInput" placeholder="Sum of the primes" inputmode="numeric" data-placeholder-en="Sum of the primes" data-placeholder-it="Somma dei primi">
             </div>
             <button type="button" id="devSkipBtn" class="dev-skip-btn" aria-label="Dev skip">»</button>
             <button class="check" id="checkBtn"><span class="check-label">${checkLabelHtml}</span></button>
@@ -1242,6 +1258,7 @@
         </div>
       </div>
     `;
+    applyLanguage();
 
     const gridEl = document.getElementById('gridEl');
     const pickedRow = document.getElementById('pickedRow');
