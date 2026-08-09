@@ -1830,7 +1830,7 @@
               <a class="mobile-kofi-btn" href="https://ko-fi.com/the_forgotten_shelf" target="_blank" rel="noopener" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></a>
             </div>
             <button type="button" class="mobile-report-btn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
-            <p class="scroll-hint">↓ Scroll down to explore the games and the rest of the site. ↓</p>
+            <p class="scroll-hint" data-en="↓ Scroll down to explore the games and the rest of the site. ↓" data-it="↓ Scorri giù per esplorare i giochi e il resto del sito. ↓">↓ Scroll down to explore the games and the rest of the site. ↓</p>
           </div>
         </section>
 
@@ -1862,7 +1862,7 @@
 <div class="modal-overlay" id="rulesModal">
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="rulesCloseBtn" aria-label="Close">✕</button>
-    <h3><span data-en="Rules" data-it="Regole">Rules</span> — Eratosthenes</h3>
+    <h3><span data-en="Rules" data-it="Regole">Rules</span> <span class="accent">·</span> <span data-en="Eratosthenes" data-it="Eratostene">Eratosthenes</span></h3>
     <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time." data-it="trova i 5 numeri primi nascosti nella griglia 5×5, somma i loro valori e inserisci il totale nella casella qui sotto. Una risposta corretta ti porta subito al livello successivo, quindi gioca con calma: ogni livello resta aperto per tutto il tempo che ti serve, senza alcuna penalità.">find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time.</span></p>
     <p><em data-en="Happy prime hunting." data-it="Buona caccia ai numeri primi.">Happy prime hunting.</em></p>
     <img class="rules-modal-face-img" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_face.png" alt="">
@@ -1973,10 +1973,11 @@
   const games = [
     {
       title: 'Eratosthenes',
+      titleIT: 'Eratostene',
       descTitle: 'Prime Numbers Game',
       descTitleIT: 'Il gioco dei numeri primi',
-      desc: 'Find the primes hidden in the grid and add them up. Simple rules, a growing memory challenge as the numbers climb higher and higher. Every level tests how many you can still remember.',
-      descIT: 'Trova i numeri primi nascosti nella griglia e sommali. Regole semplici, una sfida di memoria che cresce man mano che i numeri salgono sempre più in alto. Ogni livello mette alla prova quanti ne riesci ancora a ricordare.',
+      desc: 'Find the primes hidden in the grid and add them up. A growing memory challenge as the numbers climb higher and higher. Every level tests how many you can still remember.',
+      descIT: 'Trova i numeri primi nascosti nella griglia e sommali. Una sfida di memoria che cresce man mano che i numeri salgono sempre più in alto. Ogni livello mette alla prova quanti ne riesci ancora a ricordare.',
       mobileDesc: 'Find the primes hidden in the grid and add them up. Every level tests how many you can still remember.',
       mobileDescIT: 'Trova i numeri primi nascosti nella griglia e sommali. Ogni livello mette alla prova quanti ne riesci ancora a ricordare.',
       hrefKey: 'erato_basic_last', hrefBase: 'eratostene_thesieve.html',
@@ -2291,7 +2292,7 @@
     return `
       <div class="erato-title-row">
         <div class="erato-gamex-label" data-en="GAME 1" data-it="GIOCO 1">GAME 1</div>
-        <h2 class="game-title-centered">${g.title}</h2>
+        <h2 class="game-title-centered" data-en="${g.title}" data-it="${g.titleIT}">${g.title}</h2>
       </div>
       <div class="play-preview-block">
         <div class="play-now-split">
@@ -2376,7 +2377,7 @@
     const href = resumeHref(g.hrefKey, g.hrefBase);
     return `
       <div class="mobile-shifted-content">
-        <h2 class="mobile-game-title">${g.title}</h2>
+        <h2 class="mobile-game-title" data-en="${g.title}" data-it="${g.titleIT}">${g.title}</h2>
         <div class="mobile-game-header">
           <button type="button" class="mobile-game-number" onclick="openRulesModal()">${currentLang() === 'it' ? `Gioco ${number} - Regole` : `Game ${number} - Rules`}</button>
           <p class="mobile-tap-hint">${currentLang() === 'it' ? `Tocca Gioco ${number} per leggere le regole.` : `Tap Game ${number} to read the rules.`}</p>
@@ -3321,7 +3322,7 @@
     const reportBtn = document.querySelector('.mobile-report-btn');
     if (!row || !reportBtn) return;
     const width = reportBtn.getBoundingClientRect().width;
-    if (width > 0) row.style.setProperty('--mobile-audio-lang-gap', (width / 2) + 'px');
+    if (width > 0) row.style.setProperty('--mobile-audio-lang-gap', (width / 4) + 'px');
   }
   window.addEventListener('resize', syncMobileAudioLangGap);
   function setLang(lang){
