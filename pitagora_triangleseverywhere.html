@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pythagoras — Triangles Everywhere</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1E2C23;
+    --bg-panel: #2E4636;
+    --ink: #F3EFE4;
+    --ink-dim: #9FB0A2;
+    --yellow: #E8C468;
+    --red: #C1554B;
+    --teal: #5FA8A0;
+    --rule: rgba(243,239,228,0.14);
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+  }
+  body{
+    background-image:
+      radial-gradient(circle at 6% 96%, rgba(243,239,228,0.09), transparent 38%),
+      radial-gradient(circle at 95% 4%, rgba(243,239,228,0.09), transparent 38%);
+  }
+  .wrap{
+    max-width: min(1127px, calc(100% - 170px));
+    margin: 0 auto;
+    padding: calc(6vh + 32.7px) 1.5rem 6vh;
+  }
+  .title-icon-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 1rem;
+    margin-bottom: 0.6rem;
+  }
+  .icon-btn{
+    flex-shrink:0;
+    width: 55px; height:55px;
+    display:flex; align-items:center; justify-content:center;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    background: var(--bg-panel);
+    color: var(--ink-dim);
+    text-decoration:none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, box-shadow 0.2s ease;
+  }
+  .icon-btn:hover{
+    color: var(--yellow);
+    border-color: rgba(232,196,104,0.75);
+    background: rgba(232,196,104,0.22);
+    box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
+  }
+  .icon-btn svg{ width: 26.5px; height:26.5px; }
+  h1{
+    font-family:'Kalam', cursive;
+    font-size: 2.6rem;
+    margin: 0;
+    text-align:center;
+  }
+  h1 .accent{ color: var(--yellow); }
+  .instructions{
+    color: var(--ink-dim);
+    font-size: 1.05rem;
+    line-height:1.5;
+    margin: 0 auto 1.8rem;
+    text-align: center;
+    max-width: 640px;
+  }
+
+  .level-layout{
+    display:grid;
+    grid-template-columns: 529px 1fr;
+    gap: 2.3rem;
+    align-items:stretch;
+  }
+  @media (max-width: 1100px){
+    .level-layout{ grid-template-columns: 1fr; }
+  }
+
+  .board-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1rem;
+    position: relative;
+  }
+  .board-card svg{ display:block; width:100%; height:auto; touch-action:none; }
+
+  .level-progress{
+    margin: 1rem 0 0;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+  }
+  .level-progress-track{
+    margin-top: 0.4rem;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bg);
+    overflow:hidden;
+  }
+  .level-progress-fill{
+    height:100%;
+    background: var(--yellow);
+  }
+
+  .side-panel{ display:flex; flex-direction:column; gap: 1.2rem; }
+  .side-panel-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.3rem 1.4rem;
+  }
+  .side-panel-card h2{
+    font-family:'Kalam', cursive;
+    font-size: 1.4rem;
+    margin: 0 0 0.15rem;
+  }
+  .level-sub{
+    font-family:'Space Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 0 0 1.1rem;
+  }
+
+  .measure-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-family:'Space Mono', monospace;
+    font-size: 0.92rem;
+  }
+  .measure-row:last-of-type{ border-bottom:none; }
+  .measure-label{ color: var(--ink-dim); }
+  .measure-target{ font-weight:700; color:var(--ink); }
+  .measure-target.unknown{ color: var(--yellow); }
+  .measure-live{ font-size:0.78rem; color: var(--ink-dim); min-width: 3.4rem; text-align:right; }
+  .measure-live.ok{ color: var(--teal); font-weight:700; }
+
+  .precision-block{ margin: 1.1rem 0 0.2rem; }
+  .precision-label{
+    display:flex; justify-content:space-between;
+    font-family:'Space Mono', monospace;
+    font-size: 0.64rem; letter-spacing:0.06em; text-transform:uppercase;
+    color: var(--ink-dim); margin-bottom:0.35rem;
+  }
+  .precision-track{
+    height: 8px;
+    border-radius: 4px;
+    background: var(--bg);
+    overflow:hidden;
+  }
+  .precision-fill{
+    height:100%;
+    width:0%;
+    background: var(--red);
+    transition: width 0.15s ease, background 0.15s ease;
+  }
+
+  .check-btn{
+    width:100%;
+    margin-top: 1rem;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    background: var(--yellow);
+    color: var(--bg);
+    border:none;
+    border-radius: 6px;
+    padding: 0.92rem 1.61rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+  }
+  .check-btn:hover{ background:#f0d488; }
+  .check-btn:disabled{
+    background: var(--bg);
+    color: var(--ink-dim);
+    cursor: not-allowed;
+    border: 1px solid var(--rule);
+  }
+
+  .feedback{
+    margin-top: 0.8rem;
+    font-family:'Space Mono', monospace;
+    font-size: 0.8rem;
+    line-height:1.4;
+    min-height: 2.4em;
+  }
+  .feedback.good{ color: var(--teal); }
+  .feedback.bad{ color: var(--red); }
+
+  .next-btn{
+    display:none;
+    width:100%;
+    margin-top: 0.6rem;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    border: 1px solid var(--teal);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--teal);
+    padding: 0.75rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+  }
+  .next-btn.visible{ display:block; }
+  .next-btn:hover{ background: rgba(95,168,160,0.14); }
+
+  .final-card{
+    display:none;
+    text-align:center;
+    padding: 4rem 1.5rem;
+  }
+  .final-card.visible{ display:block; }
+  .final-card h2{
+    font-family:'Kalam', cursive;
+    font-size: 2.2rem;
+    margin: 0 0 0.6rem;
+  }
+  .final-card p{ color: var(--ink-dim); }
+  .restart-btn{
+    margin-top: 1.4rem;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    padding: 0.8rem 1.8rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--bg-panel);
+    color: var(--ink);
+    font-size: 0.8rem;
+    letter-spacing:0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+  }
+  .restart-btn:hover{ background: rgba(232,196,104,0.14); border-color: rgba(232,196,104,0.5); }
+
+  .jump-row{
+    display:flex; gap:0.5rem; margin-top:0.9rem;
+    font-family:'Space Mono', monospace; font-size:0.72rem;
+  }
+  .jump-row input{
+    width: 4.5rem;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--ink);
+    font-family:'Space Mono', monospace;
+    font-size: 0.78rem;
+    padding: 0.4rem 0.5rem;
+  }
+  .jump-row button{
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--ink-dim);
+    font-family:'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.7rem;
+    cursor:pointer;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+  }
+  .jump-row button:hover{ color: var(--ink); border-color: var(--rule); }
+
+  /* ============================================================
+     MOBILE — sotto i 900px, stesso breakpoint usato in tutto il resto
+     del sito. Il meccanismo di trascinamento (eventi pointer) funziona
+     già identico; qui si adattano solo dimensioni, spaziature e le due
+     superfici di presa (che su schermo piccolo erano troppo piccole
+     per un dito) ============================================================ */
+  @media (max-width: 900px){
+    .wrap{
+      max-width: 100%;
+      padding: calc(4vh + 20px) 1rem 5vh;
+    }
+    .title-icon-row{ gap: 0.6rem; margin-bottom: 0.5rem; }
+    .icon-btn{ width: 46px; height: 46px; }
+    .icon-btn svg{ width: 22px; height: 22px; }
+    h1{ font-size: 1.5rem; line-height: 1.3; }
+    .instructions{ font-size: 0.88rem; margin-bottom: 1.2rem; }
+
+    .level-layout{ gap: 1.2rem; }
+    .board-card{ padding: 0.7rem; }
+
+    /* la presa vera resta la stessa (eventi pointer sull'intero <g>), solo il
+       cerchio visibile e il suo alone si ingrandiscono: su desktop un alone di
+       16px di raggio nel viewBox arriva a malapena a ~12px veri, troppo piccolo
+       per un dito. Qui diventa un'area di presa reale, non solo un ritocco estetico */
+    .handle circle:first-child{ r: 30px; } /* alone */
+    .handle circle:last-child{ r: 13px; }  /* punto vero */
+
+    .side-panel-card{ padding: 1.1rem 1.15rem; }
+    .side-panel-card h2{ font-size: 1.2rem; }
+    .measure-row{ font-size: 0.85rem; padding: 0.5rem 0; }
+    .measure-live{ font-size: 0.72rem; }
+
+    .check-btn, .next-btn{ padding: 1rem; font-size: 0.82rem; }
+    .jump-row{ flex-wrap: wrap; }
+    .jump-row input{ flex: 1 1 5rem; }
+    .jump-row button{ flex: 1 1 auto; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title-icon-row">
+      <a class="icon-btn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
+      <h1 id="levelTitle">Pythagoras <span class="accent">·</span> Triangles Everywhere <span class="accent">·</span> Level 1</h1>
+      <div class="icon-btn" aria-hidden="true" style="cursor:default;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></div>
+    </div>
+    <p class="instructions">Drag the two moving vertices to build the right triangle asked for. Fewer measurements are given as you go — the last levels ask you to solve for one before you can even start dragging.</p>
+
+    <div class="level-layout" id="stage">
+      <div class="board-card">
+        <svg id="board" viewBox="0 0 480 420" xmlns="http://www.w3.org/2000/svg"></svg>
+        <p class="level-progress" id="levelProgress">Level 1</p>
+        <div class="level-progress-track"><div class="level-progress-fill" id="levelProgressFill"></div></div>
+      </div>
+
+      <div class="side-panel">
+        <div class="side-panel-card">
+          <h2>Measures</h2>
+          <p class="level-sub" id="levelSub">All measures known</p>
+          <div id="measureRows"></div>
+
+          <div class="precision-block">
+            <div class="precision-label"><span>Precision</span><span id="precisionPct">0%</span></div>
+            <div class="precision-track"><div class="precision-fill" id="precisionFill"></div></div>
+          </div>
+
+          <button type="button" class="check-btn" id="checkBtn">Check</button>
+          <p class="feedback" id="feedback"></p>
+          <button type="button" class="next-btn" id="nextBtn">Next level →</button>
+
+          <div class="jump-row">
+            <input type="number" id="jumpInput" min="1" placeholder="1+">
+            <button type="button" id="jumpBtn">Go to level</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="final-card" id="finalCard">
+      <h2>Endless mode — there's no final level.</h2>
+      <p>The precision required keeps climbing until it settles at 99% from level 50 onward.</p>
+      <a class="restart-btn" href="?n=1" id="restartBtn">Restart from level 1</a>
+    </div>
+  </div>
+
+<script>
+const POOL = [
+    { legA:3, legB:4, hyp:5, scale:85.0 },
+    { legA:28, legB:45, hyp:53, scale:7.56 },
+    { legA:115, legB:252, hyp:277, scale:1.35 },
+    { legA:69, legB:260, hyp:269, scale:1.31 },
+    { legA:22, legB:120, hyp:122, scale:2.83 },
+    { legA:12, legB:35, hyp:37, scale:9.71 },
+    { legA:120, legB:182, hyp:218, scale:1.87 },
+    { legA:66, legB:112, hyp:130, scale:3.04 },
+    { legA:51, legB:140, hyp:149, scale:2.43 },
+    { legA:10, legB:24, hyp:26, scale:14.17 },
+    { legA:26, legB:168, hyp:170, scale:2.02 },
+    { legA:75, legB:308, hyp:317, scale:1.1 },
+    { legA:19, legB:180, hyp:181, scale:1.89 },
+    { legA:20, legB:21, hyp:29, scale:16.19 },
+    { legA:16, legB:30, hyp:34, scale:11.33 },
+    { legA:13, legB:84, hyp:85, scale:4.05 },
+    { legA:105, legB:208, hyp:233, scale:1.63 },
+    { legA:120, legB:209, hyp:241, scale:1.63 },
+    { legA:52, legB:165, hyp:173, scale:2.06 },
+    { legA:17, legB:144, hyp:145, scale:2.36 },
+    { legA:39, legB:80, hyp:89, scale:4.25 },
+    { legA:88, legB:105, hyp:137, scale:3.24 },
+    { legA:44, legB:117, hyp:125, scale:2.91 },
+    { legA:24, legB:143, hyp:145, scale:2.38 },
+    { legA:7, legB:24, hyp:25, scale:14.17 },
+    { legA:60, legB:91, hyp:109, scale:3.74 },
+    { legA:18, legB:80, hyp:82, scale:4.25 },
+    { legA:15, legB:112, hyp:113, scale:3.04 },
+    { legA:65, legB:72, hyp:97, scale:4.72 },
+    { legA:36, legB:77, hyp:85, scale:4.42 },
+    { legA:23, legB:264, hyp:265, scale:1.29 },
+    { legA:29, legB:420, hyp:421, scale:0.81 },
+    { legA:161, legB:240, hyp:289, scale:1.42 },
+    { legA:14, legB:48, hyp:50, scale:7.08 },
+    { legA:48, legB:55, hyp:73, scale:6.18 },
+    { legA:20, legB:99, hyp:101, scale:3.43 },
+    { legA:57, legB:176, hyp:185, scale:1.93 },
+    { legA:8, legB:15, hyp:17, scale:22.67 },
+    { legA:9, legB:40, hyp:41, scale:8.5 },
+    { legA:16, legB:63, hyp:65, scale:5.4 },
+    { legA:27, legB:364, hyp:365, scale:0.93 },
+    { legA:130, legB:144, hyp:194, scale:2.36 },
+    { legA:25, legB:312, hyp:313, scale:1.09 },
+    { legA:85, legB:132, hyp:157, scale:2.58 },
+    { legA:56, legB:90, hyp:106, scale:3.78 },
+    { legA:6, legB:8, hyp:10, scale:42.5 },
+    { legA:72, legB:154, hyp:170, scale:2.21 },
+    { legA:28, legB:195, hyp:197, scale:1.74 },
+    { legA:95, legB:168, hyp:193, scale:2.02 },
+    { legA:104, legB:153, hyp:185, scale:2.22 },
+    { legA:40, legB:42, hyp:58, scale:8.1 },
+    { legA:140, legB:171, hyp:221, scale:1.99 },
+    { legA:96, legB:110, hyp:146, scale:3.09 },
+    { legA:11, legB:60, hyp:61, scale:5.67 },
+    { legA:21, legB:220, hyp:221, scale:1.55 },
+    { legA:78, legB:160, hyp:178, scale:2.12 },
+    { legA:33, legB:56, hyp:65, scale:6.07 },
+    { legA:133, legB:156, hyp:205, scale:2.18 },
+    { legA:84, legB:187, hyp:205, scale:1.82 },
+    { legA:32, legB:126, hyp:130, scale:2.7 },
+    { legA:24, legB:70, hyp:74, scale:4.86 },
+    { legA:119, legB:120, hyp:169, scale:2.83 },
+    { legA:40, legB:198, hyp:202, scale:1.72 },
+    { legA:5, legB:12, hyp:13, scale:28.33 },
+    { legA:60, legB:221, hyp:229, scale:1.54 }
+  ];
+
+  // livelli infiniti: la stessa terna torna ciclicamente ogni volta che si esaurisce
+  // il pool (65 terne), la difficoltà vera è la precisione richiesta che sale con
+  // ogni livello, non il numero in sé. Dal livello 50 in poi resta fissa al 99%
+  function levelFor(n){
+    const t = POOL[(n - 1) % POOL.length];
+    const precision = n <= 50 ? Math.round(80 + (99 - 80) * (n - 1) / 49) : 99;
+    return { legA: t.legA, legB: t.legB, hyp: t.hyp, scale: t.scale, missing: null, precision, liveBar: true };
+  }
+
+  const STORAGE_KEY = 'pythagoras_last';
+  const params = new URLSearchParams(window.location.search);
+  const requestedLevel = parseInt(params.get('n'));
+  const savedLevel = parseInt(localStorage.getItem(STORAGE_KEY));
+  let startLevel = requestedLevel || savedLevel || 1;
+  if (startLevel < 1) startLevel = 1;
+
+  const ORIGIN = { x: 70, y: 370 };
+  const svg = document.getElementById('board');
+  const measureRowsEl = document.getElementById('measureRows');
+  const levelTitleEl = document.getElementById('levelTitle');
+  const levelSubEl = document.getElementById('levelSub');
+  const levelProgressEl = document.getElementById('levelProgress');
+  const levelProgressFillEl = document.getElementById('levelProgressFill');
+  const precisionPctEl = document.getElementById('precisionPct');
+  const precisionFillEl = document.getElementById('precisionFill');
+  const checkBtn = document.getElementById('checkBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const feedbackEl = document.getElementById('feedback');
+  const stageEl = document.getElementById('stage');
+  const finalCardEl = document.getElementById('finalCard');
+  const jumpInput = document.getElementById('jumpInput');
+  const jumpBtn = document.getElementById('jumpBtn');
+
+  let currentLevelIndex = startLevel - 1;
+  let pointH = { x: 0, y: 0 };
+  let pointV = { x: 0, y: 0 };
+
+  function ns(tag){ return document.createElementNS('http://www.w3.org/2000/svg', tag); }
+
+  function startPositions(level){
+    const offset = 40 + level.legA * level.scale * 0.28;
+    return {
+      h: { x: ORIGIN.x + offset, y: ORIGIN.y },
+      v: { x: ORIGIN.x, y: ORIGIN.y - (30 + level.legB * level.scale * 0.32) },
+    };
+  }
+
+  function loadLevel(index){
+    currentLevelIndex = index;
+    const level = levelFor(index + 1);
+    const start = startPositions(level);
+    pointH = { ...start.h };
+    pointV = { ...start.v };
+
+    levelTitleEl.innerHTML = `Pythagoras <span class="accent">·</span> Triangles Everywhere <span class="accent">·</span> Level ${index + 1}`;
+    const missingNote = level.missing
+      ? (level.missing === 'hyp' ? ' — hypotenuse missing, work it out first' : ' — one leg missing, work it out first')
+      : '';
+    const barNote = level.liveBar ? '' : ' — bar frozen until Check';
+    levelSubEl.textContent = `Requires ${level.precision}% precision${missingNote}${barNote}`;
+    levelProgressEl.textContent = `Level ${index + 1}`;
+    levelProgressFillEl.style.width = Math.min(100, ((index + 1) / 50) * 100) + '%';
+    checkBtn.disabled = false;
+    nextBtn.classList.remove('visible');
+    feedbackEl.textContent = '';
+    feedbackEl.className = 'feedback';
+
+    // la barra riparte sempre da zero a ogni nuovo livello: nei livelli non-live resta
+    // così finché non si preme Check, non deve mostrare un valore residuo del livello
+    // precedente né un valore calcolato subito sulla posizione di partenza casuale
+    precisionPctEl.textContent = '0%';
+    precisionFillEl.style.width = '0%';
+    precisionFillEl.style.background = 'var(--red)';
+
+    localStorage.setItem(STORAGE_KEY, String(index + 1));
+
+    buildMeasureRows(level);
+    render();
+  }
+
+  function buildMeasureRows(level){
+    measureRowsEl.innerHTML = '';
+    const rows = [
+      { key: 'legA', label: 'Leg A' },
+      { key: 'legB', label: 'Leg B' },
+      { key: 'hyp',  label: 'Hypotenuse' },
+    ];
+    rows.forEach(r => {
+      const row = document.createElement('div');
+      row.className = 'measure-row';
+      const isMissing = level.missing === r.key;
+      row.innerHTML = `
+        <span class="measure-label">${r.label}</span>
+        <span class="measure-target ${isMissing ? 'unknown' : ''}">${isMissing ? '?' : level[r.key]}</span>
+        <span class="measure-live" id="live-${r.key}">—</span>
+      `;
+      measureRowsEl.appendChild(row);
+    });
+  }
+
+  function currentMeasures(){
+    const legA = Math.hypot(pointH.x - ORIGIN.x, pointH.y - ORIGIN.y);
+    const legB = Math.hypot(pointV.x - ORIGIN.x, pointV.y - ORIGIN.y);
+    const hyp = Math.hypot(pointH.x - pointV.x, pointH.y - pointV.y);
+    return { legA, legB, hyp };
+  }
+
+  // calcolo puro, sempre disponibile (serve sia per dipingere la barra sia per il
+  // controllo di Check, indipendentemente da liveBar)
+  function computeScorePercent(){
+    const level = levelFor(currentLevelIndex + 1);
+    const m = currentMeasures();
+    const errA = Math.abs(m.legA - level.legA * level.scale);
+    const errB = Math.abs(m.legB - level.legB * level.scale);
+    const maxErr = Math.max(level.legA, level.legB) * level.scale * 0.9;
+    const score = Math.max(0, 1 - ((errA + errB) / 2) / maxErr);
+    return Math.round(score * 100);
+  }
+
+  // aggiorna sia i numeri live sia la barra di precisione — chiamata sempre da Check,
+  // e durante il trascinamento solo se il livello corrente ha liveBar:true (i primi
+  // 15 livelli); dal 16esimo in poi la vista resta ferma finché non si preme Check
+  function paintReadout(){
+    const level = levelFor(currentLevelIndex + 1);
+    const m = currentMeasures();
+    ['legA','legB','hyp'].forEach(key => {
+      const el = document.getElementById('live-' + key);
+      const liveUnits = m[key] / level.scale;
+      el.textContent = liveUnits.toFixed(1);
+    });
+    const pct = computeScorePercent();
+    precisionPctEl.textContent = pct + '%';
+    precisionFillEl.style.width = pct + '%';
+    precisionFillEl.style.background = pct >= level.precision ? 'var(--teal)' : pct >= level.precision - 15 ? 'var(--yellow)' : 'var(--red)';
+  }
+
+  function render(){
+    svg.innerHTML = '';
+
+    const guideH = ns('line');
+    guideH.setAttribute('x1', ORIGIN.x); guideH.setAttribute('y1', ORIGIN.y);
+    guideH.setAttribute('x2', 460); guideH.setAttribute('y2', ORIGIN.y);
+    guideH.setAttribute('stroke', 'var(--rule)');
+    guideH.setAttribute('stroke-dasharray', '4 5');
+    svg.appendChild(guideH);
+
+    const guideV = ns('line');
+    guideV.setAttribute('x1', ORIGIN.x); guideV.setAttribute('y1', ORIGIN.y);
+    guideV.setAttribute('x2', ORIGIN.x); guideV.setAttribute('y2', 20);
+    guideV.setAttribute('stroke', 'var(--rule)');
+    guideV.setAttribute('stroke-dasharray', '4 5');
+    svg.appendChild(guideV);
+
+    const tri = ns('polygon');
+    tri.setAttribute('points', `${ORIGIN.x},${ORIGIN.y} ${pointH.x},${pointH.y} ${pointV.x},${pointV.y}`);
+    tri.setAttribute('fill', 'rgba(232,196,104,0.10)');
+    tri.setAttribute('stroke', 'var(--ink)');
+    tri.setAttribute('stroke-width', '2');
+    svg.appendChild(tri);
+
+    const sq = ns('rect');
+    sq.setAttribute('x', ORIGIN.x); sq.setAttribute('y', ORIGIN.y - 14);
+    sq.setAttribute('width', 14); sq.setAttribute('height', 14);
+    sq.setAttribute('fill', 'none');
+    sq.setAttribute('stroke', 'var(--ink-dim)');
+    sq.setAttribute('stroke-width', '1.5');
+    svg.appendChild(sq);
+
+    const o = ns('circle');
+    o.setAttribute('cx', ORIGIN.x); o.setAttribute('cy', ORIGIN.y); o.setAttribute('r', 5);
+    o.setAttribute('fill', 'var(--ink)');
+    svg.appendChild(o);
+
+    [pointH, pointV].forEach((p, idx) => {
+      const g = ns('g');
+      const halo = ns('circle');
+      halo.setAttribute('cx', p.x); halo.setAttribute('cy', p.y); halo.setAttribute('r', 16);
+      halo.setAttribute('fill', 'rgba(232,196,104,0.16)');
+      g.appendChild(halo);
+      const dot = ns('circle');
+      dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y); dot.setAttribute('r', 8);
+      dot.setAttribute('fill', 'var(--yellow)');
+      dot.setAttribute('stroke', 'var(--bg)');
+      dot.setAttribute('stroke-width', '2');
+      dot.style.cursor = 'grab';
+      g.appendChild(dot);
+      g.dataset.handle = idx === 0 ? 'H' : 'V';
+      g.classList.add('handle');
+      svg.appendChild(g);
+    });
+
+    // la barra/i numeri si aggiornano dal vivo mentre si trascina SOLO se il livello
+    // lo prevede (liveBar:true) — altrimenti restano fermi fino al prossimo Check
+    if (levelFor(currentLevelIndex + 1).liveBar) paintReadout();
+    attachDrag();
+  }
+
+  function attachDrag(){
+    svg.querySelectorAll('.handle').forEach(h => {
+      h.addEventListener('pointerdown', (e) => startDrag(e, h.dataset.handle));
+    });
+  }
+
+  let dragging = null;
+  function startDrag(e, which){
+    dragging = which;
+    e.target.setPointerCapture && e.target.setPointerCapture(e.pointerId);
+    document.addEventListener('pointermove', onDrag);
+    document.addEventListener('pointerup', endDrag);
+  }
+  function svgPoint(evt){
+    const rect = svg.getBoundingClientRect();
+    const scaleX = 480 / rect.width;
+    const scaleY = 420 / rect.height;
+    return {
+      x: (evt.clientX - rect.left) * scaleX,
+      y: (evt.clientY - rect.top) * scaleY,
+    };
+  }
+  function onDrag(e){
+    if (!dragging) return;
+    const p = svgPoint(e);
+    if (dragging === 'H'){
+      pointH.x = Math.max(ORIGIN.x + 6, Math.min(470, p.x));
+      pointH.y = ORIGIN.y;
+    } else {
+      pointV.y = Math.max(10, Math.min(ORIGIN.y - 6, p.y));
+      pointV.x = ORIGIN.x;
+    }
+    render();
+  }
+  function endDrag(){
+    dragging = null;
+    document.removeEventListener('pointermove', onDrag);
+    document.removeEventListener('pointerup', endDrag);
+  }
+
+  checkBtn.addEventListener('click', () => {
+    const level = levelFor(currentLevelIndex + 1);
+    const pct = computeScorePercent();
+    paintReadout(); // la barra si aggiorna SEMPRE qui, che il tentativo sia giusto o no
+    const ok = pct >= level.precision;
+
+    if (ok){
+      feedbackEl.textContent = `✓ ${pct}% — meets this level's ${level.precision}% requirement.`;
+      feedbackEl.className = 'feedback good';
+      checkBtn.disabled = true;
+      nextBtn.classList.add('visible');
+      nextBtn.textContent = 'Next level →';
+    } else {
+      feedbackEl.textContent = `✗ ${pct}% — this level needs at least ${level.precision}%.`;
+      feedbackEl.className = 'feedback bad';
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    loadLevel(currentLevelIndex + 1);
+  });
+
+  jumpBtn.addEventListener('click', () => {
+    const n = parseInt(jumpInput.value);
+    if (n >= 1){
+      stageEl.style.display = '';
+      finalCardEl.classList.remove('visible');
+      loadLevel(n - 1);
+    }
+  });
+
+  loadLevel(currentLevelIndex);
+</script>
+</body>
+</html>
