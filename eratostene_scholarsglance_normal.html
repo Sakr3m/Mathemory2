@@ -1435,15 +1435,15 @@
     //   livelli 21-40: 6.5s  -> 3.5s
     //   livelli 41-50: 3.5s  -> 0.5s
     function visibilityDurationForLevel(level){
-      if (level <= 20) return lerp(8, 6.5, (level - 1) / 19);
-      if (level <= 40) return lerp(6.5, 3.5, (level - 21) / 19);
-      return lerp(3.5, 1, (level - 41) / 9);
+      if (level <= 20) return lerp(7, 5.1, (level - 1) / 19);
+      if (level <= 40) return lerp(5, 3.6, (level - 21) / 19);
+      return lerp(3.5, 2.5, (level - 41) / 9);
     }
     const VISIBILITY_DURATION = visibilityDurationForLevel(levelNum);
-    // cooldown FISSO a 7 secondi per tutti i livelli (non più una curva 3s->10s): ai
+    // cooldown FISSO a 5 secondi per tutti i livelli (non più una curva 3s->10s): ai
     // livelli bassi la visibilità dura più del cooldown stesso, quindi non si sente
     // nemmeno; dal 21 in poi il cooldown supera la visibilità e comincia a farsi sentire
-    const COOLDOWN_DURATION = 7;
+    const COOLDOWN_DURATION = 5;
     // il pannello dei 5 selezionati resta leggibile fino al livello 35, poi si offusca
     // sempre di più fino a diventare del tutto illeggibile al livello 50
     const BLUR_START_LEVEL = 35;
@@ -1500,9 +1500,9 @@
     }
 
     // cooldown fisso di Sight: NON parte dal momento in cui i numeri spariscono, ma
-    // da quando viene chiamata questa funzione — usata sia al caricamento del livello
-    // (il pulsante nasce già in cooldown, non è mai utilizzabile da subito) sia a ogni
-    // pressione successiva
+    // da quando viene chiamata questa funzione — ora usata SOLO alla pressione del
+    // pulsante, non più al caricamento del livello (il pulsante nasce senza cooldown
+    // pendente, disponibile non appena i numeri si nascondono da soli)
     function startSightCooldown(){
       sightOnCooldown = true;
       cooldownEndsAt = Date.now() + COOLDOWN_DURATION * 1000;
@@ -1529,7 +1529,8 @@
     });
 
     revealNumbers(VISIBILITY_DURATION); // il livello parte sempre visibile, poi scatta il buio da solo
-    startSightCooldown(); // il cooldown parte anche solo al caricamento pagina: Sight non nasce già pronto
+    // niente startSightCooldown() qui: il cooldown ora parte solo quando si preme Sight,
+    // non più al caricamento del livello
 
     function toggleCell(i){
       if (selected.has(i)){
