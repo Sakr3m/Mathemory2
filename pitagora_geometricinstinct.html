@@ -284,6 +284,44 @@
     letter-spacing:0.03em;
   }
   .jump-row button:hover{ color: var(--ink); border-color: var(--rule); }
+
+  /* ============================================================
+     MOBILE — sotto i 900px, stesso breakpoint usato in tutto il resto
+     del sito. Il meccanismo di trascinamento (eventi pointer) funziona
+     già identico; qui si adattano solo dimensioni, spaziature e le due
+     superfici di presa (che su schermo piccolo erano troppo piccole
+     per un dito) ============================================================ */
+  @media (max-width: 900px){
+    .wrap{
+      max-width: 100%;
+      padding: calc(4vh + 20px) 1rem 5vh;
+    }
+    .title-icon-row{ gap: 0.6rem; margin-bottom: 0.5rem; }
+    .icon-btn{ width: 46px; height: 46px; }
+    .icon-btn svg{ width: 22px; height: 22px; }
+    h1{ font-size: 1.5rem; line-height: 1.3; }
+    .instructions{ font-size: 0.88rem; margin-bottom: 1.2rem; }
+
+    .level-layout{ gap: 1.2rem; }
+    .board-card{ padding: 0.7rem; }
+
+    /* la presa vera resta la stessa (eventi pointer sull'intero <g>), solo il
+       cerchio visibile e il suo alone si ingrandiscono: su desktop un alone di
+       16px di raggio nel viewBox arriva a malapena a ~12px veri, troppo piccolo
+       per un dito. Qui diventa un'area di presa reale, non solo un ritocco estetico */
+    .handle circle:first-child{ r: 30px; } /* alone */
+    .handle circle:last-child{ r: 13px; }  /* punto vero */
+
+    .side-panel-card{ padding: 1.1rem 1.15rem; }
+    .side-panel-card h2{ font-size: 1.2rem; }
+    .measure-row{ font-size: 0.85rem; padding: 0.5rem 0; }
+    .measure-live{ font-size: 0.72rem; }
+
+    .check-btn, .next-btn{ padding: 1rem; font-size: 0.82rem; }
+    .jump-row{ flex-wrap: wrap; }
+    .jump-row input{ flex: 1 1 5rem; }
+    .jump-row button{ flex: 1 1 auto; }
+  }
 </style>
 </head>
 <body>
@@ -298,7 +336,7 @@
     <div class="level-layout" id="stage">
       <div class="board-card">
         <svg id="board" viewBox="0 0 480 420" xmlns="http://www.w3.org/2000/svg"></svg>
-        <p class="level-progress" id="levelProgress">Level 1 of 55</p>
+        <p class="level-progress" id="levelProgress">Level 1</p>
         <div class="level-progress-track"><div class="level-progress-fill" id="levelProgressFill"></div></div>
       </div>
 
@@ -318,7 +356,7 @@
           <button type="button" class="next-btn" id="nextBtn">Next level →</button>
 
           <div class="jump-row">
-            <input type="number" id="jumpInput" min="1" max="55" placeholder="1-55">
+            <input type="number" id="jumpInput" min="1" max="50" placeholder="1-50">
             <button type="button" id="jumpBtn">Go to level</button>
           </div>
         </div>
@@ -326,7 +364,7 @@
     </div>
 
     <div class="final-card" id="finalCard">
-      <h2>All 55 levels complete.</h2>
+      <h2>All 50 levels complete.</h2>
       <p>From the classic 3-4-5 to reconstructing a missing side from a single leg and the hypotenuse.</p>
       <a class="restart-btn" href="?n=1" id="restartBtn">Restart from level 1</a>
     </div>
