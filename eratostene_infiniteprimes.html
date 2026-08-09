@@ -1221,17 +1221,17 @@
   }
   applyLanguage();
 
+  const INFINITE_BADGE_LEVEL = 250;
+  const INFINITE_BADGE = { title: 'Master of the Sieve', titleIT: 'Maestro del Setaccio', phrase: "You've mastered the sieve itself.", phraseIT: 'Hai padroneggiato il setaccio stesso.' };
+  function badgeForLevel(lvl){
+    return lvl >= INFINITE_BADGE_LEVEL ? INFINITE_BADGE : null;
+  }
+
   if (levelNum < 1){
     showError(`Level ${levelNum} doesn't exist.`);
   } else {
     const levelData = generateLevel(levelNum);
     renderLevel(levelData);
-  }
-
-  const INFINITE_BADGE_LEVEL = 250;
-  const INFINITE_BADGE = { title: 'Master of the Sieve', titleIT: 'Maestro del Setaccio', phrase: "You've mastered the sieve itself.", phraseIT: 'Hai padroneggiato il setaccio stesso.' };
-  function badgeForLevel(lvl){
-    return lvl >= INFINITE_BADGE_LEVEL ? INFINITE_BADGE : null;
   }
 
   function renderLevel(levelData){
