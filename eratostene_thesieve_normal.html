@@ -579,7 +579,7 @@
     }
     .page-shell{ display: none; }
   }
-  /* --- popup di fine gara (Livello 200) --- */
+  /* --- popup di fine gara (Livello 100) --- */
   .modal-overlay{
     display:none;
     position: fixed;
@@ -969,20 +969,20 @@
 
   const params = new URLSearchParams(window.location.search);
   const levelNum = parseInt(params.get('n')) || 1;
-  const STORAGE_KEY = 'erato_basic_last';
-  const TOTAL_TIME_KEY = 'erato_basic_total_race_time';
-  const SESSION_OPEN_KEY = 'erato_basic_session_open';
-  const HEARTBEAT_KEY = 'erato_basic_heartbeat_seconds';
-  const SUSPECT_RESUME_KEY = 'erato_basic_suspect_resume';
-  const PRE_LEAVE_TIME_KEY = 'erato_basic_pre_leave_time';
+  const STORAGE_KEY = 'erato_basic_v2_last';
+  const TOTAL_TIME_KEY = 'erato_basic_v2_total_race_time';
+  const SESSION_OPEN_KEY = 'erato_basic_v2_session_open';
+  const HEARTBEAT_KEY = 'erato_basic_v2_heartbeat_seconds';
+  const SUSPECT_RESUME_KEY = 'erato_basic_v2_suspect_resume';
+  const PRE_LEAVE_TIME_KEY = 'erato_basic_v2_pre_leave_time';
   const LEAVE_THRESHOLD_SECONDS = 5;   // se sei rimasto meno di questo prima di uscire (Home o chiusura brusca)...
   const RESUME_THRESHOLD_SECONDS = 5;  // ...E rientrando risolvi in meno di questo, è sospetto
   const SUSPECT_PENALTY_START_LEVEL = 75;  // dal Livello 75 in poi la penalità inizia ad applicarsi
   const SUSPECT_PENALTY_MIN = 150; // penalità al Livello 75: 2 minuti e mezzo
-  const SUSPECT_PENALTY_MAX = 600; // penalità al Livello 200: 10 minuti
+  const SUSPECT_PENALTY_MAX = 600; // penalità al Livello 100: 10 minuti
   function suspectPenaltyForLevel(lvl){
-    // scala in modo lineare da 150s (Livello 75) a 600s (Livello 200)
-    const t = Math.min(1, Math.max(0, (lvl - SUSPECT_PENALTY_START_LEVEL) / (200 - SUSPECT_PENALTY_START_LEVEL)));
+    // scala in modo lineare da 150s (Livello 75) a 600s (Livello 100)
+    const t = Math.min(1, Math.max(0, (lvl - SUSPECT_PENALTY_START_LEVEL) / (100 - SUSPECT_PENALTY_START_LEVEL)));
     return SUSPECT_PENALTY_MIN + (SUSPECT_PENALTY_MAX - SUSPECT_PENALTY_MIN) * t;
   }
 
@@ -999,7 +999,7 @@
   }
   localStorage.removeItem(SESSION_OPEN_KEY);
   localStorage.removeItem(HEARTBEAT_KEY);
-  const FINISHED_ONCE_KEY = 'erato_basic_finished_once';
+  const FINISHED_ONCE_KEY = 'erato_basic_v2_finished_once';
 
   // --- lingua: nessuno switch qui (vive solo su index.html), ma legge la stessa
   // preferenza salvata per tradurre le poche scritte previste su questa pagina ---
@@ -1385,9 +1385,9 @@
         // deposito il tempo di questo livello (chiude la sessione in modo pulito)
         const elapsed = commitElapsedTime();
 
-        if (levelNum >= 200){
+        if (levelNum >= 100){
           playSound('winner');
-          localStorage.setItem(STORAGE_KEY, '200');
+          localStorage.setItem(STORAGE_KEY, '100');
           const raceEnded = Date.now() > RACE_END_DATE.getTime();
           const alreadyFinishedOnce = localStorage.getItem(FINISHED_ONCE_KEY) === 'true';
 
@@ -1433,7 +1433,7 @@
   // dopo la fine gara si riparte da zero: si azzera tutto tranne il flag "nickname già usato"
   function resetForNewRun(){
     Object.keys(localStorage)
-      .filter(k => k.startsWith('erato_basic') && k !== FINISHED_ONCE_KEY)
+      .filter(k => k.startsWith('erato_basic_v2') && k !== FINISHED_ONCE_KEY)
       .forEach(k => localStorage.removeItem(k));
   }
 
@@ -1451,7 +1451,7 @@
       return;
     }
 
-    localStorage.setItem('erato_basic_finisher_nickname', nickname);
+    localStorage.setItem('erato_basic_v2_finisher_nickname', nickname);
     const totalRaceTime = localStorage.getItem(TOTAL_TIME_KEY) || '0';
     const timeValue = parseFloat(totalRaceTime);
 

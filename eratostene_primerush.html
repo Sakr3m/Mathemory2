@@ -64,7 +64,7 @@
   }
   h1 .accent{ color: var(--yellow); }
   /* font-size del titolo, calcolato con le metriche vere del font Kalam Bold (fontkit),
-     per fascia di cifre del livello (arriva fino a 3 cifre, livello 100) — sostituisce
+     per fascia di cifre del livello (arriva fino a 2 cifre, livello 50) — sostituisce
      la misura dal vero via JS. Margine di sicurezza 3%, come il JS originale */
   @media (min-width: 901px){
     .lv-digits-1{ font-size: min(3.192rem, 3.5532rem, calc(3.0962rem * (100vw - 360px) / 816.49px)); }
@@ -640,7 +640,7 @@
     }
     .page-shell{ display: none; }
   }
-  /* --- popup di fine gara (Livello 100) --- */
+  /* --- popup di fine gara (Livello 50) --- */
   .modal-overlay{
     display:none;
     position: fixed;
@@ -888,7 +888,7 @@
     <div class="modal-buttons" style="flex-direction:column;">
       <button type="button" class="modal-btn yes" id="devSkip1Btn">+1</button>
       <button type="button" class="modal-btn yes" id="devSkip25Btn">+25</button>
-      <button type="button" class="modal-btn yes" id="devSkip100Btn">100</button>
+      <button type="button" class="modal-btn yes" id="devSkip100Btn">50</button>
       <button type="button" class="modal-btn no" id="devSkipResetBtn">Reset</button>
     </div>
   </div>
@@ -1172,7 +1172,7 @@
   // --- colore dei cerchi/numeri selezionati, a gradini ogni 50 livelli ---
   function circleColorForLevel(lvl){
     if (lvl >= 150) return '#C1554B'; // rosso
-    if (lvl >= 100) return '#D9793A'; // arancione scuro
+    if (lvl >= 50) return '#D9793A'; // arancione scuro
     if (lvl >= 50)  return '#EFAE68'; // arancione chiaro
     return '#E8C468'; // giallo base
   }
@@ -1418,10 +1418,10 @@
       window.location.href = `eratostene_primerush.html?n=${levelNum + 1}`;
     });
     document.getElementById('devSkip25Btn').addEventListener('click', () => {
-      window.location.href = `eratostene_primerush.html?n=${Math.min(100, levelNum + 25)}`;
+      window.location.href = `eratostene_primerush.html?n=${Math.min(50, levelNum + 25)}`;
     });
     document.getElementById('devSkip100Btn').addEventListener('click', () => {
-      window.location.href = 'eratostene_primerush.html?n=100';
+      window.location.href = 'eratostene_primerush.html?n=50';
     });
     document.getElementById('devSkipResetBtn').addEventListener('click', () => {
       Object.keys(localStorage).filter(k => k.startsWith('erato_primerush')).forEach(k => localStorage.removeItem(k));
@@ -1456,7 +1456,7 @@
         const elapsed = commitElapsedTime();
         localStorage.setItem(LAST_TIME_KEY, elapsed.toFixed(1));
 
-        if (levelNum >= 100){
+        if (levelNum >= 50){
           playSound('winner');
           // Prime Rush non ha una data di scadenza: il popup compare sempre a ogni run completata
           document.getElementById('finishTotalTime').textContent = (localStorage.getItem(TOTAL_TIME_KEY) || '0') + 's';

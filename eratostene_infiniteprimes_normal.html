@@ -933,12 +933,12 @@
   }
 
   // niente più fasce/sezioni intermedie: un'unica curva lineare dal livello 1 (cap 37)
-  // fino al livello 350 (cap 997, il numero primo più alto gestibile senza rompere la
+  // fino al livello 250 (cap 997, il numero primo più alto gestibile senza rompere la
   // griglia con cifre a 4 numeri) — da lì in poi resta fermo a 997 per sempre
   function capForLevel(levelNum){
     const START_CAP = 37;
     const MAX_CAP = 997;
-    const MAX_LEVEL = 350;
+    const MAX_LEVEL = 250;
     if (levelNum >= MAX_LEVEL) return MAX_CAP;
     const target = START_CAP + (MAX_CAP - START_CAP) * (levelNum - 1) / (MAX_LEVEL - 1);
     return nextPrimeAtLeast(target);

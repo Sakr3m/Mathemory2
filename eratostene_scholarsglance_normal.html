@@ -1146,7 +1146,7 @@
   // --- generazione procedurale, nessun file da caricare: stesso motore di Infinite
   // Primes, ma cap dei primi FISSO a 211 (non cresce) e curva di difficoltà compressa
   // sui soli 50 livelli invece che centinaia ---
-  const PRIME_CAP = 211;
+  const PRIME_CAP = 397;
 
   // --- modello di difficoltà: grandezza del numero + vicinanza a un multiplo di 7 ---
   function recognitionScore(p){
@@ -1437,7 +1437,7 @@
     function visibilityDurationForLevel(level){
       if (level <= 20) return lerp(8, 6.5, (level - 1) / 19);
       if (level <= 40) return lerp(6.5, 3.5, (level - 21) / 19);
-      return lerp(3.5, 0.5, (level - 41) / 9);
+      return lerp(3.5, 1, (level - 41) / 9);
     }
     const VISIBILITY_DURATION = visibilityDurationForLevel(levelNum);
     // cooldown FISSO a 7 secondi per tutti i livelli (non più una curva 3s->10s): ai

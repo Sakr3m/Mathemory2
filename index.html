@@ -2042,12 +2042,12 @@
       descIT: 'Trova i numeri primi nascosti nella griglia e sommali. Una sfida di memoria che cresce man mano che i numeri salgono sempre più in alto. Ogni livello mette alla prova quanti ne riesci ancora a ricordare.',
       mobileDesc: 'Find the primes hidden in the grid and add them up. Every level tests how many you can still remember.',
       mobileDescIT: 'Trova i numeri primi nascosti nella griglia e sommali. Ogni livello mette alla prova quanti ne riesci ancora a ricordare.',
-      hrefKey: 'erato_basic_last', hrefBase: 'eratostene_thesieve.html',
+      hrefKey: 'erato_basic_v2_last', hrefBase: 'eratostene_thesieve.html',
       preview: buildMiniSieve(),
       modes: [
         { name: "Scholar's Glance", desc: '50 levels of total concentration.', descIT: '50 livelli di pura concentrazione.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'eratostene_scholarsglance.html', normalFile: 'eratostene_scholarsglance_normal.html', hrefKey: 'erato_scholarsglance_last', accent: 'red', requiresSieveFinish: true },
-        { name: 'Prime Rush', desc: '100 levels of pure racing against the clock, against other players.', descIT: '100 livelli di pura corsa contro il tempo, contro altri giocatori.', details: 'No time limit · no progress saved.', detailsIT: 'Nessun limite di tempo · progressi non salvati.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true },
-        { name: 'The Sieve', desc: 'The full 200-level race, at your own pace, ranked on the main leaderboard.', descIT: 'La gara completa di 200 livelli, al tuo ritmo, in classifica nella leaderboard principale.', details: 'Time-limited race · progress saved · anti-cheat active.', detailsIT: 'Gara a tempo limitato · progressi salvati · anti-cheat attivo.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_last', accent: 'yellow' },
+        { name: 'Prime Rush', desc: '50 levels of pure racing against the clock, against other players.', descIT: '50 livelli di pura corsa contro il tempo, contro altri giocatori.', details: 'No time limit · no progress saved.', detailsIT: 'Nessun limite di tempo · progressi non salvati.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true },
+        { name: 'The Sieve', desc: 'The full 100-level race, at your own pace, ranked on the main leaderboard.', descIT: 'La gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale.', details: 'Time-limited race · progress saved · anti-cheat active.', detailsIT: 'Gara a tempo limitato · progressi salvati · anti-cheat attivo.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_v2_last', accent: 'yellow' },
         { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', descIT: 'Livelli infiniti, nessuna classifica, solo tu e i numeri.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'eratostene_infiniteprimes.html', normalFile: 'eratostene_infiniteprimes_normal.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true },
       ]
     },
@@ -3968,7 +3968,7 @@
     playSound('tap');
     const g = games[gameIndex];
     const isIT = currentLang() === 'it';
-    const sieveFinished = forceUnlockAll || localStorage.getItem('erato_basic_finished_once') === 'true';
+    const sieveFinished = forceUnlockAll || localStorage.getItem('erato_basic_v2_finished_once') === 'true';
     modeOptionsEl.innerHTML = g.modes.map(m => {
       const isLocked = (m.requiresSieveFinish && !sieveFinished) || m.comingSoon;
       // Play now sinistro (forceUnlockAll=false): pagine identiche al Mathemory pubblico

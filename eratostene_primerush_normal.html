@@ -577,7 +577,7 @@
     }
     .page-shell{ display: none; }
   }
-  /* --- popup di fine gara (Livello 100) --- */
+  /* --- popup di fine gara (Livello 50) --- */
   .modal-overlay{
     display:none;
     position: fixed;
@@ -1097,7 +1097,7 @@
   // --- colore dei cerchi/numeri selezionati, a gradini ogni 50 livelli ---
   function circleColorForLevel(lvl){
     if (lvl >= 150) return '#C1554B'; // rosso
-    if (lvl >= 100) return '#D9793A'; // arancione scuro
+    if (lvl >= 50) return '#D9793A'; // arancione scuro
     if (lvl >= 50)  return '#EFAE68'; // arancione chiaro
     return '#E8C468'; // giallo base
   }
@@ -1332,7 +1332,7 @@
         const elapsed = commitElapsedTime();
         localStorage.setItem(LAST_TIME_KEY, elapsed.toFixed(1));
 
-        if (levelNum >= 100){
+        if (levelNum >= 50){
           playSound('winner');
           // Prime Rush non ha una data di scadenza: il popup compare sempre a ogni run completata
           document.getElementById('finishTotalTime').textContent = (localStorage.getItem(TOTAL_TIME_KEY) || '0') + 's';

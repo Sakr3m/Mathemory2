@@ -64,7 +64,7 @@
   }
   h1 .accent{ color: var(--yellow); }
   /* font-size del titolo, calcolato con le metriche vere del font Kalam Bold (fontkit),
-     per fascia di cifre del livello (arriva fino a 3 cifre, livello 200) — sostituisce
+     per fascia di cifre del livello (arriva fino a 3 cifre, livello 100) — sostituisce
      la misura dal vero via JS. Margine di sicurezza 3%, come il JS originale */
   @media (min-width: 901px){
     .lv-digits-1{ font-size: min(3.192rem, 3.7380rem, calc(3.0962rem * (100vw - 360px) / 776.14px)); }
@@ -642,7 +642,7 @@
     }
     .page-shell{ display: none; }
   }
-  /* --- popup di fine gara (Livello 200) --- */
+  /* --- popup di fine gara (Livello 100) --- */
   .modal-overlay{
     display:none;
     position: fixed;
@@ -890,7 +890,7 @@
     <div class="modal-buttons" style="flex-direction:column;">
       <button type="button" class="modal-btn yes" id="devSkip1Btn">+1</button>
       <button type="button" class="modal-btn yes" id="devSkip25Btn">+25</button>
-      <button type="button" class="modal-btn yes" id="devSkip200Btn">200</button>
+      <button type="button" class="modal-btn yes" id="devSkip200Btn">100</button>
       <button type="button" class="modal-btn no" id="devSkipResetBtn">Reset</button>
     </div>
   </div>
@@ -1044,20 +1044,20 @@
 
   const params = new URLSearchParams(window.location.search);
   const levelNum = parseInt(params.get('n')) || 1;
-  const STORAGE_KEY = 'erato_basic_last';
-  const TOTAL_TIME_KEY = 'erato_basic_total_race_time';
-  const SESSION_OPEN_KEY = 'erato_basic_session_open';
-  const HEARTBEAT_KEY = 'erato_basic_heartbeat_seconds';
-  const SUSPECT_RESUME_KEY = 'erato_basic_suspect_resume';
-  const PRE_LEAVE_TIME_KEY = 'erato_basic_pre_leave_time';
+  const STORAGE_KEY = 'erato_basic_v2_last';
+  const TOTAL_TIME_KEY = 'erato_basic_v2_total_race_time';
+  const SESSION_OPEN_KEY = 'erato_basic_v2_session_open';
+  const HEARTBEAT_KEY = 'erato_basic_v2_heartbeat_seconds';
+  const SUSPECT_RESUME_KEY = 'erato_basic_v2_suspect_resume';
+  const PRE_LEAVE_TIME_KEY = 'erato_basic_v2_pre_leave_time';
   const LEAVE_THRESHOLD_SECONDS = 5;   // se sei rimasto meno di questo prima di uscire (Home o chiusura brusca)...
   const RESUME_THRESHOLD_SECONDS = 5;  // ...E rientrando risolvi in meno di questo, è sospetto
   const SUSPECT_PENALTY_START_LEVEL = 75;  // dal Livello 75 in poi la penalità inizia ad applicarsi
   const SUSPECT_PENALTY_MIN = 150; // penalità al Livello 75: 2 minuti e mezzo
-  const SUSPECT_PENALTY_MAX = 600; // penalità al Livello 200: 10 minuti
+  const SUSPECT_PENALTY_MAX = 600; // penalità al Livello 100: 10 minuti
   function suspectPenaltyForLevel(lvl){
-    // scala in modo lineare da 150s (Livello 75) a 600s (Livello 200)
-    const t = Math.min(1, Math.max(0, (lvl - SUSPECT_PENALTY_START_LEVEL) / (200 - SUSPECT_PENALTY_START_LEVEL)));
+    // scala in modo lineare da 150s (Livello 75) a 600s (Livello 100)
+    const t = Math.min(1, Math.max(0, (lvl - SUSPECT_PENALTY_START_LEVEL) / (100 - SUSPECT_PENALTY_START_LEVEL)));
     return SUSPECT_PENALTY_MIN + (SUSPECT_PENALTY_MAX - SUSPECT_PENALTY_MIN) * t;
   }
 
@@ -1074,7 +1074,7 @@
   }
   localStorage.removeItem(SESSION_OPEN_KEY);
   localStorage.removeItem(HEARTBEAT_KEY);
-  const FINISHED_ONCE_KEY = 'erato_basic_finished_once';
+  const FINISHED_ONCE_KEY = 'erato_basic_v2_finished_once';
 
   // --- lingua: nessuno switch qui (vive solo su index.html), ma legge la stessa
   // preferenza salvata per tradurre le poche scritte previste su questa pagina ---
@@ -1218,8 +1218,8 @@
 
   // --- titoli di rango, a salire per livello raggiunto ---
   const RANKS = [
-    { level: 150, title: 'Master of the Sieve', titleIT: 'Maestro del Setaccio', phrase: "You've mastered the sieve itself.", phraseIT: 'Hai padroneggiato il setaccio stesso.' },
-    { level: 75,  title: 'Geometer of Primes', titleIT: 'Geometra dei Primi', phrase: 'Few see the structure beneath the primes as clearly as you.', phraseIT: 'Pochi vedono la struttura dei primi con la tua stessa chiarezza.' },
+    { level: 100, title: 'Master of the Sieve', titleIT: 'Maestro del Setaccio', phrase: "You've mastered the sieve itself.", phraseIT: 'Hai padroneggiato il setaccio stesso.' },
+    { level: 50,  title: 'Geometer of Primes', titleIT: 'Geometra dei Primi', phrase: 'Few see the structure beneath the primes as clearly as you.', phraseIT: 'Pochi vedono la struttura dei primi con la tua stessa chiarezza.' },
     { level: 25,  title: 'Pattern Seeker', titleIT: 'Cercatore di Schemi', phrase: 'The patterns are starting to reveal themselves.', phraseIT: 'Gli schemi iniziano a rivelarsi.' },
     { level: 10,  title: 'Apprentice of Cyrene', titleIT: 'Apprendista di Cirene', phrase: 'A student of Cyrene, taking your first true steps.', phraseIT: 'Uno studente di Cirene, ai tuoi primi veri passi.' },
   ];
@@ -1469,13 +1469,13 @@
       window.location.href = `eratostene_thesieve.html?n=${levelNum + 1}`;
     });
     document.getElementById('devSkip25Btn').addEventListener('click', () => {
-      window.location.href = `eratostene_thesieve.html?n=${Math.min(200, levelNum + 25)}`;
+      window.location.href = `eratostene_thesieve.html?n=${Math.min(100, levelNum + 25)}`;
     });
     document.getElementById('devSkip200Btn').addEventListener('click', () => {
-      window.location.href = 'eratostene_thesieve.html?n=200';
+      window.location.href = 'eratostene_thesieve.html?n=100';
     });
     document.getElementById('devSkipResetBtn').addEventListener('click', () => {
-      Object.keys(localStorage).filter(k => k.startsWith('erato_basic')).forEach(k => localStorage.removeItem(k));
+      Object.keys(localStorage).filter(k => k.startsWith('erato_basic_v2')).forEach(k => localStorage.removeItem(k));
       window.location.href = 'eratostene_thesieve.html?n=1';
     });
 
@@ -1498,9 +1498,9 @@
         // deposito il tempo di questo livello (chiude la sessione in modo pulito)
         const elapsed = commitElapsedTime();
 
-        if (levelNum >= 200){
+        if (levelNum >= 100){
           playSound('winner');
-          localStorage.setItem(STORAGE_KEY, '200');
+          localStorage.setItem(STORAGE_KEY, '100');
           const raceEnded = Date.now() > RACE_END_DATE.getTime();
           const alreadyFinishedOnce = localStorage.getItem(FINISHED_ONCE_KEY) === 'true';
 
@@ -1546,7 +1546,7 @@
   // dopo la fine gara si riparte da zero: si azzera tutto tranne il flag "nickname già usato"
   function resetForNewRun(){
     Object.keys(localStorage)
-      .filter(k => k.startsWith('erato_basic') && k !== FINISHED_ONCE_KEY)
+      .filter(k => k.startsWith('erato_basic_v2') && k !== FINISHED_ONCE_KEY)
       .forEach(k => localStorage.removeItem(k));
   }
 
@@ -1564,7 +1564,7 @@
       return;
     }
 
-    localStorage.setItem('erato_basic_finisher_nickname', nickname);
+    localStorage.setItem('erato_basic_v2_finisher_nickname', nickname);
     const totalRaceTime = localStorage.getItem(TOTAL_TIME_KEY) || '0';
     const timeValue = parseFloat(totalRaceTime);
 
