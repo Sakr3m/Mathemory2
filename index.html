@@ -459,6 +459,25 @@
     border-radius: 8px;
   }
 
+  .mini-triangle{
+    width: 340px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding: 0.9rem;
+    background: var(--bg-panel-locked);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    text-align: center;
+  }
+  .mini-triangle svg{ width: 100%; height: auto; display:block; }
+  .mini-triangle-formula{
+    margin: 0.5rem 0 0;
+    font-family:'Space Mono', monospace;
+    font-size: 0.95rem;
+    font-weight:700;
+    color: var(--yellow);
+  }
+
   .mc{
     position:relative;
     aspect-ratio:1;
@@ -1969,6 +1988,40 @@
     return `${baseUrl}?n=${last}`;
   }
 
+  // --- anteprima per la card di Pitagora: un triangolo rettangolo animato che
+  // simula il vero gioco. L'angolo retto resta fisso; l'angolo in alto si muove
+  // SOLO in verticale (x fissa) e quello a destra SOLO in orizzontale (y fissa),
+  // esattamente come i due vertici trascinabili in pitagora.html. A ogni fotogramma
+  // si muove UN SOLO angolo alla volta (mai insieme), in ordine casuale, con tempi
+  // irregolari tra un passaggio e l'altro — stesso ruolo visivo del mini-setaccio di
+  // Eratosthenes. Animazione SVG nativa (<animate>), nessun JS ---
+  function buildMiniTriangle(){
+    return `
+      <div class="mini-triangle">
+        <svg viewBox="0 0 140 120" xmlns="http://www.w3.org/2000/svg">
+          <polygon fill="rgba(232,196,104,0.14)" stroke="var(--yellow)" stroke-width="2">
+            <animate attributeName="points" dur="13s" repeatCount="indefinite" calcMode="spline"
+              keyTimes="0;0.0883;0.213;0.3018;0.4092;0.5248;0.6086;0.6715;0.77;0.8908;1"
+              keySplines="0.45 0 0.55 1; 0.45 0 0.55 1; 0.45 0 0.55 1; 0.45 0 0.55 1; 0.45 0 0.55 1; 0.45 0 0.55 1; 0.45 0 0.55 1; 0.45 0 0.55 1; 0.45 0 0.55 1; 0.45 0 0.55 1"
+              values="
+                15,105 15,20 125,105;
+                15,105 15,20 128.6,105;
+                15,105 15,22.5 128.6,105;
+                15,105 15,22.5 123.2,105;
+                15,105 15,18.4 123.2,105;
+                15,105 15,18.4 103.4,105;
+                15,105 15,18.4 115.9,105;
+                15,105 15,21.2 115.9,105;
+                15,105 15,21.2 118.9,105;
+                15,105 15,33.4 118.9,105;
+                15,105 15,20 125,105"/>
+          </polygon>
+          <rect x="15" y="91" width="14" height="14" fill="none" stroke="var(--ink-dim)" stroke-width="1.5"/>
+        </svg>
+        <p class="mini-triangle-formula">a² + b² = c²</p>
+      </div>`;
+  }
+
   // --- una sola card attiva: Eratosthenes ---
   const games = [
     {
@@ -1987,6 +2040,24 @@
         { name: 'Prime Rush', desc: '100 levels of pure racing against the clock, against other players.', descIT: '100 livelli di pura corsa contro il tempo, contro altri giocatori.', details: 'No time limit · no progress saved.', detailsIT: 'Nessun limite di tempo · progressi non salvati.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true },
         { name: 'The Sieve', desc: 'The full 200-level race, at your own pace, ranked on the main leaderboard.', descIT: 'La gara completa di 200 livelli, al tuo ritmo, in classifica nella leaderboard principale.', details: 'Time-limited race · progress saved · anti-cheat active.', detailsIT: 'Gara a tempo limitato · progressi salvati · anti-cheat attivo.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_last', accent: 'yellow' },
         { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', descIT: 'Livelli infiniti, nessuna classifica, solo tu e i numeri.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'eratostene_infiniteprimes.html', normalFile: 'eratostene_infiniteprimes_normal.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true },
+      ]
+    },
+    {
+      title: 'Pythagoras',
+      titleIT: 'Pitagora',
+      descTitle: 'Right Triangle Game',
+      descTitleIT: 'Il gioco del triangolo rettangolo',
+      desc: 'Drag the two moving vertices to build the exact right triangle asked for. As you go, fewer measurements are given: the last levels ask you to work one out yourself before you can even start dragging.',
+      descIT: 'Trascina i due vertici mobili per costruire esattamente il triangolo rettangolo richiesto. Andando avanti le misure fornite diminuiscono: negli ultimi livelli dovrai calcolarne una da solo prima ancora di poter iniziare a trascinare.',
+      mobileDesc: 'Drag the two moving vertices to build the exact right triangle asked for. Fewer measurements are given as you go.',
+      mobileDescIT: 'Trascina i due vertici mobili per costruire il triangolo rettangolo richiesto. Le misure fornite diminuiscono man mano che avanzi.',
+      hrefKey: 'pythagoras_geometricinstinct_last', hrefBase: 'pitagora_geometricinstinct.html',
+      preview: buildMiniTriangle(),
+      modes: [
+        { name: 'Steady Hands', desc: '35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go.', descIT: '35 livelli spietati, senza barra di precisione ad aiutarti. Minimo 99% fin dal primo livello, con misure decimali che compaiono man mano che avanzi.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_steadyhands.html', normalFile: 'pitagora_steadyhands.html', hrefKey: 'pythagoras_steadyhands_last', accent: 'red', requiresSieveFinish: true },
+        { name: 'The Theorem', desc: '50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both.', descIT: '50 triangoli fermi, niente trascinamento: calcola solo il lato mancante dagli altri due. I numeri decimali iniziano a comparire dopo il livello 30, prima in una misura poi in entrambe.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_thetheorem.html', normalFile: 'pitagora_thetheorem.html', hrefKey: 'pythagoras_thetheorem_last', accent: 'orange', requiresSieveFinish: true },
+        { name: 'Geometric Instinct', desc: '50 levels: guess the triangle\'s sides freely for the first 35, then work out a missing measurement for the last 15. Precision required climbs from 80% to 99%.', descIT: '50 livelli: indovina liberamente i lati del triangolo per i primi 35, poi calcola una misura mancante negli ultimi 15. La precisione richiesta sale dall\'80% al 99%.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_geometricinstinct.html', normalFile: 'pitagora_geometricinstinct.html', hrefKey: 'pythagoras_geometricinstinct_last', accent: 'yellow' },
+        { name: 'Triangles Everywhere', desc: 'Endless levels with every measurement given. Precision required climbs from 80% to 99% by level 50, then stays at 99% forever.', descIT: 'Livelli infiniti con tutte le misure fornite. La precisione richiesta sale dall\'80% al 99% entro il livello 50, poi resta al 99% per sempre.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'pitagora_triangleseverywhere.html', normalFile: 'pitagora_triangleseverywhere.html', hrefKey: 'pythagoras_triangleseverywhere_last', accent: 'teal', requiresSieveFinish: true },
       ]
     },
   ];
@@ -2112,6 +2183,8 @@
   let cachedPrimeRushPodium = null;
   let cachedScholarsGlancePodium = null;
   let eratoOverlayEl = null; // riferimento alla card animata (se già creata), per aggiornare la classifica quando arrivano dati freschi dal Worker
+  let pythagorasOverlayEl = null; // stesso ruolo di eratoOverlayEl qui sopra, ma per la card di Pitagora — mai lo stesso elemento
+  let pythagorasOverlayBuilt = false; // true dopo la primissima volta che si naviga su Pitagora: da lì in poi la card esiste già, va solo mostrata/riposizionata
 
   // NOTA: c'era qui una funzione (applyEratoLbMargin) che misurava via JS un margine
   // destro per allineare la classifica al bordo della card. Da quando le due metà
@@ -2341,6 +2414,65 @@
   }
 
   // ============================================================
+  // SEZIONE: PITAGORA — stesso impianto di Eratosthenes qui sopra, ma completamente
+  // separato: nessuna di queste funzioni viene mai chiamata per games[0], e nessuna
+  // funzione di Eratosthenes viene mai chiamata per games[1]. Al posto della classifica
+  // (Pitagora non ha ancora un concetto di gara/podio) la metà destra della card mostra
+  // un'anteprima più grande del triangolo e una spiegazione breve della meccanica.
+  // ============================================================
+  function pythagorasContentHtml(g){
+    return `
+      <div class="erato-title-row">
+        <div class="erato-gamex-label" data-en="GAME 2" data-it="GIOCO 2">GAME 2</div>
+        <h2 class="game-title-centered" data-en="${g.title}" data-it="${g.titleIT}">${g.title}</h2>
+      </div>
+      <div class="erato-gamex-tag" id="pythagorasRulesBtn" data-en="RULES" data-it="REGOLE">RULES</div>
+      <div class="play-preview-block">
+        <div class="play-now-split">
+          <button type="button" class="cta-inline cta-split" onclick="openModeModal(1, false)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="cta-split-sub">Normal (locked)</span></button>
+          <button type="button" class="cta-inline cta-split" onclick="openModeModal(1, true)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="cta-split-sub">All unlocked</span></button>
+        </div>
+        <div class="preview-row">
+          ${g.preview || ''}
+          <div class="preview-text-col">
+            <p class="desc"><span class="desc-title" data-en="${g.descTitle}" data-it="${g.descTitleIT}">${g.descTitle}</span><span data-en="${g.desc}" data-it="${g.descIT}">${g.desc}</span></p>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function pythagorasRightHtml(g){
+    return `
+      <div class="lb-half">
+        <h2>Geometric Instinct</h2>
+        <div class="lb-section">
+          ${podiumRowsHtml(null)}
+        </div>
+      </div>
+      <svg class="lb-divider" viewBox="0 0 356 10" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="pythagorasDividerFade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="rgba(243,239,228,0)" />
+            <stop offset="18%" stop-color="rgba(243,239,228,0.12)" />
+            <stop offset="82%" stop-color="rgba(243,239,228,0.12)" />
+            <stop offset="100%" stop-color="rgba(243,239,228,0)" />
+          </linearGradient>
+        </defs>
+        <path d="M0,5 Q89,2 178,3.5 Q267,2 356,5 Q267,8 178,6.5 Q89,8 0,5 Z" fill="url(#pythagorasDividerFade)" />
+      </svg>
+      <div class="lb-half">
+        <div class="lb-dual-title-row">
+          <h3>Steady Hands</h3>
+          <span class="lb-dual-title-spacer"></span>
+          <h3>The Theorem</h3>
+        </div>
+        <div class="lb-section">
+          ${dualPodiumRowsHtml(null, null)}
+        </div>
+      </div>`;
+  }
+
+  // ============================================================
   // SEZIONE: CARD DEI GIOCHI — generazione HTML (mobile)
   // ============================================================
   function mobileNavRowHtml(){
@@ -2452,7 +2584,13 @@
     positionKofiBtn();
     applyLanguage();
     centerEratoRightEdge();
-    if (gameState(g) === 'open'){
+    if (gameState(g) === 'open' && number === 1){
+      // ============================================================
+      // percorso di Eratosthenes: ESATTAMENTE identico a prima, nessuna riga
+      // toccata — solo racchiuso in "number === 1" per non essere mai raggiunto
+      // quando la pagina attiva è Pitagora
+      // ============================================================
+      if (pythagorasOverlayEl) pythagorasOverlayEl.style.display = 'none';
       // la card vera (l'overlay) vive fuori dalla griglia: se era stata nascosta
       // per una pagina diversa, la rimostro; le eventuali card "Coming Soon" vanno
       // invece nascoste, altrimenti resterebbero visibili sopra a tutto anche qui
@@ -2506,9 +2644,32 @@
         eratoOverlayEl.style.display = 'flex';
         eratoOverlayEl.style.opacity = '1';
       }
+    } else if (gameState(g) === 'open' && number === 2){
+      // ============================================================
+      // percorso di Pitagora: mai la primissima pagina caricata (currentIndex parte
+      // sempre da 0), quindi arriva qui solo tramite navigazione — niente comparsa
+      // lenta stile "primo caricamento", solo l'animazione rapida già usata per
+      // tornare su una pagina già vista, riusata identica (playCardNavAnimation è
+      // generica, non sa nulla di Eratosthenes né di Pitagora)
+      // ============================================================
+      if (eratoOverlayEl) eratoOverlayEl.style.display = 'none';
+      Object.values(comingSoonOverlays).forEach(el => { el.style.display = 'none'; });
+      const geometry = computePythagorasCardGeometry(g, number);
+      if (!pythagorasOverlayBuilt){
+        pythagorasOverlayBuilt = true;
+        pythagorasOverlayEl = buildPythagorasOverlay(g, number, geometry);
+        playCardNavAnimation(pythagorasOverlayEl, geometry.top, geometry.left, geometry.width, geometry.height, () => {
+          finalizePythagorasLayout(pythagorasOverlayEl);
+        });
+      } else if (isNavigation){
+        playCardNavAnimation(pythagorasOverlayEl, geometry.top, geometry.left, geometry.width, geometry.height, () => {});
+      } else {
+        pythagorasOverlayEl.style.display = 'flex';
+        pythagorasOverlayEl.style.opacity = '1';
+      }
     } else {
-      // pagina diversa da Eratosthenes: la sua card (l'overlay) va nascosta, altrimenti
-      // resterebbe visibile sopra a tutto anche qui
+      // pagina diversa da Eratosthenes/Pitagora: entrambe le loro card vanno nascoste,
+      // altrimenti resterebbero visibili sopra a tutto anche qui
       if (eratoOverlayEl){
         eratoOverlayEl.style.display = 'none';
         // se la sequenza di apertura era ancora in corso (utente ha cliccato "next"
@@ -2518,6 +2679,7 @@
         eratoIntroTimeoutIds.forEach(id => clearTimeout(id));
         eratoIntroTimeoutIds.length = 0;
       }
+      if (pythagorasOverlayEl) pythagorasOverlayEl.style.display = 'none';
       showComingSoonPage(currentIndex, isNavigation);
     }
 
@@ -2663,6 +2825,31 @@
     return geometry;
   }
 
+  // stessa identica posizione/larghezza di computeCardGeometry qui sopra (la griglia
+  // è la stessa, quindi la colonna è la stessa), ma altezza misurata sui contenuti di
+  // Pitagora — cache separata (pythagorasCardGeometry), mai la stessa di Eratosthenes:
+  // le due card hanno quasi certamente altezze diverse
+  let pythagorasCardGeometry = null;
+  function computePythagorasCardGeometry(g, number){
+    if (pythagorasCardGeometry) return pythagorasCardGeometry;
+    const grid = document.getElementById('gamesGrid');
+    const gridRect = grid.getBoundingClientRect();
+    const gridStyle = getComputedStyle(grid);
+    const gap = parseFloat(gridStyle.columnGap || gridStyle.gap) || 0;
+    const singleColWidth = (gridRect.width - gap) / 2;
+
+    const viewportCenter = window.innerWidth / 2;
+    const targetWidth = singleColWidth * 2;
+    const targetLeft = viewportCenter - singleColWidth;
+    const targetTop = gridRect.top + window.scrollY;
+
+    const targetHeight = measurePythagorasContentHeight(g, number, targetWidth);
+
+    const geometry = { top: targetTop, left: targetLeft, width: targetWidth, height: targetHeight };
+    if (fontsReadyForGeometry) pythagorasCardGeometry = geometry;
+    return geometry;
+  }
+
   // riallinea le eventuali card "Coming Soon" già costruite alla geometria corrente
   // (fresca): usata sia quando i font finiscono di caricarsi (possono essere state
   // costruite prima, con misure sbagliate) sia al resize della finestra, visto che la
@@ -2689,7 +2876,7 @@
     const geometry = computeCardGeometry(games[0], 1);
     const overlay = document.createElement('div');
     overlay.className = 'coming-soon-card';
-    const dateHtml = comingSoonUnlockLabels[index - 1] ? `<p class="unlock-date">${comingSoonUnlockLabels[index - 1]}</p>` : '';
+    const dateHtml = comingSoonUnlockLabels[index - games.length] ? `<p class="unlock-date">${comingSoonUnlockLabels[index - games.length]}</p>` : '';
     overlay.innerHTML = `<h2 class="game-title-centered">COMING SOON</h2>${dateHtml}`;
     document.body.appendChild(overlay);
     overlay._targetGeometry = geometry; // riletta da showComingSoonPage per l'animazione di comparsa
@@ -2800,6 +2987,33 @@
       </div>
       <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
         ${eratoLbPreviewHtml(g)}
+      </div>`;
+    document.body.appendChild(probe);
+    const measuredHeight = probe.offsetHeight;
+    document.body.removeChild(probe);
+    return measuredHeight;
+  }
+
+  // stessa identica logica di misura di measureEratoContentHeight qui sopra, ma con
+  // i contenuti di Pitagora al posto di quelli di Eratosthenes — mai la stessa
+  // funzione, per non rischiare di toccare la misura (già delicata) di Eratosthenes
+  function measurePythagorasContentHeight(g, number, totalWidth){
+    const halfWidth = totalWidth / 2;
+    const probe = document.createElement('div');
+    probe.style.position = 'absolute';
+    probe.style.visibility = 'hidden';
+    probe.style.pointerEvents = 'none';
+    probe.style.left = '-9999px';
+    probe.style.top = '0px';
+    probe.style.width = totalWidth + 'px';
+    probe.style.display = 'flex';
+    probe.style.flexDirection = 'row';
+    probe.innerHTML = `
+      <div class="erato-content-half" style="width:${halfWidth}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
+        ${pythagorasContentHtml(g)}
+      </div>
+      <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
+        ${pythagorasRightHtml(g)}
       </div>`;
     document.body.appendChild(probe);
     const measuredHeight = probe.offsetHeight;
@@ -3034,6 +3248,97 @@
     }
   }
 
+  // stessa identica logica di finalizeEratoLayout qui sopra (divisore centrale, RULES,
+  // hover che scambia la classifica con le regole), ma senza il ritratto — Pitagora
+  // non ne ha ancora uno. Mai la stessa funzione di Eratosthenes, per lo stesso motivo
+  // di sempre: non rischiare di toccare qualcosa che già funziona
+  function finalizePythagorasLayout(overlay){
+    const lbHalf = overlay.querySelector('.erato-leaderboard-half');
+    const playButtons = overlay.querySelectorAll('.play-now-split .cta-split');
+    const rightPlayBtn = playButtons[1];
+    const firstLbRow = overlay.querySelector('.lb-row');
+    let dividerX = null;
+    if (rightPlayBtn && firstLbRow){
+      const overlayRect = overlay.getBoundingClientRect();
+      const btnRight = rightPlayBtn.getBoundingClientRect().right;
+      const rowLeft = firstLbRow.getBoundingClientRect().left;
+      dividerX = (btnRight + rowLeft) / 2 - overlayRect.left;
+
+      let dividerLine = overlay.querySelector('.erato-mid-divider');
+      if (!dividerLine){
+        dividerLine = document.createElement('div');
+        dividerLine.className = 'erato-mid-divider';
+        dividerLine.innerHTML = `
+          <svg viewBox="0 0 10 356" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="pythagorasMidDividerFade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(243,239,228,0)" />
+                <stop offset="18%" stop-color="rgba(243,239,228,0.12)" />
+                <stop offset="82%" stop-color="rgba(243,239,228,0.12)" />
+                <stop offset="100%" stop-color="rgba(243,239,228,0)" />
+              </linearGradient>
+            </defs>
+            <path d="M5,0 Q2,89 3.5,178 Q2,267 5,356 Q8,267 6.5,178 Q8,89 5,0 Z" fill="url(#pythagorasMidDividerFade)" />
+          </svg>`;
+        overlay.appendChild(dividerLine);
+      }
+      dividerLine.style.left = dividerX + 'px';
+
+      const gamexTag = overlay.querySelector('.erato-gamex-tag');
+      if (gamexTag){
+        gamexTag.style.left = dividerX + 'px';
+        gamexTag.style.top = '-2px';
+        gamexTag.style.pointerEvents = 'none';
+        void gamexTag.offsetWidth;
+        gamexTag.style.transition = 'opacity 1s ease';
+        gamexTag.style.opacity = '1';
+        setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
+      }
+    }
+
+    const rulesBtn = overlay.querySelector('#pythagorasRulesBtn');
+    if (rulesBtn && lbHalf && !rulesBtn.dataset.hoverBound){
+      rulesBtn.dataset.hoverBound = 'true';
+      const rulesPreviewHtml = `
+        <div class="erato-rules-preview">
+          <h3 data-en="Rules" data-it="Regole">Rules</h3>
+          <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging." data-it="trascina i due vertici mobili finché il triangolo non corrisponde alle misure indicate. I primi livelli mostrano tutti e tre i lati; negli ultimi ne manca uno, da calcolare con il teorema di Pitagora prima ancora di iniziare a trascinare.">drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging.</span></p>
+          <p data-en="Happy building." data-it="Buona costruzione.">Happy building.</p>
+          <p class="device-note-old" data-en="Progress is saved per device: switching devices restarts from level 1." data-it="I progressi sono salvati per dispositivo: cambiare dispositivo fa ripartire dal livello 1.">Progress is saved per device: switching devices restarts from level 1.</p>
+        </div>`;
+      lbHalf._realLbHtml = lbHalf.innerHTML;
+      lbHalf._isShowingRules = false;
+      let swapTimer = null;
+      const fadeMs = 350;
+
+      rulesBtn.addEventListener('mouseenter', () => {
+        if (lbHalf._isShowingRules) return;
+        lbHalf._isShowingRules = true;
+        clearTimeout(swapTimer);
+        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
+        lbHalf.style.opacity = '0';
+        swapTimer = setTimeout(() => {
+          lbHalf.innerHTML = rulesPreviewHtml;
+          applyLanguage();
+          void lbHalf.offsetWidth;
+          lbHalf.style.opacity = '1';
+        }, fadeMs);
+      });
+      rulesBtn.addEventListener('mouseleave', () => {
+        if (!lbHalf._isShowingRules) return;
+        lbHalf._isShowingRules = false;
+        clearTimeout(swapTimer);
+        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
+        lbHalf.style.opacity = '0';
+        swapTimer = setTimeout(() => {
+          lbHalf.innerHTML = lbHalf._realLbHtml;
+          void lbHalf.offsetWidth;
+          lbHalf.style.opacity = '1';
+        }, fadeMs);
+      });
+    }
+  }
+
   // durata della comparsa iniziale (movimento verso l'alto), condivisa con qualunque
   // altra card copi questa stessa animazione al caricamento della pagina
   const CARD_INITIAL_FADE_MS = 1500;
@@ -3183,6 +3488,41 @@
     // limite di sicurezza: se per qualche motivo i font non risultassero mai pronti,
     // si parte comunque dopo 15 secondi, evitando un'attesa infinita
     setTimeout(startOnce, 15000);
+  }
+
+  // costruisce la card di Pitagora (contenuto + metà destra), sempre nascosta
+  // finché render() non la mostra via navigazione — a differenza di Eratosthenes,
+  // Pitagora non è mai la prima pagina, quindi non ha bisogno della comparsa lenta
+  // (fade-pausa-allargamento) usata solo al primissimo caricamento della pagina:
+  // usa sempre la stessa animazione rapida già prevista per tornare a una pagina
+  // già vista (vedi playCardNavAnimation, generica e riusata identica qui)
+  function buildPythagorasOverlay(g, number, geometry){
+    const overlay = document.createElement('div');
+    overlay.innerHTML = `
+      <div class="erato-content-half" style="width:${geometry.width / 2}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
+        ${pythagorasContentHtml(g)}
+      </div>
+      <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
+        ${pythagorasRightHtml(g)}
+      </div>`;
+    overlay.style.cssText = `
+      position: absolute;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: none;
+      flex-direction: row;
+      background: var(--bg-panel);
+      border: 1px solid rgba(232,196,104,0.85);
+      border-radius: 6px;
+      box-shadow: 0 0 0 1px rgba(232,196,104,0.55), 0 0 0 2px rgba(232,196,104,0.25);
+      animation: erato-border-cycle 14s ease-in-out infinite;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+    `;
+    document.body.appendChild(overlay);
+    applyLanguage();
+    return overlay;
   }
 
   // ============================================================
