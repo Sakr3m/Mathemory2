@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pythagoras — The Theorem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1E2C23;
+    --bg-panel: #2E4636;
+    --ink: #F3EFE4;
+    --ink-dim: #9FB0A2;
+    --yellow: #E8C468;
+    --red: #C1554B;
+    --teal: #5FA8A0;
+    --rule: rgba(243,239,228,0.14);
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+  }
+  body{
+    background-image:
+      radial-gradient(circle at 6% 96%, rgba(243,239,228,0.09), transparent 38%),
+      radial-gradient(circle at 95% 4%, rgba(243,239,228,0.09), transparent 38%);
+  }
+  .wrap{
+    max-width: min(1127px, calc(100% - 170px));
+    margin: 0 auto;
+    padding: calc(6vh + 32.7px) 1.5rem 6vh;
+  }
+  .title-icon-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 1rem;
+    margin-bottom: 0.6rem;
+  }
+  .icon-btn{
+    flex-shrink:0;
+    width: 55px; height:55px;
+    display:flex; align-items:center; justify-content:center;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    background: var(--bg-panel);
+    color: var(--ink-dim);
+    text-decoration:none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, box-shadow 0.2s ease;
+  }
+  .icon-btn:hover{
+    color: var(--yellow);
+    border-color: rgba(232,196,104,0.75);
+    background: rgba(232,196,104,0.22);
+    box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
+  }
+  .icon-btn svg{ width: 26.5px; height:26.5px; }
+  h1{
+    font-family:'Kalam', cursive;
+    font-size: 2.6rem;
+    margin: 0;
+    text-align:center;
+  }
+  h1 .accent{ color: var(--yellow); }
+  .instructions{
+    color: var(--ink-dim);
+    font-size: 1.05rem;
+    line-height:1.5;
+    margin: 0 auto 1.8rem;
+    text-align: center;
+    max-width: 640px;
+  }
+
+  .level-layout{
+    display:grid;
+    grid-template-columns: 529px 1fr;
+    gap: 2.3rem;
+    align-items:stretch;
+  }
+  @media (max-width: 1100px){
+    .level-layout{ grid-template-columns: 1fr; }
+  }
+
+  .board-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1rem;
+    position: relative;
+  }
+  .board-card svg{ display:block; width:100%; height:auto; }
+  .triangle-label{
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .triangle-label.known{ fill: var(--ink); }
+  .triangle-label.unknown{ fill: var(--yellow); }
+
+  .level-progress{
+    margin: 1rem 0 0;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+  }
+  .level-progress-track{
+    margin-top: 0.4rem;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bg);
+    overflow:hidden;
+  }
+  .level-progress-fill{
+    height:100%;
+    background: var(--yellow);
+  }
+
+  .side-panel{ display:flex; flex-direction:column; gap: 1.2rem; }
+  .side-panel-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.3rem 1.4rem;
+  }
+  .side-panel-card h2{
+    font-family:'Kalam', cursive;
+    font-size: 1.4rem;
+    margin: 0 0 0.15rem;
+  }
+  .level-sub{
+    font-family:'Space Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 0 0 1.1rem;
+  }
+
+  .measure-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--rule);
+    font-family:'Space Mono', monospace;
+    font-size: 0.92rem;
+  }
+  .measure-row:last-of-type{ border-bottom:none; }
+  .measure-label{ color: var(--ink-dim); }
+  .measure-target{ font-weight:700; color:var(--ink); }
+  .measure-target.unknown{ color: var(--yellow); }
+
+  .answer-block{ margin: 1.2rem 0 0.2rem; }
+  .answer-block label{
+    display:block;
+    font-family:'Space Mono', monospace;
+    font-size: 0.64rem; letter-spacing:0.06em; text-transform:uppercase;
+    color: var(--ink-dim); margin-bottom:0.4rem;
+  }
+  .answer-block input{
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--ink);
+    font-family:'Space Mono', monospace;
+    font-size: 1.1rem;
+    padding: 0.7rem 0.9rem;
+  }
+  .answer-block input:focus{ outline: none; border-color: var(--yellow); }
+
+  .check-btn{
+    width:100%;
+    margin-top: 1rem;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    background: var(--yellow);
+    color: var(--bg);
+    border:none;
+    border-radius: 6px;
+    padding: 0.92rem 1.61rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+  }
+  .check-btn:hover{ background:#f0d488; }
+  .check-btn:disabled{
+    background: var(--bg);
+    color: var(--ink-dim);
+    cursor: not-allowed;
+    border: 1px solid var(--rule);
+  }
+
+  .feedback{
+    margin-top: 0.8rem;
+    font-family:'Space Mono', monospace;
+    font-size: 0.8rem;
+    line-height:1.4;
+    min-height: 2.4em;
+  }
+  .feedback.good{ color: var(--teal); }
+  .feedback.bad{ color: var(--red); }
+
+  .next-btn{
+    display:none;
+    width:100%;
+    margin-top: 0.6rem;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    border: 1px solid var(--teal);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--teal);
+    padding: 0.75rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+  }
+  .next-btn.visible{ display:block; }
+  .next-btn:hover{ background: rgba(95,168,160,0.14); }
+
+  .final-card{
+    display:none;
+    text-align:center;
+    padding: 4rem 1.5rem;
+  }
+  .final-card.visible{ display:block; }
+  .final-card h2{
+    font-family:'Kalam', cursive;
+    font-size: 2.2rem;
+    margin: 0 0 0.6rem;
+  }
+  .final-card p{ color: var(--ink-dim); }
+  .restart-btn{
+    margin-top: 1.4rem;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    padding: 0.8rem 1.8rem;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--bg-panel);
+    color: var(--ink);
+    font-size: 0.8rem;
+    letter-spacing:0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+  }
+  .restart-btn:hover{ background: rgba(232,196,104,0.14); border-color: rgba(232,196,104,0.5); }
+
+  .jump-row{
+    display:flex; gap:0.5rem; margin-top:0.9rem;
+    font-family:'Space Mono', monospace; font-size:0.72rem;
+  }
+  .jump-row input{
+    width: 4.5rem;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--ink);
+    font-family:'Space Mono', monospace;
+    font-size: 0.78rem;
+    padding: 0.4rem 0.5rem;
+  }
+  .jump-row button{
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--ink-dim);
+    font-family:'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.7rem;
+    cursor:pointer;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+  }
+  .jump-row button:hover{ color: var(--ink); border-color: var(--rule); }
+
+  @media (max-width: 900px){
+    .wrap{ max-width: 100%; padding: calc(4vh + 20px) 1rem 5vh; }
+    .title-icon-row{ gap: 0.6rem; margin-bottom: 0.5rem; }
+    .icon-btn{ width: 46px; height: 46px; }
+    .icon-btn svg{ width: 22px; height: 22px; }
+    h1{ font-size: 1.5rem; line-height: 1.3; }
+    .instructions{ font-size: 0.88rem; margin-bottom: 1.2rem; }
+    .level-layout{ gap: 1.2rem; }
+    .board-card{ padding: 0.7rem; }
+    .triangle-label{ font-size: 26px; }
+    .side-panel-card{ padding: 1.1rem 1.15rem; }
+    .side-panel-card h2{ font-size: 1.2rem; }
+    .measure-row{ font-size: 0.85rem; padding: 0.5rem 0; }
+    .answer-block input{ font-size: 1.3rem; padding: 0.85rem 0.9rem; }
+    .check-btn, .next-btn{ padding: 1rem; font-size: 0.82rem; }
+    .jump-row{ flex-wrap: wrap; }
+    .jump-row input{ flex: 1 1 5rem; }
+    .jump-row button{ flex: 1 1 auto; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title-icon-row">
+      <a class="icon-btn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
+      <h1 id="levelTitle">Pythagoras <span class="accent">·</span> The Theorem <span class="accent">·</span> Level 1</h1>
+      <div class="icon-btn" aria-hidden="true" style="cursor:default;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></div>
+    </div>
+    <p class="instructions">The triangle doesn't move. Two sides are given — work out the third with the Pythagorean theorem and type your answer. Decimals start creeping into the given measurements after level 30.</p>
+
+    <div class="level-layout" id="stage">
+      <div class="board-card">
+        <svg id="board" viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg"></svg>
+        <p class="level-progress" id="levelProgress">Level 1 of 50</p>
+        <div class="level-progress-track"><div class="level-progress-fill" id="levelProgressFill"></div></div>
+      </div>
+
+      <div class="side-panel">
+        <div class="side-panel-card">
+          <h2>Solve for the missing side</h2>
+          <p class="level-sub" id="levelSub"></p>
+          <div id="measureRows"></div>
+
+          <div class="answer-block">
+            <label for="answerInput">Your answer</label>
+            <input type="number" step="0.01" id="answerInput" placeholder="0.00">
+          </div>
+
+          <button type="button" class="check-btn" id="checkBtn">Check</button>
+          <p class="feedback" id="feedback"></p>
+          <button type="button" class="next-btn" id="nextBtn">Next level →</button>
+
+          <div class="jump-row">
+            <input type="number" id="jumpInput" min="1" max="50" placeholder="1-50">
+            <button type="button" id="jumpBtn">Go to level</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="final-card" id="finalCard">
+      <h2>All 50 levels complete.</h2>
+      <p>From clean integer triples to decimals on both given sides.</p>
+      <a class="restart-btn" href="?n=1" id="restartBtn">Restart from level 1</a>
+    </div>
+  </div>
+
+<script>
+const LEVELS = [
+    { shown:{legA:3, legB:4}, missing:'hyp', answer:5 },
+    { shown:{legB:112, hyp:113}, missing:'legA', answer:15 },
+    { shown:{legA:5, hyp:13}, missing:'legB', answer:12 },
+    { shown:{legA:75, legB:308}, missing:'hyp', answer:317 },
+    { shown:{legB:15, hyp:17}, missing:'legA', answer:8 },
+    { shown:{legA:12, hyp:37}, missing:'legB', answer:35 },
+    { shown:{legA:84, legB:187}, missing:'hyp', answer:205 },
+    { shown:{legB:171, hyp:221}, missing:'legA', answer:140 },
+    { shown:{legA:21, hyp:221}, missing:'legB', answer:220 },
+    { shown:{legA:28, legB:45}, missing:'hyp', answer:53 },
+    { shown:{legB:312, hyp:313}, missing:'legA', answer:25 },
+    { shown:{legA:20, hyp:29}, missing:'legB', answer:21 },
+    { shown:{legA:27, legB:364}, missing:'hyp', answer:365 },
+    { shown:{legB:156, hyp:205}, missing:'legA', answer:133 },
+    { shown:{legA:95, hyp:193}, missing:'legB', answer:168 },
+    { shown:{legA:11, legB:60}, missing:'hyp', answer:61 },
+    { shown:{legB:80, hyp:89}, missing:'legA', answer:39 },
+    { shown:{legA:17, hyp:145}, missing:'legB', answer:144 },
+    { shown:{legA:44, legB:117}, missing:'hyp', answer:125 },
+    { shown:{legB:140, hyp:149}, missing:'legA', answer:51 },
+    { shown:{legA:29, hyp:421}, missing:'legB', answer:420 },
+    { shown:{legA:9, legB:40}, missing:'hyp', answer:41 },
+    { shown:{legB:99, hyp:101}, missing:'legA', answer:20 },
+    { shown:{legA:19, hyp:181}, missing:'legB', answer:180 },
+    { shown:{legA:13, legB:84}, missing:'hyp', answer:85 },
+    { shown:{legB:24, hyp:25}, missing:'legA', answer:7 },
+    { shown:{legA:104, hyp:185}, missing:'legB', answer:153 },
+    { shown:{legA:161, legB:240}, missing:'hyp', answer:289 },
+    { shown:{legB:176, hyp:185}, missing:'legA', answer:57 },
+    { shown:{legA:119, hyp:169}, missing:'legB', answer:120 },
+    { shown:{legA:28, legB:9.7}, missing:'hyp', answer:29.63 },
+    { shown:{legB:16, hyp:16.8}, missing:'legA', answer:5.12 },
+    { shown:{legA:13, hyp:39.1}, missing:'legB', answer:36.88 },
+    { shown:{legA:37, legB:10.5}, missing:'hyp', answer:38.46 },
+    { shown:{legB:8, hyp:19.0}, missing:'legA', answer:17.23 },
+    { shown:{legA:16, hyp:43.8}, missing:'legB', answer:40.77 },
+    { shown:{legA:33, legB:6.8}, missing:'hyp', answer:33.69 },
+    { shown:{legB:14, hyp:27.0}, missing:'legA', answer:23.09 },
+    { shown:{legA:7, hyp:30.4}, missing:'legB', answer:29.58 },
+    { shown:{legA:22, legB:27.0}, missing:'hyp', answer:34.83 },
+    { shown:{legA:8.6, legB:13.8}, missing:'hyp', answer:16.26 },
+    { shown:{legB:29.1, hyp:55.3}, missing:'legA', answer:47.02 },
+    { shown:{legA:11.5, hyp:31.6}, missing:'legB', answer:29.43 },
+    { shown:{legA:9.1, legB:12.8}, missing:'hyp', answer:15.71 },
+    { shown:{legB:21.9, hyp:26.2}, missing:'legA', answer:14.38 },
+    { shown:{legA:8.1, hyp:23.3}, missing:'legB', answer:21.85 },
+    { shown:{legA:33.5, legB:23.3}, missing:'hyp', answer:40.81 },
+    { shown:{legB:22.5, hyp:35.8}, missing:'legA', answer:27.85 },
+    { shown:{legA:25.1, hyp:27.2}, missing:'legB', answer:10.48 },
+    { shown:{legA:15.0, legB:12.4}, missing:'hyp', answer:19.46 }
+  ];
+
+  const STORAGE_KEY = 'pythagoras_thetheorem_last';
+  const params = new URLSearchParams(window.location.search);
+  const requestedLevel = parseInt(params.get('n'));
+  const savedLevel = parseInt(localStorage.getItem(STORAGE_KEY));
+  let startLevel = requestedLevel || savedLevel || 1;
+  if (startLevel < 1 || startLevel > LEVELS.length) startLevel = 1;
+
+  const svg = document.getElementById('board');
+  const measureRowsEl = document.getElementById('measureRows');
+  const levelTitleEl = document.getElementById('levelTitle');
+  const levelSubEl = document.getElementById('levelSub');
+  const levelProgressEl = document.getElementById('levelProgress');
+  const levelProgressFillEl = document.getElementById('levelProgressFill');
+  const answerInput = document.getElementById('answerInput');
+  const checkBtn = document.getElementById('checkBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const feedbackEl = document.getElementById('feedback');
+  const stageEl = document.getElementById('stage');
+  const finalCardEl = document.getElementById('finalCard');
+  const jumpInput = document.getElementById('jumpInput');
+  const jumpBtn = document.getElementById('jumpBtn');
+
+  let currentLevelIndex = startLevel - 1;
+
+  function ns(tag){ return document.createElementNS('http://www.w3.org/2000/svg', tag); }
+
+  const LABELS = { legA: 'Leg A', legB: 'Leg B', hyp: 'Hypotenuse' };
+
+  // triangolo sempre nella stessa forma/posizione: qui non si trascina nulla, le
+  // proporzioni visive non seguono i numeri veri (che vanno da poche unità a oltre
+  // 150), servono solo a mostrare dove sta ciascun lato
+  const P_RIGHT = { x: 60, y: 280 };
+  const P_TOP   = { x: 60, y: 40 };
+  const P_FAR   = { x: 340, y: 280 };
+
+  function loadLevel(index){
+    currentLevelIndex = index;
+    const level = LEVELS[index];
+
+    levelTitleEl.innerHTML = `Pythagoras <span class="accent">·</span> The Theorem <span class="accent">·</span> Level ${index + 1}`;
+    const hasDecimals = Object.values(level.shown).some(v => !Number.isInteger(v));
+    levelSubEl.textContent = hasDecimals ? 'Watch the decimals' : 'Clean numbers';
+    levelProgressEl.textContent = `Level ${index + 1} of ${LEVELS.length}`;
+    levelProgressFillEl.style.width = (((index + 1) / LEVELS.length) * 100) + '%';
+    checkBtn.disabled = false;
+    nextBtn.classList.remove('visible');
+    feedbackEl.textContent = '';
+    feedbackEl.className = 'feedback';
+    answerInput.value = '';
+
+    localStorage.setItem(STORAGE_KEY, String(index + 1));
+
+    buildMeasureRows(level);
+    render(level);
+    answerInput.focus();
+  }
+
+  function buildMeasureRows(level){
+    measureRowsEl.innerHTML = '';
+    ['legA', 'legB', 'hyp'].forEach(key => {
+      const row = document.createElement('div');
+      row.className = 'measure-row';
+      const isMissing = level.missing === key;
+      row.innerHTML = `
+        <span class="measure-label">${LABELS[key]}</span>
+        <span class="measure-target ${isMissing ? 'unknown' : ''}">${isMissing ? '?' : level.shown[key]}</span>
+      `;
+      measureRowsEl.appendChild(row);
+    });
+  }
+
+  function render(level){
+    svg.innerHTML = '';
+
+    const tri = ns('polygon');
+    tri.setAttribute('points', `${P_RIGHT.x},${P_RIGHT.y} ${P_TOP.x},${P_TOP.y} ${P_FAR.x},${P_FAR.y}`);
+    tri.setAttribute('fill', 'rgba(232,196,104,0.10)');
+    tri.setAttribute('stroke', 'var(--ink)');
+    tri.setAttribute('stroke-width', '2');
+    svg.appendChild(tri);
+
+    const sq = ns('rect');
+    sq.setAttribute('x', P_RIGHT.x); sq.setAttribute('y', P_RIGHT.y - 16);
+    sq.setAttribute('width', 16); sq.setAttribute('height', 16);
+    sq.setAttribute('fill', 'none');
+    sq.setAttribute('stroke', 'var(--ink-dim)');
+    sq.setAttribute('stroke-width', '1.5');
+    svg.appendChild(sq);
+
+    // etichette: cateto A (verticale, sinistra), cateto B (orizzontale, sotto),
+    // ipotenusa (diagonale, centrata sopra il lato lungo)
+    const labelDefs = [
+      { key: 'legA', x: P_RIGHT.x - 26, y: (P_RIGHT.y + P_TOP.y) / 2, anchor: 'end' },
+      { key: 'legB', x: (P_RIGHT.x + P_FAR.x) / 2, y: P_RIGHT.y + 32, anchor: 'middle' },
+      { key: 'hyp',  x: (P_TOP.x + P_FAR.x) / 2 + 18, y: (P_TOP.y + P_FAR.y) / 2 - 10, anchor: 'middle' },
+    ];
+    labelDefs.forEach(d => {
+      const isMissing = level.missing === d.key;
+      const text = ns('text');
+      text.setAttribute('x', d.x); text.setAttribute('y', d.y);
+      text.setAttribute('text-anchor', d.anchor);
+      text.setAttribute('class', 'triangle-label ' + (isMissing ? 'unknown' : 'known'));
+      text.textContent = isMissing ? '?' : level.shown[d.key];
+      svg.appendChild(text);
+    });
+  }
+
+  function checkAnswer(){
+    const level = LEVELS[currentLevelIndex];
+    const given = parseFloat(answerInput.value);
+    if (isNaN(given)){
+      feedbackEl.textContent = '✗ Type a number first.';
+      feedbackEl.className = 'feedback bad';
+      return;
+    }
+    // tolleranza: 1% del valore vero, minimo 0.05 — la risposta esatta spesso ha
+    // infinite cifre decimali, un margine ragionevole evita di penalizzare
+    // l'arrotondamento naturale di chi digita a mano
+    const tolerance = Math.max(0.05, level.answer * 0.01);
+    const ok = Math.abs(given - level.answer) <= tolerance;
+
+    if (ok){
+      feedbackEl.textContent = `✓ Correct — ${level.answer} (±${tolerance.toFixed(2)} accepted).`;
+      feedbackEl.className = 'feedback good';
+      checkBtn.disabled = true;
+      nextBtn.classList.add('visible');
+      nextBtn.textContent = currentLevelIndex === LEVELS.length - 1 ? 'See the result →' : 'Next level →';
+    } else {
+      feedbackEl.textContent = `✗ Not quite — try again.`;
+      feedbackEl.className = 'feedback bad';
+    }
+  }
+
+  checkBtn.addEventListener('click', checkAnswer);
+  answerInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !checkBtn.disabled) checkAnswer();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if (currentLevelIndex < LEVELS.length - 1){
+      loadLevel(currentLevelIndex + 1);
+    } else {
+      stageEl.style.display = 'none';
+      finalCardEl.classList.add('visible');
+      localStorage.setItem(STORAGE_KEY, '1');
+    }
+  });
+
+  jumpBtn.addEventListener('click', () => {
+    const n = parseInt(jumpInput.value);
+    if (n >= 1 && n <= LEVELS.length){
+      stageEl.style.display = '';
+      finalCardEl.classList.remove('visible');
+      loadLevel(n - 1);
+    }
+  });
+
+  loadLevel(currentLevelIndex);
+</script>
+</body>
+</html>
