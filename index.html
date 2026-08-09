@@ -1888,6 +1888,15 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="pythagorasRulesModal">
+  <div class="rules-modal-card">
+    <button type="button" class="rules-close-btn" id="pythagorasRulesCloseBtn" aria-label="Close">✕</button>
+    <h3><span data-en="Rules" data-it="Regole">Rules</span> <span class="accent">·</span> Pythagoras</h3>
+    <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging." data-it="trascina i due vertici mobili finché il triangolo non corrisponde alle misure indicate. I primi livelli mostrano tutti e tre i lati; negli ultimi ne manca uno, da calcolare con il teorema di Pitagora prima ancora di iniziare a trascinare.">drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging.</span></p>
+    <p><em data-en="Happy building." data-it="Buona costruzione.">Happy building.</em></p>
+  </div>
+</div>
+
 <div class="modal-overlay" id="reportModal">
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="reportCloseBtn" aria-label="Close">✕</button>
@@ -2511,13 +2520,13 @@
       <div class="mobile-shifted-content">
         <h2 class="mobile-game-title" data-en="${g.title}" data-it="${g.titleIT}">${g.title}</h2>
         <div class="mobile-game-header">
-          <button type="button" class="mobile-game-number" onclick="openRulesModal()">${currentLang() === 'it' ? `Gioco ${number} - Regole` : `Game ${number} - Rules`}</button>
+          <button type="button" class="mobile-game-number" onclick="${number === 2 ? 'openPythagorasRulesModal()' : 'openRulesModal()'}">${currentLang() === 'it' ? `Gioco ${number} - Regole` : `Game ${number} - Rules`}</button>
           <p class="mobile-tap-hint">${currentLang() === 'it' ? `Tocca Gioco ${number} per leggere le regole.` : `Tap Game ${number} to read the rules.`}</p>
         </div>
         <div class="mobile-play-preview-block">
           <div class="mobile-play-split">
-            <button type="button" class="mobile-play-btn mobile-play-split-btn" onclick="openModeModal(0, false)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="mobile-play-split-sub">Normal (locked)</span></button>
-            <button type="button" class="mobile-play-btn mobile-play-split-btn" onclick="openModeModal(0, true)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="mobile-play-split-sub">All unlocked</span></button>
+            <button type="button" class="mobile-play-btn mobile-play-split-btn" onclick="openModeModal(${number - 1}, false)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="mobile-play-split-sub">Normal (locked)</span></button>
+            <button type="button" class="mobile-play-btn mobile-play-split-btn" onclick="openModeModal(${number - 1}, true)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="mobile-play-split-sub">All unlocked</span></button>
           </div>
           <div class="mobile-preview-block">
             ${g.preview || ''}
@@ -2559,6 +2568,35 @@
           </div>
           <div class="lb-section">
             ${dualPodiumRowsHtml(cachedPrimeRushPodium, cachedScholarsGlancePodium)}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // stessa identica struttura di mobileLeaderboardSectionHtml qui sopra, ma per
+  // Pitagora: mai la stessa funzione (quella resta cucita su Eratosthenes: titolo
+  // "The Sieve" fisso, variabili cachedPodium/cachedPrimeRushPodium/
+  // cachedScholarsGlancePodium tutte specifiche di Eratosthenes)
+  function mobilePythagorasLeaderboardSectionHtml(g){
+    const navAndDivider = mobileNavRowHtml();
+    return `
+      <div class="mobile-shifted-content">
+        ${navAndDivider}
+        <div class="mobile-lb-block">
+          <h2>Geometric Instinct</h2>
+          <div class="lb-section">
+            ${podiumRowsHtml(null)}
+          </div>
+        </div>
+        <div class="mobile-lb-divider"></div>
+        <div class="mobile-records-block">
+          <div class="lb-dual-title-row">
+            <h3>Steady Hands</h3>
+            <span class="lb-dual-title-spacer"></span>
+            <h3>The Theorem</h3>
+          </div>
+          <div class="lb-section">
+            ${dualPodiumRowsHtml(null, null)}
           </div>
         </div>
       </div>`;
@@ -2713,7 +2751,7 @@
         document.querySelectorAll('.mobile-next').forEach(el => el.onclick = () => step(1));
       }
       // questa invece dipende dai dati di classifica: va sempre aggiornata
-      snapLeaderboard.innerHTML = mobileLeaderboardSectionHtml(g);
+      snapLeaderboard.innerHTML = number === 2 ? mobilePythagorasLeaderboardSectionHtml(g) : mobileLeaderboardSectionHtml(g);
 
       // ingresso/uscita dalla schermata di Eratostene su mobile: ora che il DOM sopra
       // non viene più ricostruito se currentIndex resta lo stesso, questo scatta solo
@@ -3910,6 +3948,17 @@
   document.getElementById('rulesCloseBtn').addEventListener('click', closeRulesModal);
   rulesModal.addEventListener('click', (e) => {
     if (e.target === rulesModal) closeRulesModal();
+  });
+
+  // stesso meccanismo di apertura/chiusura qui sopra, ma per il popup regole di
+  // Pitagora — mai lo stesso popup di Eratosthenes, altrimenti su mobile "Gioco 2 -
+  // Regole" mostrerebbe per sbaglio le regole del setaccio
+  const pythagorasRulesModal = document.getElementById('pythagorasRulesModal');
+  function openPythagorasRulesModal(){ playSound('tap'); pythagorasRulesModal.classList.add('visible'); }
+  function closePythagorasRulesModal(){ playSound('tap'); pythagorasRulesModal.classList.remove('visible'); }
+  document.getElementById('pythagorasRulesCloseBtn').addEventListener('click', closePythagorasRulesModal);
+  pythagorasRulesModal.addEventListener('click', (e) => {
+    if (e.target === pythagorasRulesModal) closePythagorasRulesModal();
   });
 
   // --- popup di scelta modalità (The Sieve / Prime Rush / Infinite Primes) ---
