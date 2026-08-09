@@ -834,7 +834,7 @@
       <a class="mobile-icon-btn" id="homeBtn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
     </div>
     <p class="instructions" data-en="Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total." data-it="Tocca ogni numero primo che riesci a trovare. Cadranno nella casella laterale per aiutarti a sommarli. Poi scrivi il totale.">Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total.</p>
-    <div class="rank-callout no-rank"><span class="rank-badge">Placeholder rank</span><span class="rank-phrase">Placeholder phrase text goes here.</span></div>
+    <div class="rank-callout no-rank" id="rankCallout"><span class="rank-badge">Placeholder rank</span><span class="rank-phrase">Placeholder phrase text goes here.</span></div>
     <div class="level-layout" id="levelLayout">
       <p style="color:var(--ink-dim); font-family:'Space Mono', monospace; font-size:0.85rem;">Loading level…</p>
     </div>
@@ -943,13 +943,14 @@
   loadSound('right', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_right.mp3');
   loadSound('wrong', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_wrong.mp3');
   loadSound('tap', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/tap.mp3'); // suono generico, riusabile per la maggior parte dei pulsanti della pagina
+  loadSound('badge', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_badge.mp3');
 
   let currentPadSource = null;
   // volume specifico per singolo suono, sopra a quello scelto con la barra effetti
   // (o il 100% di default su mobile, dove la barra non c'e): 1 = nessuna modifica.
   // Ogni suono puo avere un valore diverso per PC e per mobile (o un solo numero,
   // se deve valere uguale su entrambi)
-  const SOUND_LEVELS = { pad: { desktop: 1, mobile: 0.7 } };
+  const SOUND_LEVELS = { pad: { desktop: 1, mobile: 0.7 }, badge: { desktop: 1, mobile: 0.5 } };
   function getSoundLevel(name){
     const level = SOUND_LEVELS[name];
     if (level === undefined) return 1;
@@ -1227,6 +1228,12 @@
     renderLevel(levelData);
   }
 
+  const INFINITE_BADGE_LEVEL = 250;
+  const INFINITE_BADGE = { title: 'Master of the Sieve', titleIT: 'Maestro del Setaccio', phrase: "You've mastered the sieve itself.", phraseIT: 'Hai padroneggiato il setaccio stesso.' };
+  function badgeForLevel(lvl){
+    return lvl >= INFINITE_BADGE_LEVEL ? INFINITE_BADGE : null;
+  }
+
   function renderLevel(levelData){
     const grid = levelData.griglia;
     // solo per test su Mathemory2: la somma corretta va nel placeholder dell'input,
@@ -1238,6 +1245,18 @@
     const checkLabelHtml = window.innerWidth <= 900 ? 'C<br>h<br>e<br>c<br>k' : 'Check';
 
     wrap.style.setProperty('--circle-color', circleColor);
+
+    const badgeInfo = badgeForLevel(levelNum);
+    const prevBadgeInfo = badgeForLevel(levelNum - 1);
+    if (badgeInfo && !prevBadgeInfo){
+      playSound('badge');
+    }
+    const isIT = currentLang() === 'it';
+    const rankCalloutEl = document.getElementById('rankCallout');
+    rankCalloutEl.classList.toggle('no-rank', !badgeInfo);
+    rankCalloutEl.innerHTML = badgeInfo
+      ? `<span class="rank-badge">${isIT ? badgeInfo.titleIT : badgeInfo.title}</span><span class="rank-phrase">${isIT ? badgeInfo.phraseIT : badgeInfo.phrase}</span>`
+      : `<span class="rank-badge">Placeholder rank</span><span class="rank-phrase">Placeholder phrase text goes here.</span>`;
 
     document.getElementById('levelLayout').innerHTML = `
       <div class="grid" id="gridEl"></div>
