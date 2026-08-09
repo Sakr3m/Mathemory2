@@ -1574,7 +1574,7 @@
       background: var(--bg-panel);
       color: var(--ink-dim);
       font-family:'Space Mono', monospace;
-      font-size: 0.72rem;
+      font-size: 0.576rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       white-space: nowrap;
@@ -1586,6 +1586,32 @@
       pointer-events: none;
     }
     .index-report-btn:hover{
+      color: var(--yellow);
+      border-color: rgba(232,196,104,0.75);
+      background: rgba(232,196,104,0.22);
+      box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
+    }
+    .index-info-btn{
+      position: absolute;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--rule);
+      border-radius: 50%;
+      background: var(--bg-panel);
+      color: var(--ink-dim);
+      font-family:'Space Mono', monospace;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease, opacity 0.5s ease, background 0.15s ease, box-shadow 0.2s ease;
+      z-index: 50;
+      opacity: 0; /* stesso fade in sincronizzato di titolo/sottotitolo/pulsante volume */
+      pointer-events: none;
+    }
+    .index-info-btn:hover{
       color: var(--yellow);
       border-color: rgba(232,196,104,0.75);
       background: rgba(232,196,104,0.22);
@@ -1792,6 +1818,7 @@
         <button type="button" class="lang-switch-btn" id="langBtnIt" data-lang="it">IT</button>
       </div>
       <a class="index-kofi-btn" id="indexKofiBtn" href="https://ko-fi.com/the_forgotten_shelf" target="_blank" rel="noopener" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></a>
+      <button type="button" class="index-info-btn" id="indexInfoBtn" aria-label="Info">i</button>
       <button type="button" class="index-report-btn" id="indexReportBtn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
       <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
     </div>
@@ -1894,6 +1921,14 @@
     <h3><span data-en="Rules" data-it="Regole">Rules</span> <span class="accent">·</span> Pythagoras</h3>
     <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging." data-it="trascina i due vertici mobili finché il triangolo non corrisponde alle misure indicate. I primi livelli mostrano tutti e tre i lati; negli ultimi ne manca uno, da calcolare con il teorema di Pitagora prima ancora di iniziare a trascinare.">drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging.</span></p>
     <p><em data-en="Happy building." data-it="Buona costruzione.">Happy building.</em></p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="infoModal">
+  <div class="rules-modal-card">
+    <button type="button" class="rules-close-btn" id="infoCloseBtn" aria-label="Close">✕</button>
+    <h3 data-en="Patch 1.1" data-it="Patch 1.1">Patch 1.1</h3>
+    <p data-en="Eratosthenes just received a major update that required resetting The Sieve's saved progress. If you lost a few levels, don't worry: the climb to the top is now much faster than before." data-it="Eratostene ha ricevuto un aggiornamento importante che ha richiesto il reset dei salvataggi di The Sieve. Se hai perso qualche livello non preoccuparti: la scalata verso la vetta sarà d'ora in poi molto più veloce di prima.">Eratosthenes just received a major update that required resetting The Sieve's saved progress. If you lost a few levels, don't worry: the climb to the top is now much faster than before.</p>
   </div>
 </div>
 
@@ -2974,6 +3009,8 @@
       if (soundBtn){ soundBtn.style.opacity = '1'; soundBtn.style.pointerEvents = 'auto'; }
       const reportBtn = document.getElementById('indexReportBtn');
       if (reportBtn){ reportBtn.style.opacity = '1'; reportBtn.style.pointerEvents = 'auto'; }
+      const infoBtn = document.getElementById('indexInfoBtn');
+      if (infoBtn){ infoBtn.style.opacity = '1'; infoBtn.style.pointerEvents = 'auto'; }
       const langSwitch = document.getElementById('langSwitch');
       if (langSwitch){ langSwitch.style.opacity = '1'; langSwitch.style.pointerEvents = 'auto'; }
       const kofiBtn = document.getElementById('indexKofiBtn');
@@ -3724,12 +3761,14 @@
   function positionReportBtn(){
     if (window.innerWidth <= 900) return;
     const btn = document.getElementById('indexReportBtn');
+    const infoBtn = document.getElementById('indexInfoBtn');
     const subtitle = document.querySelector('.subtitle');
     const grid = document.getElementById('gamesGrid');
-    if (!btn || !subtitle || !grid) return;
+    if (!btn || !infoBtn || !subtitle || !grid) return;
 
     if (!indexReportBtnMovedToBody){
       document.body.appendChild(btn);
+      document.body.appendChild(infoBtn);
       indexReportBtnMovedToBody = true;
     }
 
@@ -3750,9 +3789,18 @@
     }
     const lastLineCenterY = subtitleRect.bottom - lineHeight / 2;
     const btnHeight = btn.getBoundingClientRect().height;
+    const btnTop = lastLineCenterY + window.scrollY - btnHeight / 2;
+    const infoGap = 12; // "a sinistra", non attaccato
 
-    btn.style.left = cardLeft + 'px';
-    btn.style.top = (lastLineCenterY + window.scrollY - btnHeight / 2) + 'px';
+    // il pulsante info prende il posto che occupava prima Segnala bug (stessa altezza,
+    // tonda quindi larghezza = altezza), Segnala bug si sposta subito dopo
+    infoBtn.style.width = btnHeight + 'px';
+    infoBtn.style.height = btnHeight + 'px';
+    infoBtn.style.left = cardLeft + 'px';
+    infoBtn.style.top = btnTop + 'px';
+
+    btn.style.left = (cardLeft + btnHeight + infoGap) + 'px';
+    btn.style.top = btnTop + 'px';
   }
   window.addEventListener('resize', positionReportBtn);
 
@@ -3959,6 +4007,17 @@
   document.getElementById('pythagorasRulesCloseBtn').addEventListener('click', closePythagorasRulesModal);
   pythagorasRulesModal.addEventListener('click', (e) => {
     if (e.target === pythagorasRulesModal) closePythagorasRulesModal();
+  });
+
+  // stesso meccanismo di apertura/chiusura qui sopra, ma per il popup informativo
+  // (patch note) aperto dal nuovo pulsante "i" a sinistra di Segnala bug
+  const infoModal = document.getElementById('infoModal');
+  function openInfoModal(){ playSound('tap'); infoModal.classList.add('visible'); }
+  function closeInfoModal(){ playSound('tap'); infoModal.classList.remove('visible'); }
+  document.getElementById('indexInfoBtn').addEventListener('click', openInfoModal);
+  document.getElementById('infoCloseBtn').addEventListener('click', closeInfoModal);
+  infoModal.addEventListener('click', (e) => {
+    if (e.target === infoModal) closeInfoModal();
   });
 
   // --- popup di scelta modalità (The Sieve / Prime Rush / Infinite Primes) ---
