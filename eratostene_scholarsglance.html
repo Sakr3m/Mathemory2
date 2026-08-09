@@ -905,24 +905,24 @@
 
 <div class="modal-overlay" id="finishModal">
   <div class="modal-card">
-    <h3>🎉 You finished the race!</h3>
+    <h3 data-en="🎉 You finished the race!" data-it="🎉 Hai finito la gara!">🎉 You finished the race!</h3>
     <div class="finish-stat">
-      <span class="finish-stat-label">Your total race time</span>
+      <span class="finish-stat-label" data-en="Your total race time" data-it="Il tuo tempo totale di gara">Your total race time</span>
       <span class="finish-stat-value" id="finishTotalTime"></span>
     </div>
     <div class="finish-input-block">
-      <p class="finish-instruction">Enter a nickname to be remembered for this race — it will be sent for the leaderboard.</p>
-      <input type="text" id="finishNickname" maxlength="12" placeholder="Your nickname">
-      <p class="nickname-hint">3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine).</p>
+      <p class="finish-instruction" data-en="Enter a nickname to be remembered for this race — it will be sent for the leaderboard." data-it="Inserisci un nickname per essere ricordato in questa gara: verrà inviato per la classifica.">Enter a nickname to be remembered for this race — it will be sent for the leaderboard.</p>
+      <input type="text" id="finishNickname" maxlength="12" placeholder="Your nickname" data-placeholder-en="Your nickname" data-placeholder-it="Il tuo nickname">
+      <p class="nickname-hint" data-en="3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine)." data-it="Da 3 a 12 caratteri. Solo lettere, numeri, spazi, - _ . (qualsiasi lingua/alfabeto va bene).">3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine).</p>
     </div>
     <div class="modal-buttons">
-      <button type="button" class="modal-btn yes" id="finishConfirmBtn">Confirm</button>
-      <button type="button" class="modal-btn no" id="finishSkipBtn">Skip</button>
+      <button type="button" class="modal-btn yes" id="finishConfirmBtn" data-en="Confirm" data-it="Conferma">Confirm</button>
+      <button type="button" class="modal-btn no" id="finishSkipBtn" data-en="Skip" data-it="Salta">Skip</button>
     </div>
     <p class="modal-note" id="finishNote"></p>
     <div class="modal-footnotes">
-      <p>📸 Tip: screenshot this screen if you get a new record — submissions can occasionally fail to go through.</p>
-      <p>⚠️ Nicknames containing "sakrem" (any case or variant) are reserved for testing and auto-removed after 5 minutes.</p>
+      <p data-en="📸 Tip: screenshot this screen if you get a new record — submissions can occasionally fail to go through." data-it="📸 Consiglio: fai uno screenshot di questa schermata se ottieni un nuovo record: a volte l'invio non va a buon fine.">📸 Tip: screenshot this screen if you get a new record — submissions can occasionally fail to go through.</p>
+      <p data-en="⚠️ Nicknames containing &quot;sakrem&quot; (any case or variant) are reserved for testing and auto-removed after 5 minutes." data-it="⚠️ I nickname che contengono &quot;sakrem&quot; (in qualsiasi variante) sono riservati ai test e vengono rimossi automaticamente dopo 5 minuti.">⚠️ Nicknames containing "sakrem" (any case or variant) are reserved for testing and auto-removed after 5 minutes.</p>
     </div>
   </div>
 </div>
@@ -1007,7 +1007,7 @@
       <h1 id="levelTitle"></h1>
       <a class="mobile-icon-btn" id="homeBtn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
     </div>
-    <p class="instructions">Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total.</p>
+    <p class="instructions" data-en="Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total." data-it="Tocca ogni numero primo che riesci a trovare. Cadranno nella casella laterale per aiutarti a sommarli. Poi scrivi il totale.">Tap every prime you can find. They'll drop into the box on the side to help you add them up. Then write the total.</p>
     <div class="rank-callout no-rank"><span class="rank-badge">Placeholder rank</span><span class="rank-phrase">Placeholder phrase text goes here.</span></div>
     <div class="level-layout" id="levelLayout">
       <p style="color:var(--ink-dim); font-family:'Space Mono', monospace; font-size:0.85rem;">Loading level…</p>
@@ -1227,6 +1227,22 @@
     `;
   }
 
+  // --- lingua: nessuno switch qui (vive solo su index.html), ma legge la stessa
+  // preferenza salvata per tradurre le poche scritte previste su questa pagina ---
+  function currentLang(){
+    return localStorage.getItem('mathemory_lang') || 'en';
+  }
+  function applyLanguage(){
+    const lang = currentLang();
+    document.querySelectorAll('[data-en][data-it]').forEach(el => {
+      el.textContent = lang === 'it' ? el.dataset.it : el.dataset.en;
+    });
+    document.querySelectorAll('[data-placeholder-en][data-placeholder-it]').forEach(el => {
+      el.placeholder = lang === 'it' ? el.dataset.placeholderIt : el.dataset.placeholderEn;
+    });
+  }
+  applyLanguage();
+
   // --- generazione procedurale, nessun file da caricare: stesso motore di Infinite
   // Primes, ma cap dei primi FISSO a 211 (non cresce) e curva di difficoltà compressa
   // sui soli 50 livelli invece che centinaia ---
@@ -1436,8 +1452,9 @@
 
     const h1El = document.getElementById('levelTitle');
     h1El.className = 'lv-digits-' + String(levelNum).length;
+    const levelWord = currentLang() === 'it' ? 'Livello' : 'Level';
     h1El.innerHTML =
-      `Eratosthenes <span class="accent">·</span> Scholar's Glance <span class="accent">·</span> Level ${levelNum}`;
+      `Eratosthenes <span class="accent">·</span> Scholar's Glance <span class="accent">·</span> ${levelWord} ${levelNum}`;
 
     document.getElementById('levelLayout').innerHTML = `
       <div class="grid" id="gridEl"></div>
@@ -1453,7 +1470,7 @@
             </div>
             <div class="skip-sight-row">
               <button type="button" id="devSkipBtn" class="dev-skip-btn" aria-label="Dev skip">»</button>
-              <button type="button" class="sight-btn" id="sightBtn" disabled>👁 Sight</button>
+              <button type="button" class="sight-btn" id="sightBtn" disabled>👁 ${currentLang() === 'it' ? 'Guarda' : 'Sight'}</button>
             </div>
             <button class="check" id="checkBtn"><span class="check-label">${checkLabelHtml}</span></button>
           </div>
@@ -1461,6 +1478,7 @@
         </div>
       </div>
     `;
+    applyLanguage();
 
     // valore di sicurezza: mai lasciare levelStartTime nullo, nel caso rarissimo in cui
     // il giocatore interagisca prima ancora che i font risultino pronti
@@ -1609,10 +1627,10 @@
         if (remaining <= 0){
           clearInterval(cooldownLabelInterval);
           sightOnCooldown = false;
-          sightBtn.textContent = '👁 Sight';
+          sightBtn.textContent = currentLang() === 'it' ? '👁 Guarda' : '👁 Sight';
           updateSightButtonState();
         } else {
-          sightBtn.textContent = `👁 Sight (${remaining.toFixed(1)}s)`;
+          sightBtn.textContent = currentLang() === 'it' ? `👁 Guarda (${remaining.toFixed(1)}s)` : `👁 Sight (${remaining.toFixed(1)}s)`;
         }
       }, 100);
     }
