@@ -460,7 +460,7 @@
   }
 
   .mini-triangle{
-    width: 340px;
+    width: 306px;
     flex-shrink: 0;
     align-self: flex-start;
     padding: 0.9rem;
@@ -748,6 +748,28 @@
     margin: 0 0 1rem;
   }
   .rules-modal-card p strong{ color: var(--ink); }
+  .rules-modes-title{
+    font-family:'Work Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.99rem;
+    color: var(--ink);
+    margin: 1.2rem 0 0.6rem;
+  }
+  .rules-modes-list{
+    list-style: none;
+    margin: 0 0 0.4rem;
+    padding: 0;
+  }
+  .rules-modes-list li{
+    font-family:'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--ink-dim);
+    line-height: 1.5;
+    margin: 0 0 0.7rem;
+  }
+  .rules-modes-list li strong{ color: var(--ink); }
+  .erato-rules-preview .rules-modes-title,
+  .erato-rules-preview .rules-modes-list li{ font-size: 0.85rem; }
   /* testolina di Eratostene nel popup Rules: stessa immagine della versione desktop
      (nell'anteprima a comparsa sopra la classifica), qui però ancorata in basso a
      DESTRA invece che al centro del divisore, perché il popup non ha due colonne.
@@ -1365,6 +1387,7 @@
       gap: 0.6rem;
     }
     .mobile-preview-block .mini-sieve{ width: auto; max-width: 196px; margin: 0; }
+    .mobile-preview-block .mini-triangle{ width: auto; max-width: 196px; margin: 0; padding: 0.5rem; }
     /* il cerchio si scala già da solo col viewBox: la proporzione giusta è quella originale (r=21) */
     .mobile-preview-block .mc{ font-size: 0.91rem; }
     .mobile-device-note-full{
@@ -1911,6 +1934,13 @@
     <h3><span data-en="Rules" data-it="Regole">Rules</span> <span class="accent">·</span> <span data-en="Eratosthenes" data-it="Eratostene">Eratosthenes</span></h3>
     <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time." data-it="trova i 5 numeri primi nascosti nella griglia 5×5, somma i loro valori e inserisci il totale nella casella qui sotto. Una risposta corretta ti porta subito al livello successivo, quindi gioca con calma: ogni livello resta aperto per tutto il tempo che ti serve, senza alcuna penalità.">find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time.</span></p>
     <p><em data-en="Happy prime hunting." data-it="Buona caccia ai numeri primi.">Happy prime hunting.</em></p>
+    <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
+    <ul class="rules-modes-list">
+      <li><strong>The Sieve</strong> — <span data-en="the full 100-level race, at your own pace, ranked on the main leaderboard." data-it="la gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale.">the full 100-level race, at your own pace, ranked on the main leaderboard.</span></li>
+      <li><strong>Prime Rush</strong> — <span data-en="50 levels of pure racing against the clock, against other players." data-it="50 livelli di pura corsa contro il tempo, contro altri giocatori.">50 levels of pure racing against the clock, against other players.</span></li>
+      <li><strong>Scholar's Glance</strong> — <span data-en="50 levels of total concentration." data-it="50 livelli di pura concentrazione.">50 levels of total concentration.</span></li>
+      <li><strong>Infinite Primes</strong> — <span data-en="endless levels, no leaderboard, just you and the numbers." data-it="livelli infiniti, nessuna classifica, solo tu e i numeri.">endless levels, no leaderboard, just you and the numbers.</span></li>
+    </ul>
     <img class="rules-modal-face-img" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_face.png" alt="">
   </div>
 </div>
@@ -1921,6 +1951,13 @@
     <h3><span data-en="Rules" data-it="Regole">Rules</span> <span class="accent">·</span> Pythagoras</h3>
     <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging." data-it="trascina i due vertici mobili finché il triangolo non corrisponde alle misure indicate. I primi livelli mostrano tutti e tre i lati; negli ultimi ne manca uno, da calcolare con il teorema di Pitagora prima ancora di iniziare a trascinare.">drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging.</span></p>
     <p><em data-en="Happy building." data-it="Buona costruzione.">Happy building.</em></p>
+    <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
+    <ul class="rules-modes-list">
+      <li><strong>Geometric Instinct</strong> — <span data-en="50 levels: guess the triangle's sides freely for the first 35, then work out a missing measurement for the last 15. Precision required climbs from 80% to 99%." data-it="50 livelli: indovina liberamente i lati del triangolo per i primi 35, poi calcola una misura mancante negli ultimi 15. La precisione richiesta sale dall'80% al 99%.">50 levels: guess the triangle's sides freely for the first 35, then work out a missing measurement for the last 15. Precision required climbs from 80% to 99%.</span></li>
+      <li><strong>Triangles Everywhere</strong> — <span data-en="endless levels with every measurement given. Precision required climbs from 80% to 99% by level 50, then stays at 99% forever." data-it="livelli infiniti con tutte le misure fornite. La precisione richiesta sale dall'80% al 99% entro il livello 50, poi resta al 99% per sempre.">endless levels with every measurement given. Precision required climbs from 80% to 99% by level 50, then stays at 99% forever.</span></li>
+      <li><strong>Steady Hands</strong> — <span data-en="35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go." data-it="35 livelli spietati, senza barra di precisione ad aiutarti. Minimo 99% fin dal primo livello, con misure decimali che compaiono man mano che avanzi.">35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go.</span></li>
+      <li><strong>The Theorem</strong> — <span data-en="50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both." data-it="50 triangoli fermi, niente trascinamento: calcola solo il lato mancante dagli altri due. I numeri decimali iniziano a comparire dopo il livello 30, prima in una misura poi in entrambe.">50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both.</span></li>
+    </ul>
   </div>
 </div>
 
@@ -2098,10 +2135,10 @@
       hrefKey: 'pythagoras_geometricinstinct_last', hrefBase: 'pitagora_geometricinstinct.html',
       preview: buildMiniTriangle(),
       modes: [
-        { name: 'Steady Hands', desc: '35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go.', descIT: '35 livelli spietati, senza barra di precisione ad aiutarti. Minimo 99% fin dal primo livello, con misure decimali che compaiono man mano che avanzi.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_steadyhands.html', normalFile: 'pitagora_steadyhands.html', hrefKey: 'pythagoras_steadyhands_last', accent: 'red', requiresSieveFinish: true },
-        { name: 'The Theorem', desc: '50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both.', descIT: '50 triangoli fermi, niente trascinamento: calcola solo il lato mancante dagli altri due. I numeri decimali iniziano a comparire dopo il livello 30, prima in una misura poi in entrambe.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_thetheorem.html', normalFile: 'pitagora_thetheorem.html', hrefKey: 'pythagoras_thetheorem_last', accent: 'orange', requiresSieveFinish: true },
-        { name: 'Geometric Instinct', desc: '50 levels: guess the triangle\'s sides freely for the first 35, then work out a missing measurement for the last 15. Precision required climbs from 80% to 99%.', descIT: '50 livelli: indovina liberamente i lati del triangolo per i primi 35, poi calcola una misura mancante negli ultimi 15. La precisione richiesta sale dall\'80% al 99%.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_geometricinstinct.html', normalFile: 'pitagora_geometricinstinct.html', hrefKey: 'pythagoras_geometricinstinct_last', accent: 'yellow' },
-        { name: 'Triangles Everywhere', desc: 'Endless levels with every measurement given. Precision required climbs from 80% to 99% by level 50, then stays at 99% forever.', descIT: 'Livelli infiniti con tutte le misure fornite. La precisione richiesta sale dall\'80% al 99% entro il livello 50, poi resta al 99% per sempre.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'pitagora_triangleseverywhere.html', normalFile: 'pitagora_triangleseverywhere.html', hrefKey: 'pythagoras_triangleseverywhere_last', accent: 'teal', requiresSieveFinish: true },
+        { name: 'Steady Hands', desc: '35 unforgiving levels, no precision gauge to help you.', descIT: '35 livelli spietati, senza barra di precisione ad aiutarti.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_steadyhands.html', normalFile: 'pitagora_steadyhands.html', hrefKey: 'pythagoras_steadyhands_last', accent: 'red', requiresSieveFinish: true },
+        { name: 'The Theorem', desc: '50 static triangles: calculate the missing side yourself.', descIT: '50 triangoli fermi: calcola tu stesso il lato mancante.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_thetheorem.html', normalFile: 'pitagora_thetheorem.html', hrefKey: 'pythagoras_thetheorem_last', accent: 'orange', requiresSieveFinish: true },
+        { name: 'Geometric Instinct', desc: '50 levels, from generous guesses to near-perfect precision.', descIT: '50 livelli, da un margine ampio a una precisione quasi perfetta.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_geometricinstinct.html', normalFile: 'pitagora_geometricinstinct.html', hrefKey: 'pythagoras_geometricinstinct_last', accent: 'yellow' },
+        { name: 'Triangles Everywhere', desc: 'Endless levels, precision climbing until it maxes out.', descIT: 'Livelli infiniti, precisione che sale fino al massimo.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'pitagora_triangleseverywhere.html', normalFile: 'pitagora_triangleseverywhere.html', hrefKey: 'pythagoras_triangleseverywhere_last', accent: 'teal', requiresSieveFinish: true },
       ]
     },
   ];
@@ -2488,7 +2525,7 @@
   function pythagorasRightHtml(g){
     return `
       <div class="lb-half">
-        <h2>Geometric Instinct</h2>
+        <h2>The Theorem</h2>
         <div class="lb-section">
           ${podiumRowsHtml(null)}
         </div>
@@ -2505,13 +2542,9 @@
         <path d="M0,5 Q89,2 178,3.5 Q267,2 356,5 Q267,8 178,6.5 Q89,8 0,5 Z" fill="url(#pythagorasDividerFade)" />
       </svg>
       <div class="lb-half">
-        <div class="lb-dual-title-row">
-          <h3>Steady Hands</h3>
-          <span class="lb-dual-title-spacer"></span>
-          <h3>The Theorem</h3>
-        </div>
+        <h2>Steady Hands</h2>
         <div class="lb-section">
-          ${dualPodiumRowsHtml(null, null)}
+          ${podiumRowsHtml(null)}
         </div>
       </div>`;
   }
@@ -2618,20 +2651,16 @@
       <div class="mobile-shifted-content">
         ${navAndDivider}
         <div class="mobile-lb-block">
-          <h2>Geometric Instinct</h2>
+          <h2>The Theorem</h2>
           <div class="lb-section">
             ${podiumRowsHtml(null)}
           </div>
         </div>
         <div class="mobile-lb-divider"></div>
         <div class="mobile-records-block">
-          <div class="lb-dual-title-row">
-            <h3>Steady Hands</h3>
-            <span class="lb-dual-title-spacer"></span>
-            <h3>The Theorem</h3>
-          </div>
+          <h2>Steady Hands</h2>
           <div class="lb-section">
-            ${dualPodiumRowsHtml(null, null)}
+            ${podiumRowsHtml(null)}
           </div>
         </div>
       </div>`;
@@ -2713,7 +2742,15 @@
       } else if (eratoOverlayEl && eratoOverlayEl.dataset.eratoFinalized === 'true'){
         // forzo opacità/display solo se la sequenza di comparsa è già del tutto
         // conclusa: farlo mentre è ancora in corso (es. un resize a metà animazione)
-        // tronca di colpo il fade lasciando il movimento a proseguire per conto suo
+        // tronca di colpo il fade lasciando il movimento a proseguire per conto suo.
+        // Riapplico anche la geometria fresca (non solo display/opacity): un render
+        // "silenzioso" come il cambio lingua può cambiare la larghezza/altezza reale
+        // del contenuto, e senza questo la card restava alla vecchia posizione/misura
+        const freshGeometry = computeCardGeometry(g, number);
+        eratoOverlayEl.style.top = freshGeometry.top + 'px';
+        eratoOverlayEl.style.left = freshGeometry.left + 'px';
+        eratoOverlayEl.style.width = freshGeometry.width + 'px';
+        eratoOverlayEl.style.height = freshGeometry.height + 'px';
         eratoOverlayEl.style.display = 'flex';
         eratoOverlayEl.style.opacity = '1';
       }
@@ -2735,8 +2772,38 @@
           finalizePythagorasLayout(pythagorasOverlayEl);
         });
       } else if (isNavigation){
-        playCardNavAnimation(pythagorasOverlayEl, geometry.top, geometry.left, geometry.width, geometry.height, () => {});
+        // stessa coreografia usata per Eratosthenes qui sopra: senza nascondere prima
+        // divisore/RULES/classifica, restano visibili per tutta la fase di restringimento
+        // dell'animazione — si vedevano "sbucare" prima che la card fosse tornata piena
+        const dividerLine = pythagorasOverlayEl.querySelector('.erato-mid-divider');
+        const gamexTag = pythagorasOverlayEl.querySelector('.erato-gamex-tag');
+        const lbHalfNav = pythagorasOverlayEl.querySelector('.erato-leaderboard-half');
+        [dividerLine, gamexTag].forEach(el => {
+          if (!el) return;
+          el.style.transition = 'none';
+          el.style.opacity = '0';
+        });
+        if (lbHalfNav){ lbHalfNav.style.transition = 'none'; lbHalfNav.style.opacity = '0'; }
+        if (gamexTag) gamexTag.style.pointerEvents = 'none';
+        playCardNavAnimation(pythagorasOverlayEl, geometry.top, geometry.left, geometry.width, geometry.height, () => {
+          [dividerLine, gamexTag].forEach(el => {
+            if (!el) return;
+            void el.offsetWidth;
+            el.style.transition = 'opacity 1s ease';
+            el.style.opacity = '1';
+          });
+          if (gamexTag) setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
+          if (lbHalfNav){
+            void lbHalfNav.offsetWidth;
+            lbHalfNav.style.transition = 'opacity 500ms ease';
+            lbHalfNav.style.opacity = '1';
+          }
+        });
       } else {
+        pythagorasOverlayEl.style.top = geometry.top + 'px';
+        pythagorasOverlayEl.style.left = geometry.left + 'px';
+        pythagorasOverlayEl.style.width = geometry.width + 'px';
+        pythagorasOverlayEl.style.height = geometry.height + 'px';
         pythagorasOverlayEl.style.display = 'flex';
         pythagorasOverlayEl.style.opacity = '1';
       }
@@ -3255,6 +3322,13 @@
           <h3 data-en="Rules" data-it="Regole">Rules</h3>
           <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time." data-it="trova i 5 numeri primi nascosti nella griglia 5×5, somma i loro valori e inserisci il totale nella casella qui sotto. Una risposta corretta ti porta subito al livello successivo, quindi gioca con calma: ogni livello resta aperto per tutto il tempo che ti serve, senza alcuna penalità.">find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time.</span></p>
           <p data-en="Happy prime hunting." data-it="Buona caccia ai numeri primi.">Happy prime hunting.</p>
+          <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
+          <ul class="rules-modes-list">
+            <li><strong>The Sieve</strong> — <span data-en="the full 100-level race, at your own pace, ranked on the main leaderboard." data-it="la gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale.">the full 100-level race, at your own pace, ranked on the main leaderboard.</span></li>
+            <li><strong>Prime Rush</strong> — <span data-en="50 levels of pure racing against the clock, against other players." data-it="50 livelli di pura corsa contro il tempo, contro altri giocatori.">50 levels of pure racing against the clock, against other players.</span></li>
+            <li><strong>Scholar's Glance</strong> — <span data-en="50 levels of total concentration." data-it="50 livelli di pura concentrazione.">50 levels of total concentration.</span></li>
+            <li><strong>Infinite Primes</strong> — <span data-en="endless levels, no leaderboard, just you and the numbers." data-it="livelli infiniti, nessuna classifica, solo tu e i numeri.">endless levels, no leaderboard, just you and the numbers.</span></li>
+          </ul>
           <p class="device-note-old" data-en="Progress is saved per device — switching devices restarts from level 1." data-it="I progressi sono salvati per dispositivo: cambiare dispositivo fa ripartire dal livello 1.">Progress is saved per device — switching devices restarts from level 1.</p>
         </div>`;
       // stato esplicito, mai dedotto leggendo l'HTML attuale: leggere lbHalf.innerHTML
@@ -3379,6 +3453,13 @@
           <h3 data-en="Rules" data-it="Regole">Rules</h3>
           <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging." data-it="trascina i due vertici mobili finché il triangolo non corrisponde alle misure indicate. I primi livelli mostrano tutti e tre i lati; negli ultimi ne manca uno, da calcolare con il teorema di Pitagora prima ancora di iniziare a trascinare.">drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging.</span></p>
           <p data-en="Happy building." data-it="Buona costruzione.">Happy building.</p>
+          <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
+          <ul class="rules-modes-list">
+            <li><strong>Geometric Instinct</strong> — <span data-en="50 levels: guess the triangle's sides freely for the first 35, then work out a missing measurement for the last 15. Precision required climbs from 80% to 99%." data-it="50 livelli: indovina liberamente i lati del triangolo per i primi 35, poi calcola una misura mancante negli ultimi 15. La precisione richiesta sale dall'80% al 99%.">50 levels: guess the triangle's sides freely for the first 35, then work out a missing measurement for the last 15. Precision required climbs from 80% to 99%.</span></li>
+            <li><strong>Triangles Everywhere</strong> — <span data-en="endless levels with every measurement given. Precision required climbs from 80% to 99% by level 50, then stays at 99% forever." data-it="livelli infiniti con tutte le misure fornite. La precisione richiesta sale dall'80% al 99% entro il livello 50, poi resta al 99% per sempre.">endless levels with every measurement given. Precision required climbs from 80% to 99% by level 50, then stays at 99% forever.</span></li>
+            <li><strong>Steady Hands</strong> — <span data-en="35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go." data-it="35 livelli spietati, senza barra di precisione ad aiutarti. Minimo 99% fin dal primo livello, con misure decimali che compaiono man mano che avanzi.">35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go.</span></li>
+            <li><strong>The Theorem</strong> — <span data-en="50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both." data-it="50 triangoli fermi, niente trascinamento: calcola solo il lato mancante dagli altri due. I numeri decimali iniziano a comparire dopo il livello 30, prima in una misura poi in entrambe.">50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both.</span></li>
+          </ul>
           <p class="device-note-old" data-en="Progress is saved per device: switching devices restarts from level 1." data-it="I progressi sono salvati per dispositivo: cambiare dispositivo fa ripartire dal livello 1.">Progress is saved per device: switching devices restarts from level 1.</p>
         </div>`;
       lbHalf._realLbHtml = lbHalf.innerHTML;
@@ -3744,6 +3825,13 @@
     if (lang !== 'it' && lang !== 'en') return;
     localStorage.setItem('mathemory_lang', lang);
     applyLanguage();
+    // la geometria delle card era misurata una sola volta e mai più ricalcolata: cambiando
+    // lingua il testo reale cambia larghezza (es. "GAME 2"/"GIOCO 2"), la cache restava
+    // quella vecchia e la card successiva finiva posizionata in base a un valore ormai
+    // sbagliato — invalido entrambe le cache e forzo un render fresco
+    cardGeometry = null;
+    pythagorasCardGeometry = null;
+    render();
     // la frase di fine gara vive dentro alla classifica (rigenerata qui, non da
     // render() che non la tocca) e legge già currentLang() al suo interno
     if (typeof refreshEratoLeaderboard === 'function') refreshEratoLeaderboard();
