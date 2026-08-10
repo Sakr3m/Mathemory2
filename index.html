@@ -609,7 +609,6 @@
   .erato-face-img{
     position: absolute;
     bottom: 0;
-    left: 50%;
     transform: translateX(-50%);
     max-height: 20.87%;
     width: auto;
@@ -3294,10 +3293,9 @@
         setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
       }
 
-      // piccola immagine di Eratostene: sempre presente in basso al centro di tutta la
-      // card (posizione fissa via CSS, left:50%, non serve calcolarla), stessa identica
-      // comparsa graduale del pulsante RULES qui sopra — non più legata al passaggio del
-      // mouse su RULES, quella logica è stata tolta dagli handler più sotto
+      // piccola immagine di Eratostene: al centro del divisore, esattamente come RULES
+      // (stesso dividerX), stessa identica comparsa graduale — non più legata al
+      // passaggio del mouse su RULES, quella logica è stata tolta dagli handler più sotto
       let faceImg = overlay.querySelector('.erato-face-img');
       if (!faceImg){
         faceImg = document.createElement('img');
@@ -3306,6 +3304,7 @@
         faceImg.alt = '';
         overlay.appendChild(faceImg);
       }
+      faceImg.style.left = dividerX + 'px';
       void faceImg.offsetWidth;
       faceImg.style.transition = 'opacity 1s ease';
       faceImg.style.opacity = '1';
@@ -3430,6 +3429,15 @@
         gamexTag.style.opacity = '1';
         setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
       }
+    }
+
+    // stessa classifica: al primo caricamento parte invisibile (vedi buildPythagorasOverlay)
+    // e va fatta comparire qui, altrimenti resterebbe nascosta per sempre — stesso fade
+    // da 500ms usato nel ramo di navigazione in render(), per coerenza
+    if (lbHalf){
+      void lbHalf.offsetWidth;
+      lbHalf.style.transition = 'opacity 500ms ease';
+      lbHalf.style.opacity = '1';
     }
 
     const rulesBtn = overlay.querySelector('#pythagorasRulesBtn');
@@ -3645,7 +3653,7 @@
       <div class="erato-content-half" style="width:${geometry.width / 2}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
         ${pythagorasContentHtml(g)}
       </div>
-      <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
+      <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem; opacity:0;">
         ${pythagorasRightHtml(g)}
       </div>`;
     overlay.style.cssText = `
