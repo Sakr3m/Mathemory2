@@ -568,6 +568,7 @@
     align-items: stretch;
     gap: 0.65rem;
     height: 100%;
+    overflow-y: auto;
     /* l'illustrazione del volto (.erato-face-img) è ancorata in basso e arriva fino
        al 20.87% dell'altezza della card: questo spazio fisso (non percentuale — il
        padding percentuale in CSS si calcola sulla larghezza, non sull'altezza, quindi
@@ -608,12 +609,13 @@
   .erato-face-img{
     position: absolute;
     bottom: 0;
-    left: 0;
+    left: 50%;
     transform: translateX(-50%);
     max-height: 20.87%;
     width: auto;
     pointer-events: none;
     z-index: 2;
+    opacity: 0; /* stessa comparsa di RULES: nascosta finché la card non è del tutto rivelata */
   }
   /* --- overlay condiviso da tutti i popup (regole, scelta modalità, ecc.) --- */
   .modal-overlay{
@@ -1932,14 +1934,14 @@
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="rulesCloseBtn" aria-label="Close">✕</button>
     <h3><span data-en="Rules" data-it="Regole">Rules</span> <span class="accent">·</span> <span data-en="Eratosthenes" data-it="Eratostene">Eratosthenes</span></h3>
-    <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time." data-it="trova i 5 numeri primi nascosti nella griglia 5×5, somma i loro valori e inserisci il totale nella casella qui sotto. Una risposta corretta ti porta subito al livello successivo, quindi gioca con calma: ogni livello resta aperto per tutto il tempo che ti serve, senza alcuna penalità.">find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time.</span></p>
+    <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total." data-it="trova i 5 numeri primi nascosti nella griglia 5×5, somma i loro valori e inserisci il totale.">find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total.</span></p>
     <p><em data-en="Happy prime hunting." data-it="Buona caccia ai numeri primi.">Happy prime hunting.</em></p>
     <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
     <ul class="rules-modes-list">
-      <li><strong>The Sieve</strong> — <span data-en="the full 100-level race, at your own pace, ranked on the main leaderboard." data-it="la gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale.">the full 100-level race, at your own pace, ranked on the main leaderboard.</span></li>
-      <li><strong>Prime Rush</strong> — <span data-en="50 levels of pure racing against the clock, against other players." data-it="50 livelli di pura corsa contro il tempo, contro altri giocatori.">50 levels of pure racing against the clock, against other players.</span></li>
-      <li><strong>Scholar's Glance</strong> — <span data-en="50 levels of total concentration." data-it="50 livelli di pura concentrazione.">50 levels of total concentration.</span></li>
-      <li><strong>Infinite Primes</strong> — <span data-en="endless levels, no leaderboard, just you and the numbers." data-it="livelli infiniti, nessuna classifica, solo tu e i numeri.">endless levels, no leaderboard, just you and the numbers.</span></li>
+      <li><strong>The Sieve</strong> — <span data-en="the full 100-level race, at your own pace, ranked on the main leaderboard. Time-limited, progress saved, anti-cheat active in the final levels." data-it="la gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale. A tempo limitato, progressi salvati, anti-cheat attivo negli ultimi livelli.">the full 100-level race, at your own pace, ranked on the main leaderboard. Time-limited, progress saved, anti-cheat active in the final levels.</span></li>
+      <li><strong>Prime Rush</strong> — <span data-en="50 levels of pure racing against the clock, against other players. No progress saved: it's all or nothing in one sitting." data-it="50 livelli di pura corsa contro il tempo, contro altri giocatori. Nessun progresso salvato: tutto o niente in un'unica sessione.">50 levels of pure racing against the clock, against other players. No progress saved: it's all or nothing in one sitting.</span></li>
+      <li><strong>Scholar's Glance</strong> — <span data-en="50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory." data-it="50 livelli di pura concentrazione: i numeri appaiono per un attimo, poi spariscono, e risolvi a memoria.">50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory.</span></li>
+      <li><strong>Infinite Primes</strong> — <span data-en="endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going." data-it="livelli infiniti, nessuna classifica, solo tu e i numeri, per tutto il tempo che vuoi continuare.">endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going.</span></li>
     </ul>
     <img class="rules-modal-face-img" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_face.png" alt="">
   </div>
@@ -1949,7 +1951,7 @@
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="pythagorasRulesCloseBtn" aria-label="Close">✕</button>
     <h3><span data-en="Rules" data-it="Regole">Rules</span> <span class="accent">·</span> Pythagoras</h3>
-    <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging." data-it="trascina i due vertici mobili finché il triangolo non corrisponde alle misure indicate. I primi livelli mostrano tutti e tre i lati; negli ultimi ne manca uno, da calcolare con il teorema di Pitagora prima ancora di iniziare a trascinare.">drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging.</span></p>
+    <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="drag the two moving vertices until the triangle matches the measurements shown." data-it="trascina i due vertici mobili finché il triangolo non corrisponde alle misure indicate.">drag the two moving vertices until the triangle matches the measurements shown.</span></p>
     <p><em data-en="Happy building." data-it="Buona costruzione.">Happy building.</em></p>
     <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
     <ul class="rules-modes-list">
@@ -2713,8 +2715,9 @@
         const geometry = computeCardGeometry(g, number);
         const dividerLine = eratoOverlayEl.querySelector('.erato-mid-divider');
         const gamexTag = eratoOverlayEl.querySelector('.erato-gamex-tag');
+        const faceImg = eratoOverlayEl.querySelector('.erato-face-img');
         const lbHalfNav = eratoOverlayEl.querySelector('.erato-leaderboard-half');
-        [dividerLine, gamexTag].forEach(el => {
+        [dividerLine, gamexTag, faceImg].forEach(el => {
           if (!el) return;
           el.style.transition = 'none';
           el.style.opacity = '0';
@@ -2722,7 +2725,7 @@
         if (lbHalfNav){ lbHalfNav.style.transition = 'none'; lbHalfNav.style.opacity = '0'; }
         if (gamexTag) gamexTag.style.pointerEvents = 'none'; // non hoverabile finché non è del tutto comparso
         playCardNavAnimation(eratoOverlayEl, geometry.top, geometry.left, geometry.width, geometry.height, () => {
-          [dividerLine, gamexTag].forEach(el => {
+          [dividerLine, gamexTag, faceImg].forEach(el => {
             if (!el) return;
             void el.offsetWidth;
             el.style.transition = 'opacity 1s ease';
@@ -2730,9 +2733,7 @@
           });
           if (gamexTag) setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
           // stessa sezione leaderboard (titoli + tabelle): fade omogeneo di 0.5s, separato
-          // dal secondo di dividerLine/gamexTag. La testolina (.erato-face-img) resta
-          // fuori da questo fade apposta: deve restare nascosta finché non si passa il
-          // mouse su RULES, non ricomparire a ogni cambio di card del carosello
+          // dal secondo di dividerLine/gamexTag/faceImg
           if (lbHalfNav){
             void lbHalfNav.offsetWidth;
             lbHalfNav.style.transition = 'opacity 500ms ease';
@@ -3293,19 +3294,21 @@
         setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
       }
 
-      // piccola immagine di Eratostene: non più visibile di default sulla card, compare
-      // solo al passaggio del mouse su RULES (vedi rulesBtn qui sotto). Qui la creo e la
-      // preposiziono sul divisore, ma resta a opacity:0 finché RULES non è in hover
+      // piccola immagine di Eratostene: sempre presente in basso al centro di tutta la
+      // card (posizione fissa via CSS, left:50%, non serve calcolarla), stessa identica
+      // comparsa graduale del pulsante RULES qui sopra — non più legata al passaggio del
+      // mouse su RULES, quella logica è stata tolta dagli handler più sotto
       let faceImg = overlay.querySelector('.erato-face-img');
       if (!faceImg){
         faceImg = document.createElement('img');
         faceImg.className = 'erato-face-img';
         faceImg.src = 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_face.png';
         faceImg.alt = '';
-        faceImg.style.opacity = '0';
         overlay.appendChild(faceImg);
       }
-      faceImg.style.left = dividerX + 'px';
+      void faceImg.offsetWidth;
+      faceImg.style.transition = 'opacity 1s ease';
+      faceImg.style.opacity = '1';
     }
 
     // al passaggio del mouse su RULES, la classifica sparisce per un attimo lasciando
@@ -3320,14 +3323,14 @@
       const rulesPreviewHtml = `
         <div class="erato-rules-preview">
           <h3 data-en="Rules" data-it="Regole">Rules</h3>
-          <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time." data-it="trova i 5 numeri primi nascosti nella griglia 5×5, somma i loro valori e inserisci il totale nella casella qui sotto. Una risposta corretta ti porta subito al livello successivo, quindi gioca con calma: ogni livello resta aperto per tutto il tempo che ti serve, senza alcuna penalità.">find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total in the box below. A correct answer takes you straight to the next level, so play at your own pace: every level stays open for as long as you need, with no penalty for taking your time.</span></p>
+          <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total." data-it="trova i 5 numeri primi nascosti nella griglia 5×5, somma i loro valori e inserisci il totale.">find the 5 hidden primes in the 5×5 grid, add up their values, and enter the total.</span></p>
           <p data-en="Happy prime hunting." data-it="Buona caccia ai numeri primi.">Happy prime hunting.</p>
           <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
           <ul class="rules-modes-list">
-            <li><strong>The Sieve</strong> — <span data-en="the full 100-level race, at your own pace, ranked on the main leaderboard." data-it="la gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale.">the full 100-level race, at your own pace, ranked on the main leaderboard.</span></li>
-            <li><strong>Prime Rush</strong> — <span data-en="50 levels of pure racing against the clock, against other players." data-it="50 livelli di pura corsa contro il tempo, contro altri giocatori.">50 levels of pure racing against the clock, against other players.</span></li>
-            <li><strong>Scholar's Glance</strong> — <span data-en="50 levels of total concentration." data-it="50 livelli di pura concentrazione.">50 levels of total concentration.</span></li>
-            <li><strong>Infinite Primes</strong> — <span data-en="endless levels, no leaderboard, just you and the numbers." data-it="livelli infiniti, nessuna classifica, solo tu e i numeri.">endless levels, no leaderboard, just you and the numbers.</span></li>
+            <li><strong>The Sieve</strong> — <span data-en="the full 100-level race, at your own pace, ranked on the main leaderboard. Time-limited, progress saved, anti-cheat active in the final levels." data-it="la gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale. A tempo limitato, progressi salvati, anti-cheat attivo negli ultimi livelli.">the full 100-level race, at your own pace, ranked on the main leaderboard. Time-limited, progress saved, anti-cheat active in the final levels.</span></li>
+            <li><strong>Prime Rush</strong> — <span data-en="50 levels of pure racing against the clock, against other players. No progress saved: it's all or nothing in one sitting." data-it="50 livelli di pura corsa contro il tempo, contro altri giocatori. Nessun progresso salvato: tutto o niente in un'unica sessione.">50 levels of pure racing against the clock, against other players. No progress saved: it's all or nothing in one sitting.</span></li>
+            <li><strong>Scholar's Glance</strong> — <span data-en="50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory." data-it="50 livelli di pura concentrazione: i numeri appaiono per un attimo, poi spariscono, e risolvi a memoria.">50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory.</span></li>
+            <li><strong>Infinite Primes</strong> — <span data-en="endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going." data-it="livelli infiniti, nessuna classifica, solo tu e i numeri, per tutto il tempo che vuoi continuare.">endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going.</span></li>
           </ul>
           <p class="device-note-old" data-en="Progress is saved per device — switching devices restarts from level 1." data-it="I progressi sono salvati per dispositivo: cambiare dispositivo fa ripartire dal livello 1.">Progress is saved per device — switching devices restarts from level 1.</p>
         </div>`;
@@ -3353,17 +3356,6 @@
           // regola CSS condivisa) è statico nel CSS, non serve calcolarlo
           void lbHalf.offsetWidth; // forzo il reflow prima di far ripartire la dissolvenza
           lbHalf.style.opacity = '1';
-          // la testolina, nascosta di default, compare (fade in) solo ora, già
-          // posizionata al centro esatto del box Rules
-          const faceImg = overlay.querySelector('.erato-face-img');
-          if (faceImg){
-            const lbHalfRect = lbHalf.getBoundingClientRect();
-            const overlayRect = overlay.getBoundingClientRect();
-            faceImg.style.left = (lbHalfRect.left + lbHalfRect.width / 2 - overlayRect.left) + 'px';
-            void faceImg.offsetWidth;
-            faceImg.style.transition = `opacity ${fadeMs}ms ease`;
-            faceImg.style.opacity = '1';
-          }
         }, fadeMs);
       });
       rulesBtn.addEventListener('mouseleave', () => {
@@ -3372,16 +3364,11 @@
         clearTimeout(swapTimer);
         lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
         lbHalf.style.opacity = '0';
-        const faceImg = overlay.querySelector('.erato-face-img');
-        if (faceImg){ faceImg.style.transition = `opacity ${fadeMs}ms ease`; faceImg.style.opacity = '0'; }
         swapTimer = setTimeout(() => {
           lbHalf.innerHTML = lbHalf._realLbHtml; // sempre il contenuto vero, mai una copia sporcata
           // l'allineamento a destra è statico nel CSS, non serve riapplicarlo a mano
           void lbHalf.offsetWidth;
           lbHalf.style.opacity = '1';
-          // torna sul divisore centrale, pronta per la prossima volta — ma resta
-          // invisibile (opacity:0) finché non si passa di nuovo il mouse su RULES
-          if (faceImg) faceImg.style.left = dividerX + 'px';
         }, fadeMs);
       });
     }
@@ -3451,7 +3438,7 @@
       const rulesPreviewHtml = `
         <div class="erato-rules-preview">
           <h3 data-en="Rules" data-it="Regole">Rules</h3>
-          <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging." data-it="trascina i due vertici mobili finché il triangolo non corrisponde alle misure indicate. I primi livelli mostrano tutti e tre i lati; negli ultimi ne manca uno, da calcolare con il teorema di Pitagora prima ancora di iniziare a trascinare.">drag the two moving vertices until the triangle matches the measurements shown. Early levels give you all three sides; later ones give you only two, so work out the third with the Pythagorean theorem before you start dragging.</span></p>
+          <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="drag the two moving vertices until the triangle matches the measurements shown." data-it="trascina i due vertici mobili finché il triangolo non corrisponde alle misure indicate.">drag the two moving vertices until the triangle matches the measurements shown.</span></p>
           <p data-en="Happy building." data-it="Buona costruzione.">Happy building.</p>
           <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
           <ul class="rules-modes-list">
