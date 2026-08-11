@@ -796,6 +796,11 @@
     margin: 0 0 1rem;
   }
   .rules-modal-card p strong{ color: var(--ink); }
+  /* il testo dei popup Regole (a differenza degli altri popup che condividono lo
+     stesso .rules-modal-card) non deve leggersi come una nota attenuata: qui vive
+     la spiegazione vera del gioco, va scritto con lo stesso colore pieno del resto */
+  #rulesModal .rules-modal-card p,
+  #pythagorasRulesModal .rules-modal-card p{ color: var(--ink); }
   .rules-modes-title{
     font-family:'Work Sans', sans-serif;
     font-weight: 700;
@@ -811,7 +816,7 @@
   .rules-modes-list li{
     font-family:'Work Sans', sans-serif;
     font-size: 0.9rem;
-    color: var(--ink-dim);
+    color: var(--ink);
     line-height: 1.5;
     margin: 0 0 0.7rem;
   }
@@ -819,6 +824,10 @@
   .erato-rules-preview .rules-modes-title{ font-size: 1.1rem; margin: 0 0 0.45rem; }
   .erato-rules-preview .rules-modes-list{ margin: 0; }
   .erato-rules-preview .rules-modes-list li{ font-size: 0.92rem; line-height: 1.5; margin: 0 0 0.55rem; }
+  /* sulla card di Pitagora il testo arrivava già quasi a ridosso del bordo destro:
+     con la barra di scorrimento aggiunta non c'entrava più, urtava contro di lei.
+     Riduco lo spazio utilizzabile della larghezza di una barra di scorrimento tipica */
+  .pythagoras-card-overlay .erato-rules-preview{ padding-right: 16px; }
   /* testolina di Eratostene nel popup Rules: stessa immagine della versione desktop
      (nell'anteprima a comparsa sopra la classifica), qui però ancorata in basso a
      DESTRA invece che al centro del divisore, perché il popup non ha due colonne.
@@ -3720,6 +3729,7 @@
   // già vista (vedi playCardNavAnimation, generica e riusata identica qui)
   function buildPythagorasOverlay(g, number, geometry){
     const overlay = document.createElement('div');
+    overlay.className = 'pythagoras-card-overlay';
     overlay.innerHTML = `
       <div class="erato-content-half" style="width:${geometry.width / 2}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
         ${pythagorasContentHtml(g)}
