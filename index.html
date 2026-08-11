@@ -26,38 +26,36 @@
 
   *{ box-sizing: border-box; }
 
-  /* effetto LED del pulsante Ko-fi (desktop + mobile): un puntino luminoso in alto a
-     destra del pulsante, il pulsante stesso resta sempre fermo e completamente
-     visibile — non è più l'intero pulsante a lampeggiare, solo questa piccola luce
-     interna. Vero elemento <span> dentro al pulsante (non uno pseudo-elemento CSS:
-     alcuni browser tagliano gli pseudo-elementi dentro ai <button>, un vero elemento
-     evita del tutto il problema). Va tenuto FUORI da qualunque media query:
-     .index-kofi-btn esiste solo su desktop e .mobile-kofi-btn solo su mobile, ma
-     servono entrambi lo stesso identico comportamento, quindi qui vive una volta sola */
-  .index-kofi-btn, .mobile-kofi-btn{ position: relative; }
-  .kofi-led-dot{
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--yellow);
-    /* stesso identico bagliore delle celle selezionate nella griglia (vedi
-       .cell.selected in ogni gioco), non un bagliore inventato apposta qui */
-    box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
-    opacity: 0;
-    pointer-events: none;
+  /* effetto luce del pulsante Ko-fi (desktop + mobile): tutto il pulsante si illumina
+     come una cella selezionata nella griglia dei giochi (stesso sfondo/bordo/bagliore
+     di .cell.selected), non un dettaglio piccolo in un angolo. Va tenuto FUORI da
+     qualunque media query: .index-kofi-btn esiste solo su desktop e .mobile-kofi-btn
+     solo su mobile, ma servono entrambi lo stesso identico comportamento, quindi qui
+     vive una volta sola invece che duplicato in entrambe */
+  @keyframes kofi-led{
+    0%, 100%{
+      background-color: var(--bg-panel);
+      border-color: var(--rule);
+      color: var(--ink-dim);
+      box-shadow: none;
+    }
+    14.2857%{
+      background-color: var(--yellow);
+      border-color: var(--yellow);
+      color: #1C1F16;
+      box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
+    }
+    28.5714%{
+      background-color: var(--bg-panel);
+      border-color: var(--rule);
+      color: var(--ink-dim);
+      box-shadow: none;
+    }
   }
   /* come se qualcuno premesse un numero della griglia: si accende una volta sola per
      ciclo, con una dissolvenza morbida di 0,5s sia in entrata sia in uscita (mai un
      lampo secco), poi una pausa di 2,5s prima di riaccendersi — ciclo totale 3,5s */
-  @keyframes kofi-led{
-    0%, 100%{ opacity: 0; }
-    14.2857%{ opacity: 1; }
-    28.5714%{ opacity: 0; }
-  }
-  .kofi-blink .kofi-led-dot{
+  .index-kofi-btn.kofi-blink, .mobile-kofi-btn.kofi-blink{
     animation: kofi-led 3.5s ease-in-out infinite;
   }
 
@@ -1894,7 +1892,7 @@
         <button type="button" class="lang-switch-btn" id="langBtnEn" data-lang="en">EN</button>
         <button type="button" class="lang-switch-btn" id="langBtnIt" data-lang="it">IT</button>
       </div>
-      <button type="button" class="index-kofi-btn" id="indexKofiBtn" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg><span class="kofi-led-dot" aria-hidden="true"></span></button>
+      <button type="button" class="index-kofi-btn" id="indexKofiBtn" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></button>
       <button type="button" class="index-info-btn" id="indexInfoBtn" aria-label="Info">i</button>
       <button type="button" class="index-report-btn" id="indexReportBtn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
       <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
@@ -1950,7 +1948,7 @@
                 <button type="button" class="lang-switch-btn" data-lang="en">EN</button>
                 <button type="button" class="lang-switch-btn" data-lang="it">IT</button>
               </div>
-              <button type="button" class="mobile-kofi-btn" id="mobileKofiBtn" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg><span class="kofi-led-dot" aria-hidden="true"></span></button>
+              <button type="button" class="mobile-kofi-btn" id="mobileKofiBtn" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></button>
             </div>
             <button type="button" class="mobile-report-btn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
             <p class="scroll-hint" data-en="↓ Scroll down to explore the games and the rest of the site. ↓" data-it="↓ Scorri giù per esplorare i giochi e il resto del sito. ↓">↓ Scroll down to explore the games and the rest of the site. ↓</p>
