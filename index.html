@@ -26,37 +26,16 @@
 
   *{ box-sizing: border-box; }
 
-  /* effetto luce del pulsante Ko-fi (desktop + mobile): tutto il pulsante si illumina
-     come una cella selezionata nella griglia dei giochi (stesso sfondo/bordo/bagliore
-     di .cell.selected), non un dettaglio piccolo in un angolo. Va tenuto FUORI da
-     qualunque media query: .index-kofi-btn esiste solo su desktop e .mobile-kofi-btn
-     solo su mobile, ma servono entrambi lo stesso identico comportamento, quindi qui
-     vive una volta sola invece che duplicato in entrambe */
-  @keyframes kofi-led{
-    0%, 100%{
-      background-color: var(--bg-panel);
-      border-color: var(--rule);
-      color: var(--ink-dim);
-      box-shadow: none;
-    }
-    14.2857%{
-      background-color: var(--yellow);
-      border-color: var(--yellow);
-      color: #1C1F16;
-      box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
-    }
-    28.5714%{
-      background-color: var(--bg-panel);
-      border-color: var(--rule);
-      color: var(--ink-dim);
-      box-shadow: none;
-    }
-  }
-  /* come se qualcuno premesse un numero della griglia: si accende una volta sola per
-     ciclo, con una dissolvenza morbida di 0,5s sia in entrata sia in uscita (mai un
-     lampo secco), poi una pausa di 2,5s prima di riaccendersi — ciclo totale 3,5s */
+  /* DEBUG TEMPORANEO: niente animazione, il pulsante resta acceso fisso — serve a
+     isolare se il problema è nel timing dell'animazione o in qualcos'altro. Stesso
+     sfondo/bordo/bagliore di .cell.selected nella griglia dei giochi. Va tenuto FUORI
+     da qualunque media query: .index-kofi-btn esiste solo su desktop e
+     .mobile-kofi-btn solo su mobile, ma servono entrambi lo stesso trattamento */
   .index-kofi-btn.kofi-blink, .mobile-kofi-btn.kofi-blink{
-    animation: kofi-led 3.5s ease-in-out infinite;
+    background-color: var(--yellow) !important;
+    border-color: var(--yellow) !important;
+    color: #1C1F16 !important;
+    box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow) !important;
   }
 
   html, body{
