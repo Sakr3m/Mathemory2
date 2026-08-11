@@ -1549,6 +1549,20 @@
     #reportModal #reportNote{ font-size: 0.62rem; margin: 0.5rem 0 0; }
     #reportModal .modal-footnotes{ margin-top: 0.5rem; padding-top: 0.5rem; }
     #reportModal .modal-footnotes p{ font-size: 0.62rem; line-height: 1.25; }
+
+    /* popup Ko-fi su mobile: stessa filosofia di #reportModal qui sopra */
+    #kofiModal .rules-modal-card{
+      max-width: calc(100% - 2rem);
+      width: auto;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.17rem;
+      box-sizing: border-box;
+    }
+    #kofiModal .rules-modal-card h3{ font-size: 1.125rem; margin: 0 0 0.6rem; }
+    #kofiModal .rules-modal-card p{ font-size: 0.72rem; line-height: 1.3; margin: 0 0 0.6rem; }
+    #kofiModal .modal-buttons{ gap: 0.6rem; margin: 0.8rem 0 0; flex-wrap: wrap; }
+    #kofiModal .modal-btn{ font-size: 0.78rem; padding: 0.55rem 1rem; }
   }
 
   /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
@@ -1998,6 +2012,7 @@
     <button type="button" class="rules-close-btn" id="kofiCloseBtn" aria-label="Close">✕</button>
     <h3 data-en="About the ads" data-it="A proposito delle pubblicità">About the ads</h3>
     <p data-en="Mathemory runs a few ads. They help me recoup at least some of the time I've put into building all this, and maybe earn a little something along the way." data-it="Su Mathemory ci sono alcune pubblicità. Servono a farmi rientrare almeno in parte del tempo che ci ho messo a costruire tutto questo, e magari a guadagnarci anche qualcosa.">Mathemory runs a few ads. They help me recoup at least some of the time I've put into building all this, and maybe earn a little something along the way.</p>
+    <p data-en="If you have an ad blocker, I'd be grateful if you left it off here — it really does make a difference." data-it="Se usi un'estensione che blocca le pubblicità, ti sarei grato se la disattivassi qui: fa davvero la differenza.">If you have an ad blocker, I'd be grateful if you left it off here — it really does make a difference.</p>
     <p data-en="If support on Ko-fi ever grew significant enough, I might decide to remove them entirely — though, to be fair, they've never been particularly intrusive." data-it="Se il supporto su Ko-fi dovesse diventare abbastanza importante, potrei decidere di toglierle del tutto, anche se va detto che non sono mai state particolarmente invadenti.">If support on Ko-fi ever grew significant enough, I might decide to remove them entirely — though, to be fair, they've never been particularly intrusive.</p>
     <p data-en="If you'd like to support the project, the link is below. Either way, thanks for stopping by." data-it="Se ti va di sostenere il progetto, il link è qui sotto. In ogni caso, grazie di essere passato di qui.">If you'd like to support the project, the link is below. Either way, thanks for stopping by.</p>
     <div class="modal-buttons">
