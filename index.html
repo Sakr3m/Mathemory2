@@ -26,16 +26,38 @@
 
   *{ box-sizing: border-box; }
 
-  /* DEBUG TEMPORANEO: niente animazione, il pulsante resta acceso fisso — serve a
-     isolare se il problema è nel timing dell'animazione o in qualcos'altro. Stesso
-     sfondo/bordo/bagliore di .cell.selected nella griglia dei giochi. Va tenuto FUORI
-     da qualunque media query: .index-kofi-btn esiste solo su desktop e
-     .mobile-kofi-btn solo su mobile, ma servono entrambi lo stesso trattamento */
+  /* effetto luce del pulsante Ko-fi (desktop + mobile): tutto il pulsante si illumina
+     come una cella selezionata nella griglia dei giochi (stesso sfondo/bordo/bagliore
+     di .cell.selected). La classe kofi-blink è scritta direttamente nell'HTML (non più
+     aggiunta da JS: era quello il problema reale, il JS non la applicava in modo
+     affidabile su mobile). Va tenuto FUORI da qualunque media query: .index-kofi-btn
+     esiste solo su desktop e .mobile-kofi-btn solo su mobile, ma servono entrambi lo
+     stesso trattamento */
+  @keyframes kofi-led{
+    0%, 100%{
+      background-color: var(--bg-panel);
+      border-color: var(--rule);
+      color: var(--ink-dim);
+      box-shadow: none;
+    }
+    14.2857%{
+      background-color: var(--yellow);
+      border-color: var(--yellow);
+      color: #1C1F16;
+      box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
+    }
+    28.5714%{
+      background-color: var(--bg-panel);
+      border-color: var(--rule);
+      color: var(--ink-dim);
+      box-shadow: none;
+    }
+  }
+  /* come se qualcuno premesse un numero della griglia: si accende una volta sola per
+     ciclo, con una dissolvenza morbida di 0,5s sia in entrata sia in uscita (mai un
+     lampo secco), poi una pausa di 2,5s prima di riaccendersi — ciclo totale 3,5s */
   .index-kofi-btn.kofi-blink, .mobile-kofi-btn.kofi-blink{
-    background-color: var(--yellow) !important;
-    border-color: var(--yellow) !important;
-    color: #1C1F16 !important;
-    box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow) !important;
+    animation: kofi-led 3.5s ease-in-out infinite;
   }
 
   html, body{
@@ -1871,7 +1893,7 @@
         <button type="button" class="lang-switch-btn" id="langBtnEn" data-lang="en">EN</button>
         <button type="button" class="lang-switch-btn" id="langBtnIt" data-lang="it">IT</button>
       </div>
-      <button type="button" class="index-kofi-btn" id="indexKofiBtn" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></button>
+      <button type="button" class="index-kofi-btn kofi-blink" id="indexKofiBtn" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></button>
       <button type="button" class="index-info-btn" id="indexInfoBtn" aria-label="Info">i</button>
       <button type="button" class="index-report-btn" id="indexReportBtn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
       <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
