@@ -600,7 +600,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    gap: 1.1rem;
+    gap: 0.85rem;
     height: 100%;
     overflow-y: auto;
     /* l'illustrazione del volto (.erato-face-img) è ancorata in basso e arriva fino
@@ -608,6 +608,7 @@
        padding percentuale in CSS si calcola sulla larghezza, non sull'altezza, quindi
        qui sarebbe stato inutile) tiene il testo sempre sopra di lei, senza sovrapporsi */
     padding-bottom: 6.5rem;
+    padding-top: 0.5rem;
     text-align: left;
     box-sizing: border-box;
   }
@@ -621,8 +622,8 @@
   }
   .erato-rules-preview p{
     font-family:'Work Sans', sans-serif;
-    font-size: 0.95rem;
-    line-height: 1.5;
+    font-size: 0.92rem;
+    line-height: 1.42;
     color: var(--ink);
     margin: 0;
   }
@@ -804,9 +805,9 @@
     margin: 0 0 0.7rem;
   }
   .rules-modes-list li strong{ color: var(--ink); }
-  .erato-rules-preview .rules-modes-title{ font-size: 1.05rem; margin: 0 0 0.5rem; }
+  .erato-rules-preview .rules-modes-title{ font-size: 1rem; margin: 0 0 0.4rem; }
   .erato-rules-preview .rules-modes-list{ margin: 0; }
-  .erato-rules-preview .rules-modes-list li{ font-size: 0.88rem; line-height: 1.5; margin: 0 0 0.6rem; }
+  .erato-rules-preview .rules-modes-list li{ font-size: 0.85rem; line-height: 1.4; margin: 0 0 0.45rem; }
   /* testolina di Eratostene nel popup Rules: stessa immagine della versione desktop
      (nell'anteprima a comparsa sopra la classifica), qui però ancorata in basso a
      DESTRA invece che al centro del divisore, perché il popup non ha due colonne.
