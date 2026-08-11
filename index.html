@@ -800,6 +800,9 @@
     border-radius: 6px;
     padding: 0.7rem 1.8rem;
     cursor:pointer;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
   }
   .modal-btn.yes{ background: var(--yellow); color: var(--bg); }
   .modal-btn.no{ background: transparent; color: var(--ink-dim); border: 1px solid var(--rule); }
@@ -1732,6 +1735,20 @@
     background: rgba(232,196,104,0.22);
     box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
   }
+  /* lampeggio intermittente (non un'oscillazione continua): due lampi ravvicinati,
+     poi una pausa lunga prima del prossimo ciclo — attivato via JS solo DOPO la
+     comparsa iniziale del pulsante, per non confliggere con quella dissolvenza */
+  @keyframes kofi-blink{
+    0%, 8%, 16%, 100%{ opacity: 1; }
+    4%, 12%{ opacity: 0.32; }
+  }
+  .index-kofi-btn.kofi-blink, .mobile-kofi-btn.kofi-blink{
+    animation: kofi-blink 4.2s ease-in-out infinite;
+  }
+  .index-kofi-btn.kofi-blink:hover, .mobile-kofi-btn.kofi-blink:hover{
+    animation-play-state: paused;
+    opacity: 1;
+  }
   .index-kofi-btn svg{ width: 26.5px; height: 26.5px; }
   /* stato "acceso" del volume (audio non muto): stessa illuminazione dei numeri
      selezionati nella griglia, l'icona resta sempre la stessa, cambia solo questo */
@@ -1841,7 +1858,7 @@
         <button type="button" class="lang-switch-btn" id="langBtnEn" data-lang="en">EN</button>
         <button type="button" class="lang-switch-btn" id="langBtnIt" data-lang="it">IT</button>
       </div>
-      <a class="index-kofi-btn" id="indexKofiBtn" href="https://ko-fi.com/the_forgotten_shelf" target="_blank" rel="noopener" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></a>
+      <button type="button" class="index-kofi-btn" id="indexKofiBtn" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></button>
       <button type="button" class="index-info-btn" id="indexInfoBtn" aria-label="Info">i</button>
       <button type="button" class="index-report-btn" id="indexReportBtn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
       <span class="mark" aria-label="Mathemory"><span aria-hidden="true">Ma<span class="mark-sym mark-cross">✝</span>h<span class="mark-sym mark-sigma">Σ</span>m<span class="mark-sym mark-emptyset">∅</span>ry</span></span>
@@ -1897,7 +1914,7 @@
                 <button type="button" class="lang-switch-btn" data-lang="en">EN</button>
                 <button type="button" class="lang-switch-btn" data-lang="it">IT</button>
               </div>
-              <a class="mobile-kofi-btn" href="https://ko-fi.com/the_forgotten_shelf" target="_blank" rel="noopener" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></a>
+              <button type="button" class="mobile-kofi-btn" id="mobileKofiBtn" aria-label="Ko-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></button>
             </div>
             <button type="button" class="mobile-report-btn" aria-label="Report a bug" data-en="Report bug" data-it="Segnala bug">Report bug</button>
             <p class="scroll-hint" data-en="↓ Scroll down to explore the games and the rest of the site. ↓" data-it="↓ Scorri giù per esplorare i giochi e il resto del sito. ↓">↓ Scroll down to explore the games and the rest of the site. ↓</p>
@@ -1959,6 +1976,20 @@
       <li><strong>Steady Hands</strong> — <span data-en="35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go." data-it="35 livelli spietati, senza barra di precisione ad aiutarti. Minimo 99% fin dal primo livello, con misure decimali che compaiono man mano che avanzi.">35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go.</span></li>
       <li><strong>The Theorem</strong> — <span data-en="50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both." data-it="50 triangoli fermi, niente trascinamento: calcola solo il lato mancante dagli altri due. I numeri decimali iniziano a comparire dopo il livello 30, prima in una misura poi in entrambe.">50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both.</span></li>
     </ul>
+  </div>
+</div>
+
+<div class="modal-overlay" id="kofiModal">
+  <div class="rules-modal-card">
+    <button type="button" class="rules-close-btn" id="kofiCloseBtn" aria-label="Close">✕</button>
+    <h3 data-en="About the ads" data-it="A proposito delle pubblicità">About the ads</h3>
+    <p data-en="Mathemory runs a few ads. They help me recoup at least some of the time I've put into building all this, and maybe earn a little something along the way." data-it="Su Mathemory ci sono alcune pubblicità. Servono a farmi rientrare almeno in parte del tempo che ci ho messo a costruire tutto questo, e magari a guadagnarci anche qualcosa.">Mathemory runs a few ads. They help me recoup at least some of the time I've put into building all this, and maybe earn a little something along the way.</p>
+    <p data-en="If support on Ko-fi ever grew significant enough, I might decide to remove them entirely — though, to be fair, they've never been particularly intrusive." data-it="Se il supporto su Ko-fi dovesse diventare abbastanza importante, potrei decidere di toglierle del tutto, anche se va detto che non sono mai state particolarmente invadenti.">If support on Ko-fi ever grew significant enough, I might decide to remove them entirely — though, to be fair, they've never been particularly intrusive.</p>
+    <p data-en="If you'd like to support the project, the link is below. Either way, thanks for stopping by." data-it="Se ti va di sostenere il progetto, il link è qui sotto. In ogni caso, grazie di essere passato di qui.">If you'd like to support the project, the link is below. Either way, thanks for stopping by.</p>
+    <div class="modal-buttons">
+      <a class="modal-btn yes" href="https://ko-fi.com/the_forgotten_shelf" target="_blank" rel="noopener" data-en="Support on Ko-fi" data-it="Sostieni su Ko-fi">Support on Ko-fi</a>
+      <button type="button" class="modal-btn no" id="kofiMaybeLaterBtn" data-en="Maybe later" data-it="Magari più tardi">Maybe later</button>
+    </div>
   </div>
 </div>
 
@@ -3081,7 +3112,9 @@
       const langSwitch = document.getElementById('langSwitch');
       if (langSwitch){ langSwitch.style.opacity = '1'; langSwitch.style.pointerEvents = 'auto'; }
       const kofiBtn = document.getElementById('indexKofiBtn');
-      if (kofiBtn){ kofiBtn.style.opacity = '1'; kofiBtn.style.pointerEvents = 'auto'; }
+      if (kofiBtn){ kofiBtn.style.opacity = '1'; kofiBtn.style.pointerEvents = 'auto'; kofiBtn.classList.add('kofi-blink'); }
+      const mobileKofiBtn = document.getElementById('mobileKofiBtn');
+      if (mobileKofiBtn) mobileKofiBtn.classList.add('kofi-blink');
     }
 
     function playCardSequence(){
@@ -4101,6 +4134,21 @@
   document.getElementById('infoCloseBtn').addEventListener('click', closeInfoModal);
   infoModal.addEventListener('click', (e) => {
     if (e.target === infoModal) closeInfoModal();
+  });
+
+  // stesso meccanismo di apertura/chiusura qui sopra, ma per il popup Ko-fi: sia il
+  // pulsante desktop sia quello mobile aprono lo stesso popup invece di portare
+  // subito al link. "Maybe later"/il tasto di chiusura chiudono e basta; il pulsante
+  // "Support on Ko-fi" dentro al popup è un link vero, nessuna logica extra necessaria
+  const kofiModal = document.getElementById('kofiModal');
+  function openKofiModal(){ playSound('tap'); kofiModal.classList.add('visible'); }
+  function closeKofiModal(){ playSound('tap'); kofiModal.classList.remove('visible'); }
+  document.getElementById('indexKofiBtn').addEventListener('click', openKofiModal);
+  document.getElementById('mobileKofiBtn').addEventListener('click', openKofiModal);
+  document.getElementById('kofiCloseBtn').addEventListener('click', closeKofiModal);
+  document.getElementById('kofiMaybeLaterBtn').addEventListener('click', closeKofiModal);
+  kofiModal.addEventListener('click', (e) => {
+    if (e.target === kofiModal) closeKofiModal();
   });
 
   // --- popup di scelta modalità (The Sieve / Prime Rush / Infinite Primes) ---
