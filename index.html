@@ -40,13 +40,13 @@
       color: var(--ink-dim);
       box-shadow: none;
     }
-    18.1818%{
+    20%{
       background-color: var(--yellow);
       border-color: var(--yellow);
       color: #1C1F16;
       box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
     }
-    36.3636%{
+    40%{
       background-color: var(--bg-panel);
       border-color: var(--rule);
       color: var(--ink-dim);
@@ -55,9 +55,9 @@
   }
   /* come se qualcuno premesse un numero della griglia: si accende una volta sola per
      ciclo, con una dissolvenza morbida di 1s sia in entrata sia in uscita (mai un
-     lampo secco), poi una pausa di 3,5s prima di riaccendersi — ciclo totale 5,5s */
+     lampo secco), poi una pausa di 3s prima di riaccendersi — ciclo totale 5s */
   .index-kofi-btn.kofi-blink, .mobile-kofi-btn.kofi-blink{
-    animation: kofi-led 5.5s ease-in-out infinite;
+    animation: kofi-led 5s ease-in-out infinite;
   }
 
   html, body{
