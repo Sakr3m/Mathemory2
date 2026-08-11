@@ -580,6 +580,17 @@
     border-top: none;
     border-radius: 0 0 6px 6px;
     padding: 0.25rem 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .erato-gamex-tag:hover{
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .erato-gamex-tag.active{
+    background: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--bg);
   }
   .erato-title-row{
     position: relative;
@@ -600,7 +611,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    gap: 0.85rem;
+    gap: 1rem;
     height: 100%;
     overflow-y: auto;
     /* l'illustrazione del volto (.erato-face-img) è ancorata in basso e arriva fino
@@ -622,14 +633,14 @@
   }
   .erato-rules-preview p{
     font-family:'Work Sans', sans-serif;
-    font-size: 0.92rem;
-    line-height: 1.42;
+    font-size: 0.98rem;
+    line-height: 1.5;
     color: var(--ink);
     margin: 0;
   }
   .erato-rules-preview p.device-note-old{
     font-family:'Space Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     line-height: 1.4;
     color: rgba(243,239,228,0.5);
   }
@@ -805,9 +816,9 @@
     margin: 0 0 0.7rem;
   }
   .rules-modes-list li strong{ color: var(--ink); }
-  .erato-rules-preview .rules-modes-title{ font-size: 1rem; margin: 0 0 0.4rem; }
+  .erato-rules-preview .rules-modes-title{ font-size: 1.1rem; margin: 0 0 0.45rem; }
   .erato-rules-preview .rules-modes-list{ margin: 0; }
-  .erato-rules-preview .rules-modes-list li{ font-size: 0.85rem; line-height: 1.4; margin: 0 0 0.45rem; }
+  .erato-rules-preview .rules-modes-list li{ font-size: 0.92rem; line-height: 1.5; margin: 0 0 0.55rem; }
   /* testolina di Eratostene nel popup Rules: stessa immagine della versione desktop
      (nell'anteprima a comparsa sopra la classifica), qui però ancorata in basso a
      DESTRA invece che al centro del divisore, perché il popup non ha due colonne.
@@ -3414,31 +3425,24 @@
       let swapTimer = null;
       const fadeMs = 350;
 
-      rulesBtn.addEventListener('mouseenter', () => {
-        if (lbHalf._isShowingRules) return; // già in vista o in transizione: ignoro il re-trigger
-        lbHalf._isShowingRules = true;
+      rulesBtn.addEventListener('click', () => {
+        const showingRules = lbHalf._isShowingRules;
         clearTimeout(swapTimer);
         lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
         lbHalf.style.opacity = '0';
         swapTimer = setTimeout(() => {
-          lbHalf.innerHTML = rulesPreviewHtml;
-          applyLanguage();
-          // l'allineamento a destra (.erato-rules-preview è tra i selettori della
-          // regola CSS condivisa) è statico nel CSS, non serve calcolarlo
+          if (showingRules){
+            lbHalf.innerHTML = lbHalf._realLbHtml; // sempre il contenuto vero, mai una copia sporcata
+            lbHalf._isShowingRules = false;
+            rulesBtn.classList.remove('active');
+          } else {
+            lbHalf.innerHTML = rulesPreviewHtml;
+            applyLanguage();
+            lbHalf._isShowingRules = true;
+            rulesBtn.classList.add('active');
+          }
+          // l'allineamento a destra è statico nel CSS, non serve calcolarlo a mano
           void lbHalf.offsetWidth; // forzo il reflow prima di far ripartire la dissolvenza
-          lbHalf.style.opacity = '1';
-        }, fadeMs);
-      });
-      rulesBtn.addEventListener('mouseleave', () => {
-        if (!lbHalf._isShowingRules) return; // non era in vista: nulla da ripristinare
-        lbHalf._isShowingRules = false;
-        clearTimeout(swapTimer);
-        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
-        lbHalf.style.opacity = '0';
-        swapTimer = setTimeout(() => {
-          lbHalf.innerHTML = lbHalf._realLbHtml; // sempre il contenuto vero, mai una copia sporcata
-          // l'allineamento a destra è statico nel CSS, non serve riapplicarlo a mano
-          void lbHalf.offsetWidth;
           lbHalf.style.opacity = '1';
         }, fadeMs);
       });
@@ -3534,27 +3538,22 @@
       let swapTimer = null;
       const fadeMs = 350;
 
-      rulesBtn.addEventListener('mouseenter', () => {
-        if (lbHalf._isShowingRules) return;
-        lbHalf._isShowingRules = true;
+      rulesBtn.addEventListener('click', () => {
+        const showingRules = lbHalf._isShowingRules;
         clearTimeout(swapTimer);
         lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
         lbHalf.style.opacity = '0';
         swapTimer = setTimeout(() => {
-          lbHalf.innerHTML = rulesPreviewHtml;
-          applyLanguage();
-          void lbHalf.offsetWidth;
-          lbHalf.style.opacity = '1';
-        }, fadeMs);
-      });
-      rulesBtn.addEventListener('mouseleave', () => {
-        if (!lbHalf._isShowingRules) return;
-        lbHalf._isShowingRules = false;
-        clearTimeout(swapTimer);
-        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
-        lbHalf.style.opacity = '0';
-        swapTimer = setTimeout(() => {
-          lbHalf.innerHTML = lbHalf._realLbHtml;
+          if (showingRules){
+            lbHalf.innerHTML = lbHalf._realLbHtml;
+            lbHalf._isShowingRules = false;
+            rulesBtn.classList.remove('active');
+          } else {
+            lbHalf.innerHTML = rulesPreviewHtml;
+            applyLanguage();
+            lbHalf._isShowingRules = true;
+            rulesBtn.classList.add('active');
+          }
           void lbHalf.offsetWidth;
           lbHalf.style.opacity = '1';
         }, fadeMs);
