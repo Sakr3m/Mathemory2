@@ -440,7 +440,7 @@
       <h1 id="levelTitle">Pythagoras <span class="accent">·</span> Steady Hands <span class="accent">·</span> Level 1</h1>
       <div class="icon-btn" aria-hidden="true" style="cursor:default;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></div>
     </div>
-    <p class="instructions">Drag the two moving vertices to build the exact right triangle asked for. No precision gauge here — the readout is broken. You won't know how close you are until you press Check.</p>
+    <p class="instructions" data-en="Drag the two moving vertices to build the exact right triangle asked for. No precision gauge here — the readout is broken. You won't know how close you are until you press Check." data-it="Trascina i due vertici mobili per costruire esattamente il triangolo rettangolo richiesto. Qui non c'è un misuratore di precisione: la lettura è rotta. Non saprai quanto sei vicino finché non premi Verifica.">Drag the two moving vertices to build the exact right triangle asked for. No precision gauge here — the readout is broken. You won't know how close you are until you press Check.</p>
 
     <div class="level-layout" id="stage">
       <div class="board-card">
@@ -451,12 +451,12 @@
 
       <div class="side-panel">
         <div class="side-panel-card">
-          <h2>Measures</h2>
+          <h2 data-en="Measures" data-it="Misure">Measures</h2>
           <p class="level-sub" id="levelSub">All measures known</p>
           <div id="measureRows"></div>
 
           <div class="precision-block broken">
-            <div class="precision-label"><span>Precision</span><span class="broken-tag">⚠ offline</span></div>
+            <div class="precision-label"><span data-en="Precision" data-it="Precisione">Precision</span><span class="broken-tag" data-en="⚠ offline" data-it="⚠ offline">⚠ offline</span></div>
             <div class="precision-track">
               <div class="precision-fill-broken"></div>
               <svg class="precision-scribble" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
@@ -465,13 +465,13 @@
             </div>
           </div>
 
-          <button type="button" class="check-btn" id="checkBtn">Check</button>
+          <button type="button" class="check-btn" id="checkBtn" data-en="Check" data-it="Verifica">Check</button>
           <p class="feedback" id="feedback"></p>
           <button type="button" class="next-btn" id="nextBtn">Next level →</button>
 
           <div class="jump-row">
-            <input type="number" id="jumpInput" min="1" max="35" placeholder="1-35">
-            <button type="button" id="jumpBtn">Go to level</button>
+            <input type="number" id="jumpInput" min="1" max="35" data-placeholder-en="1-35" data-placeholder-it="1-35" placeholder="1-35">
+            <button type="button" id="jumpBtn" data-en="Go to level" data-it="Vai al livello">Go to level</button>
           </div>
         </div>
       </div>
@@ -598,9 +598,13 @@ const LEVELS = [
     pointH = { ...start.h };
     pointV = { ...start.v };
 
-    levelTitleEl.innerHTML = `Pythagoras <span class="accent">·</span> Steady Hands <span class="accent">·</span> Level ${index + 1}`;
-    levelSubEl.textContent = `Requires ${level.precision}% precision — no gauge to help you`;
-    levelProgressEl.textContent = `Level ${index + 1} of ${LEVELS.length}`;
+    const lang = currentLang();
+    const levelWord = lang === 'it' ? 'Livello' : 'Level';
+    levelTitleEl.innerHTML = `Pythagoras <span class="accent">·</span> Steady Hands <span class="accent">·</span> ${levelWord} ${index + 1}`;
+    levelSubEl.textContent = lang === 'it'
+      ? `Richiede ${level.precision}% di precisione — nessun misuratore ad aiutarti`
+      : `Requires ${level.precision}% precision — no gauge to help you`;
+    levelProgressEl.textContent = lang === 'it' ? `Livello ${index + 1} di ${LEVELS.length}` : `Level ${index + 1} of ${LEVELS.length}`;
     levelProgressFillEl.style.width = (((index + 1) / LEVELS.length) * 100) + '%';
     checkBtn.disabled = false;
     nextBtn.classList.remove('visible');
@@ -615,10 +619,11 @@ const LEVELS = [
 
   function buildMeasureRows(level){
     measureRowsEl.innerHTML = '';
+    const lang = currentLang();
     const rows = [
-      { key: 'legA', label: 'Leg A' },
-      { key: 'legB', label: 'Leg B' },
-      { key: 'hyp',  label: 'Hypotenuse' },
+      { key: 'legA', label: lang === 'it' ? 'Cateto A' : 'Leg A' },
+      { key: 'legB', label: lang === 'it' ? 'Cateto B' : 'Leg B' },
+      { key: 'hyp',  label: lang === 'it' ? 'Ipotenusa' : 'Hypotenuse' },
     ];
     rows.forEach(r => {
       const row = document.createElement('div');
@@ -754,15 +759,24 @@ const LEVELS = [
     const level = LEVELS[currentLevelIndex];
     const pct = computeScorePercent();
     const ok = pct >= level.precision;
+    const lang = currentLang();
 
     if (ok){
-      feedbackEl.textContent = `✓ Steady enough — you met this level's ${level.precision}% requirement.`;
+      feedbackEl.textContent = lang === 'it'
+        ? `✓ Polso fermo — hai soddisfatto il requisito del ${level.precision}% di questo livello.`
+        : `✓ Steady enough — you met this level's ${level.precision}% requirement.`;
       feedbackEl.className = 'feedback good';
       checkBtn.disabled = true;
       nextBtn.classList.add('visible');
-      nextBtn.textContent = currentLevelIndex === LEVELS.length - 1 ? 'See the result →' : 'Next level →';
+      if (currentLevelIndex === LEVELS.length - 1){
+        nextBtn.textContent = lang === 'it' ? 'Vedi il risultato →' : 'See the result →';
+      } else {
+        nextBtn.textContent = lang === 'it' ? 'Livello successivo →' : 'Next level →';
+      }
     } else {
-      feedbackEl.textContent = `✗ Not steady enough yet — this level needs at least ${level.precision}%. No gauge to guide you, trust your eye.`;
+      feedbackEl.textContent = lang === 'it'
+        ? `✗ Non ancora abbastanza fermo — questo livello richiede almeno il ${level.precision}%. Nessun misuratore a guidarti, fidati del tuo occhio.`
+        : `✗ Not steady enough yet — this level needs at least ${level.precision}%. No gauge to guide you, trust your eye.`;
       feedbackEl.className = 'feedback bad';
     }
   });
