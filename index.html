@@ -2490,6 +2490,7 @@
       .then(r => r.json())
       .then(data => {
         cachedPythagorasTheTheoremPodium = data.podium || [];
+        render();
         refreshPythagorasLeaderboard();
       })
       .catch(() => {
@@ -2502,6 +2503,7 @@
       .then(r => r.json())
       .then(data => {
         cachedPythagorasSteadyHandsPodium = data.podium || [];
+        render();
         refreshPythagorasLeaderboard();
       })
       .catch(() => {
@@ -2822,14 +2824,14 @@
         <div class="mobile-lb-block">
           <h2>The Theorem</h2>
           <div class="lb-section">
-            ${podiumRowsHtml(null)}
+            ${podiumRowsHtml(cachedPythagorasTheTheoremPodium)}
           </div>
         </div>
         <div class="mobile-lb-divider"></div>
         <div class="mobile-records-block">
           <h2>Steady Hands</h2>
           <div class="lb-section">
-            ${podiumRowsHtml(null)}
+            ${podiumRowsHtml(cachedPythagorasSteadyHandsPodium)}
           </div>
         </div>
       </div>`;
