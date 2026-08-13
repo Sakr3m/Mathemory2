@@ -1425,11 +1425,48 @@
     return { griglia, checkpoint: cap };
   }
 
-  if (levelNum < 1 || levelNum > 50){
-    showError(`Level ${levelNum} doesn't exist (valid range: 1-50).`);
-  } else {
-    renderLevel(generateLevel(levelNum));
-  }
+  // livelli fissi (non più generati dal vivo a ogni caricamento): stessa combinazione
+  // per tutti i giocatori, stesso schema di caricamento di The Sieve/Prime Rush.
+  // Le funzioni del vecchio generatore restano sopra invariate, semplicemente non
+  // vengono più chiamate — la run scelta è già stata verificata matematicamente
+  const levelFetchController = new AbortController();
+  const levelFetchTimeout = setTimeout(() => levelFetchController.abort(), 7000);
+
+  fetch('eratostene_scholarsglance.json', { signal: levelFetchController.signal })
+    .then(res => {
+      clearTimeout(levelFetchTimeout);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(sections => {
+      const allLevels = [];
+      sections.forEach(section => {
+        section.livelli.forEach(lv => {
+          allLevels.push({ ...lv, checkpoint: section.checkpoint });
+        });
+      });
+
+      if (levelNum < 1 || levelNum > allLevels.length){
+        showError(`Level ${levelNum} doesn't exist (valid range: 1-${allLevels.length}).`);
+        return;
+      }
+
+      const levelData = allLevels[levelNum - 1];
+      renderLevel(levelData);
+    })
+    .catch(err => {
+      if (err.name === 'AbortError'){
+        showError('This is taking too long. Please check your connection and reload the page.');
+        return;
+      }
+      showError(`
+        Could not load <code>eratostene_scholarsglance.json</code>.<br><br>
+        If you're testing this by double-clicking the file (a <code>file://</code> address), most browsers block this kind of request for security reasons.<br><br>
+        Fix: open a terminal in this folder and run <code>python -m http.server 8000</code>, then visit
+        <code>http://localhost:8000/index.html</code> instead.<br><br>
+        Technical detail: ${err.message}
+      `);
+    });
 
   // stessa dimensione fissa del pulsante suono dell'index: 55px, indipendente
   // dalla larghezza dello schermo e dal titolo di questa pagina
