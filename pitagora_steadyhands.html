@@ -591,11 +591,12 @@ const LEVELS = [
   }
   applyLanguage();
 
-  const STORAGE_KEY = 'pythagoras_last';
+  // niente salvataggio progressi: come Prime Rush, va fatta tutta d'un fiato — solo
+  // il parametro URL, mai localStorage (prima usava la stessa chiave di Geometric
+  // Instinct, "pythagoras_last": i progressi dei due giochi si mescolavano tra loro)
   const params = new URLSearchParams(window.location.search);
   const requestedLevel = parseInt(params.get('n'));
-  const savedLevel = parseInt(localStorage.getItem(STORAGE_KEY));
-  let startLevel = requestedLevel || savedLevel || 1;
+  let startLevel = requestedLevel || 1;
   if (startLevel < 1 || startLevel > LEVELS.length) startLevel = 1;
 
   const ORIGIN = { x: 70, y: 370 };
@@ -645,8 +646,6 @@ const LEVELS = [
     nextBtn.classList.remove('visible');
     feedbackEl.textContent = '';
     feedbackEl.className = 'feedback';
-
-    localStorage.setItem(STORAGE_KEY, String(index + 1));
 
     buildMeasureRows(level);
     render();
@@ -822,7 +821,6 @@ const LEVELS = [
     if (currentLevelIndex < LEVELS.length - 1){
       loadLevel(currentLevelIndex + 1);
     } else {
-      localStorage.setItem(STORAGE_KEY, '1');
       finishModalEl.classList.add('visible');
     }
   });
