@@ -64,6 +64,15 @@
     box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
   }
   .icon-btn svg{ width: 26.5px; height:26.5px; }
+  .audio-toggle-btn{ cursor: pointer; }
+  /* stato "acceso" del volume (audio non muto): stessa illuminazione usata altrove nel sito,
+     l'icona resta sempre la stessa, cambia solo questo */
+  .audio-toggle-btn.audio-on{
+    color: #1C1F16;
+    background: var(--yellow);
+    border-color: var(--yellow);
+    box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
+  }
   h1{
     font-family:'Kalam', cursive;
     font-size: 2.6rem;
@@ -402,13 +411,15 @@
 </style>
 </head>
 <body>
+
+<audio id="bgMusic" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_thesieve.mp3" loop preload="none"></audio>
   <div class="rotate-lock-overlay" data-en="Please rotate your device back to portrait to continue." data-it="Ruota di nuovo il dispositivo in verticale per continuare.">Please rotate your device back to portrait to continue.</div>
 
   <div class="wrap">
     <div class="title-icon-row">
       <a class="icon-btn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
       <h1 id="levelTitle">Pythagoras <span class="accent">·</span> Triangles Everywhere <span class="accent">·</span> Level 1</h1>
-      <div class="icon-btn" aria-hidden="true" style="cursor:default;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></div>
+      <button type="button" class="icon-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></button>
     </div>
     <p class="instructions" data-en="Drag the two moving vertices to build the right triangle asked for." data-it="Trascina i due vertici mobili per costruire il triangolo rettangolo richiesto.">Drag the two moving vertices to build the right triangle asked for.</p>
 
@@ -839,5 +850,8 @@ const POOL = [
 
   loadLevel(currentLevelIndex);
 </script>
+<script>window.MATHEMORY_MUSIC_VOLUME_MULTIPLIER = { desktop: 1.25, mobile: 1.875 };</script>
+<script src="mathemory-audio.js"></script>
+
 </body>
 </html>
