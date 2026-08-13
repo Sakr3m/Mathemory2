@@ -718,12 +718,26 @@
     border-color: var(--rule);
   }
   .mode-option.mode-option-locked h4{ color: var(--ink-dim); }
+  .mode-option-title-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 0.6rem;
+    margin: 0 0 0.3rem;
+  }
   .mode-option-text h4{
     font-family:'Kalam', cursive;
     font-size: 1.25rem;
-    margin: 0 0 0.3rem;
+    margin: 0;
     color: var(--mode-color, var(--yellow));
   }
+  .mode-star-rating{
+    display:flex;
+    align-items:center;
+    gap: 0.12rem;
+    flex-shrink: 0;
+  }
+  .mode-star{ width: 15px; height: 15px; }
   .mode-option-text p{
     font-family:'Work Sans', sans-serif;
     font-size: 0.92rem;
@@ -821,6 +835,13 @@
     margin: 0 0 0.7rem;
   }
   .rules-modes-list li strong{ color: var(--ink); }
+  .rules-stars-note{
+    font-family:'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--ink-dim);
+    line-height: 1.5;
+    margin: 0 0 0.4rem;
+  }
   .erato-rules-preview .rules-modes-title{ font-size: 1.1rem; margin: 0 0 0.45rem; }
   .erato-rules-preview .rules-modes-list{ margin: 0; }
   .erato-rules-preview .rules-modes-list li{ font-size: 0.92rem; line-height: 1.5; margin: 0 0 0.55rem; }
@@ -1579,7 +1600,9 @@
     #modeModal .mode-modal-card h3{ font-size: 1.06875rem; margin: 0 0 0.7695rem; }
     #modeModal .mode-options{ gap: 0.513rem; }
     #modeModal .mode-option{ min-height: 6rem; padding: 0.5985rem 0.7695rem; gap: 0.513rem; box-sizing: border-box; }
-    #modeModal .mode-option-text h4{ font-size: 0.8721rem; margin: 0 0 0.12825rem; }
+    #modeModal .mode-option-title-row{ margin: 0 0 0.12825rem; gap: 0.4rem; }
+    #modeModal .mode-option-text h4{ font-size: 0.8721rem; margin: 0; }
+    #modeModal .mode-star{ width: 11px; height: 11px; }
     #modeModal .mode-option-text p{ font-size: 0.64125rem; line-height: 1.25; }
     #modeModal .mode-option-text p.mode-option-details{
       font-family:'Space Mono', monospace;
@@ -2027,6 +2050,7 @@
       <li><strong>Scholar's Glance</strong><span data-en=" — " data-it=": "> </span><span data-en="50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory." data-it="50 livelli di pura concentrazione: i numeri appaiono per un attimo, poi spariscono, e risolvi a memoria.">50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory.</span></li>
       <li><strong>Infinite Primes</strong><span data-en=" — " data-it=": "> </span><span data-en="endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going." data-it="livelli infiniti, nessuna classifica, solo tu e i numeri, per tutto il tempo che vuoi continuare.">endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going.</span></li>
     </ul>
+    <p class="rules-stars-note" data-en="★ The stars next to each mode in the mode picker are my own difficulty rating, from half a star (easiest) to 5 (hardest)." data-it="★ Le stelline accanto a ogni modalità nel popup di scelta indicano una mia valutazione personale della difficoltà, da mezza stella (più facile) a 5 (più difficile).">★ The stars next to each mode in the mode picker are my own difficulty rating, from half a star (easiest) to 5 (hardest).</p>
     <img class="rules-modal-face-img" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_face.png" alt="">
   </div>
 </div>
@@ -2044,6 +2068,7 @@
       <li><strong>Steady Hands</strong><span data-en=" — " data-it=": "> </span><span data-en="35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go." data-it="35 livelli spietati, senza barra di precisione ad aiutarti. Minimo 99% fin dal primo livello, con misure decimali che compaiono man mano che avanzi.">35 unforgiving levels, no precision bar to help you. 99% minimum from the very first level, with decimal measurements creeping in as you go.</span></li>
       <li><strong>The Theorem</strong><span data-en=" — " data-it=": "> </span><span data-en="50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both." data-it="50 triangoli fermi, niente trascinamento: calcola solo il lato mancante dagli altri due. I numeri decimali iniziano a comparire dopo il livello 30, prima in una misura poi in entrambe.">50 static triangles, no dragging: just calculate the missing side from the other two. Decimals start appearing after level 30, first in one measurement, then in both.</span></li>
     </ul>
+    <p class="rules-stars-note" data-en="★ The stars next to each mode in the mode picker are my own difficulty rating, from half a star (easiest) to 5 (hardest)." data-it="★ Le stelline accanto a ogni modalità nel popup di scelta indicano una mia valutazione personale della difficoltà, da mezza stella (più facile) a 5 (più difficile).">★ The stars next to each mode in the mode picker are my own difficulty rating, from half a star (easiest) to 5 (hardest).</p>
   </div>
 </div>
 
@@ -2218,10 +2243,10 @@
       hrefKey: 'erato_basic_v2_last', hrefBase: 'eratostene_thesieve.html',
       preview: buildMiniSieve(),
       modes: [
-        { name: "Scholar's Glance", desc: '50 levels of total concentration.', descIT: '50 livelli di pura concentrazione.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'eratostene_scholarsglance.html', normalFile: 'eratostene_scholarsglance_normal.html', hrefKey: 'erato_scholarsglance_last', accent: 'red', requiresSieveFinish: true },
-        { name: 'Prime Rush', desc: '50 levels of pure racing against the clock, against other players.', descIT: '50 livelli di pura corsa contro il tempo, contro altri giocatori.', details: 'No time limit · no progress saved.', detailsIT: 'Nessun limite di tempo · progressi non salvati.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true },
-        { name: 'The Sieve', desc: 'The full 100-level race, at your own pace, ranked on the main leaderboard.', descIT: 'La gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale.', details: 'Time-limited race · progress saved · anti-cheat active.', detailsIT: 'Gara a tempo limitato · progressi salvati · anti-cheat attivo.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_v2_last', accent: 'yellow' },
-        { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', descIT: 'Livelli infiniti, nessuna classifica, solo tu e i numeri.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'eratostene_infiniteprimes.html', normalFile: 'eratostene_infiniteprimes_normal.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true },
+        { name: "Scholar's Glance", desc: '50 levels of total concentration.', descIT: '50 livelli di pura concentrazione.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'eratostene_scholarsglance.html', normalFile: 'eratostene_scholarsglance_normal.html', hrefKey: 'erato_scholarsglance_last', accent: 'red', requiresSieveFinish: true, stars: 3.5 },
+        { name: 'Prime Rush', desc: '50 levels of pure racing against the clock, against other players.', descIT: '50 livelli di pura corsa contro il tempo, contro altri giocatori.', details: 'No time limit · no progress saved.', detailsIT: 'Nessun limite di tempo · progressi non salvati.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true, stars: 3 },
+        { name: 'The Sieve', desc: 'The full 100-level race, at your own pace, ranked on the main leaderboard.', descIT: 'La gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale.', details: 'Time-limited race · progress saved · anti-cheat active.', detailsIT: 'Gara a tempo limitato · progressi salvati · anti-cheat attivo.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_v2_last', accent: 'yellow', stars: 2.5 },
+        { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', descIT: 'Livelli infiniti, nessuna classifica, solo tu e i numeri.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'eratostene_infiniteprimes.html', normalFile: 'eratostene_infiniteprimes_normal.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true, stars: 1.5 },
       ]
     },
     {
@@ -2236,10 +2261,10 @@
       hrefKey: 'pythagoras_geometricinstinct_last', hrefBase: 'pitagora_geometricinstinct.html',
       preview: buildMiniTriangle(),
       modes: [
-        { name: 'Steady Hands', desc: '35 unforgiving levels, no precision gauge to help you.', descIT: '35 livelli spietati, senza barra di precisione ad aiutarti.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_steadyhands.html', normalFile: 'pitagora_steadyhands.html', hrefKey: 'pythagoras_steadyhands_last', accent: 'red', requiresSieveFinish: true },
-        { name: 'The Theorem', desc: '50 static triangles: calculate the missing side yourself.', descIT: '50 triangoli fermi: calcola tu stesso il lato mancante.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_thetheorem.html', normalFile: 'pitagora_thetheorem.html', hrefKey: 'pythagoras_thetheorem_last', accent: 'orange', requiresSieveFinish: true },
-        { name: 'Geometric Instinct', desc: '50 levels, from generous guesses to near-perfect precision.', descIT: '50 livelli, da un margine ampio a una precisione quasi perfetta.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_geometricinstinct.html', normalFile: 'pitagora_geometricinstinct.html', hrefKey: 'pythagoras_geometricinstinct_last', accent: 'yellow' },
-        { name: 'Triangles Everywhere', desc: 'Endless levels, precision climbing until it maxes out.', descIT: 'Livelli infiniti, precisione che sale fino al massimo.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'pitagora_triangleseverywhere.html', normalFile: 'pitagora_triangleseverywhere.html', hrefKey: 'pythagoras_triangleseverywhere_last', accent: 'teal', requiresSieveFinish: true },
+        { name: 'Steady Hands', desc: '35 unforgiving levels, no precision gauge to help you.', descIT: '35 livelli spietati, senza barra di precisione ad aiutarti.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_steadyhands.html', normalFile: 'pitagora_steadyhands.html', hrefKey: 'pythagoras_steadyhands_last', accent: 'red', requiresSieveFinish: true, stars: 3.5 },
+        { name: 'The Theorem', desc: '50 static triangles: calculate the missing side yourself.', descIT: '50 triangoli fermi: calcola tu stesso il lato mancante.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_thetheorem.html', normalFile: 'pitagora_thetheorem.html', hrefKey: 'pythagoras_thetheorem_last', accent: 'orange', requiresSieveFinish: true, stars: 2.5 },
+        { name: 'Geometric Instinct', desc: '50 levels, from generous guesses to near-perfect precision.', descIT: '50 livelli, da un margine ampio a una precisione quasi perfetta.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_geometricinstinct.html', normalFile: 'pitagora_geometricinstinct.html', hrefKey: 'pythagoras_geometricinstinct_last', accent: 'yellow', stars: 3 },
+        { name: 'Triangles Everywhere', desc: 'Endless levels, precision climbing until it maxes out.', descIT: 'Livelli infiniti, precisione che sale fino al massimo.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'pitagora_triangleseverywhere.html', normalFile: 'pitagora_triangleseverywhere.html', hrefKey: 'pythagoras_triangleseverywhere_last', accent: 'teal', requiresSieveFinish: true, stars: 2 },
       ]
     },
   ];
@@ -4212,6 +4237,24 @@
   // --- popup di scelta modalità (The Sieve / Prime Rush / Infinite Primes) ---
   const modeModal = document.getElementById('modeModal');
   const modeOptionsEl = document.getElementById('modeOptions');
+  // 5 stelline (piene/mezze/vuote) che rappresentano la difficoltà di ciascuna modalità,
+  // valutazione personale — spiegata nei popup Regole di Eratostene e Pitagora
+  let starIdCounter = 0;
+  function renderStars(value){
+    starIdCounter++;
+    const uid = starIdCounter;
+    let stars = '';
+    for (let i = 0; i < 5; i++){
+      const diff = value - i;
+      const fillPct = diff >= 1 ? 100 : diff >= 0.5 ? 50 : 0;
+      const gradId = `starGrad_${uid}_${i}`;
+      stars += `<svg class="mode-star" viewBox="0 0 24 24" aria-hidden="true">
+        <defs><linearGradient id="${gradId}"><stop offset="${fillPct}%" stop-color="var(--yellow)"/><stop offset="${fillPct}%" stop-color="rgba(243,239,228,0.18)"/></linearGradient></defs>
+        <path fill="url(#${gradId})" stroke="var(--yellow)" stroke-width="1" stroke-opacity="0.4" d="M12 2.5l2.9 6.06 6.6.79-4.9 4.5 1.28 6.55L12 17.1l-5.88 3.3 1.28-6.55-4.9-4.5 6.6-.79z"/>
+      </svg>`;
+    }
+    return `<span class="mode-star-rating" title="${value}/5">${stars}</span>`;
+  }
   function openModeModal(gameIndex, forceUnlockAll){
     playSound('tap');
     const g = games[gameIndex];
@@ -4235,7 +4278,10 @@
         return `
           <div class="mode-option mode-option-locked" style="--mode-color: var(--${m.accent})">
             <div class="mode-option-text">
-              <h4>${m.name}</h4>
+              <div class="mode-option-title-row">
+                <h4>${m.name}</h4>
+                ${renderStars(m.stars)}
+              </div>
               <p class="mode-option-details">${lockMessage}</p>
             </div>
           </div>`;
@@ -4244,7 +4290,10 @@
       return `
         <a class="mode-option" href="${href}" onclick="playSound('tap')" style="--mode-color: var(--${m.accent})">
           <div class="mode-option-text">
-            <h4>${m.name}</h4>
+            <div class="mode-option-title-row">
+              <h4>${m.name}</h4>
+              ${renderStars(m.stars)}
+            </div>
             <p>${desc}</p>
             <p class="mode-option-details">${details}</p>
           </div>
