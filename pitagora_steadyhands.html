@@ -153,8 +153,6 @@
   .measure-label{ color: var(--ink-dim); }
   .measure-target{ font-weight:700; color:var(--ink); }
   .measure-target.unknown{ color: var(--yellow); }
-  .measure-live{ font-size:0.78rem; color: var(--ink-dim); min-width: 3.4rem; text-align:right; }
-  .measure-live.ok{ color: var(--teal); font-weight:700; }
 
   .precision-block{ margin: 1.1rem 0 0.2rem; }
   .precision-block.broken .precision-track{ position: relative; opacity: 0.55; }
@@ -427,7 +425,6 @@
     .side-panel-card h2{ font-size: 0.70875rem; }
     .level-sub{ font-size: 0.3915rem; }
     .measure-row{ font-size: 0.54rem; padding: 0.30375rem 0; }
-    .measure-live{ font-size: 0.68rem; }
     .precision-block{ margin: 0.5rem 0 0.1rem; }
 
     .check-btn, .next-btn{ padding: 0.85rem; font-size: 0.76rem; }
@@ -614,7 +611,6 @@ const LEVELS = [
   const checkBtn = document.getElementById('checkBtn');
   const nextBtn = document.getElementById('nextBtn');
   const feedbackEl = document.getElementById('feedback');
-  const stageEl = document.getElementById('stage');
 
   let currentLevelIndex = startLevel - 1;
   let pointH = { x: 0, y: 0 };
