@@ -413,7 +413,7 @@
       <h1 id="levelTitle">Pythagoras <span class="accent">·</span> The Theorem <span class="accent">·</span> Level 1</h1>
       <div class="icon-btn" aria-hidden="true" style="cursor:default;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></div>
     </div>
-    <p class="instructions">The triangle doesn't move. Two sides are given — work out the third with the Pythagorean theorem and type your answer. Decimals start creeping into the given measurements after level 30.</p>
+    <p class="instructions" data-en="The triangle doesn't move. Two sides are given — work out the third with the Pythagorean theorem and type your answer. Decimals start creeping into the given measurements after level 30." data-it="Il triangolo non si muove. Sono dati due lati: calcola il terzo con il teorema di Pitagora e scrivi la risposta. I numeri decimali cominciano a comparire nelle misure fornite dopo il livello 30.">The triangle doesn't move. Two sides are given — work out the third with the Pythagorean theorem and type your answer. Decimals start creeping into the given measurements after level 30.</p>
 
     <div class="level-layout" id="stage">
       <div class="board-card">
@@ -424,22 +424,22 @@
 
       <div class="side-panel">
         <div class="side-panel-card">
-          <h2>Solve for the missing side</h2>
+          <h2 data-en="Solve for the missing side" data-it="Calcola il lato mancante">Solve for the missing side</h2>
           <p class="level-sub" id="levelSub"></p>
           <div id="measureRows"></div>
 
           <div class="answer-block">
-            <label for="answerInput">Your answer</label>
+            <label for="answerInput" data-en="Your answer" data-it="La tua risposta">Your answer</label>
             <input type="number" step="0.01" id="answerInput" placeholder="0.00">
           </div>
 
-          <button type="button" class="check-btn" id="checkBtn">Check</button>
+          <button type="button" class="check-btn" id="checkBtn" data-en="Check" data-it="Verifica">Check</button>
           <p class="feedback" id="feedback"></p>
           <button type="button" class="next-btn" id="nextBtn">Next level →</button>
 
           <div class="jump-row">
-            <input type="number" id="jumpInput" min="1" max="50" placeholder="1-50">
-            <button type="button" id="jumpBtn">Go to level</button>
+            <input type="number" id="jumpInput" min="1" max="50" data-placeholder-en="1-50" data-placeholder-it="1-50" placeholder="1-50">
+            <button type="button" id="jumpBtn" data-en="Go to level" data-it="Vai al livello">Go to level</button>
           </div>
         </div>
       </div>
@@ -564,7 +564,11 @@ const LEVELS = [
 
   function ns(tag){ return document.createElementNS('http://www.w3.org/2000/svg', tag); }
 
-  const LABELS = { legA: 'Leg A', legB: 'Leg B', hyp: 'Hypotenuse' };
+  function labelsFor(){
+    return currentLang() === 'it'
+      ? { legA: 'Cateto A', legB: 'Cateto B', hyp: 'Ipotenusa' }
+      : { legA: 'Leg A', legB: 'Leg B', hyp: 'Hypotenuse' };
+  }
 
   // triangolo sempre nella stessa forma/posizione: qui non si trascina nulla, le
   // proporzioni visive non seguono i numeri veri (che vanno da poche unità a oltre
@@ -577,10 +581,14 @@ const LEVELS = [
     currentLevelIndex = index;
     const level = LEVELS[index];
 
-    levelTitleEl.innerHTML = `Pythagoras <span class="accent">·</span> The Theorem <span class="accent">·</span> Level ${index + 1}`;
+    const lang = currentLang();
+    const levelWord = lang === 'it' ? 'Livello' : 'Level';
+    levelTitleEl.innerHTML = `Pythagoras <span class="accent">·</span> The Theorem <span class="accent">·</span> ${levelWord} ${index + 1}`;
     const hasDecimals = Object.values(level.shown).some(v => !Number.isInteger(v));
-    levelSubEl.textContent = hasDecimals ? 'Watch the decimals' : 'Clean numbers';
-    levelProgressEl.textContent = `Level ${index + 1} of ${LEVELS.length}`;
+    levelSubEl.textContent = lang === 'it'
+      ? (hasDecimals ? 'Attento ai decimali' : 'Numeri puliti')
+      : (hasDecimals ? 'Watch the decimals' : 'Clean numbers');
+    levelProgressEl.textContent = lang === 'it' ? `Livello ${index + 1} di ${LEVELS.length}` : `Level ${index + 1} of ${LEVELS.length}`;
     levelProgressFillEl.style.width = (((index + 1) / LEVELS.length) * 100) + '%';
     checkBtn.disabled = false;
     nextBtn.classList.remove('visible');
@@ -602,7 +610,7 @@ const LEVELS = [
       row.className = 'measure-row';
       const isMissing = level.missing === key;
       row.innerHTML = `
-        <span class="measure-label">${LABELS[key]}</span>
+        <span class="measure-label">${labelsFor()[key]}</span>
         <span class="measure-target ${isMissing ? 'unknown' : ''}">${isMissing ? '?' : level.shown[key]}</span>
       `;
       measureRowsEl.appendChild(row);
@@ -648,8 +656,9 @@ const LEVELS = [
   function checkAnswer(){
     const level = LEVELS[currentLevelIndex];
     const given = parseFloat(answerInput.value);
+    const lang = currentLang();
     if (isNaN(given)){
-      feedbackEl.textContent = '✗ Type a number first.';
+      feedbackEl.textContent = lang === 'it' ? '✗ Scrivi prima un numero.' : '✗ Type a number first.';
       feedbackEl.className = 'feedback bad';
       return;
     }
@@ -660,13 +669,19 @@ const LEVELS = [
     const ok = Math.abs(given - level.answer) <= tolerance;
 
     if (ok){
-      feedbackEl.textContent = `✓ Correct — ${level.answer} (±${tolerance.toFixed(2)} accepted).`;
+      feedbackEl.textContent = lang === 'it'
+        ? `✓ Corretto — ${level.answer} (±${tolerance.toFixed(2)} accettato).`
+        : `✓ Correct — ${level.answer} (±${tolerance.toFixed(2)} accepted).`;
       feedbackEl.className = 'feedback good';
       checkBtn.disabled = true;
       nextBtn.classList.add('visible');
-      nextBtn.textContent = currentLevelIndex === LEVELS.length - 1 ? 'See the result →' : 'Next level →';
+      if (currentLevelIndex === LEVELS.length - 1){
+        nextBtn.textContent = lang === 'it' ? 'Vedi il risultato →' : 'See the result →';
+      } else {
+        nextBtn.textContent = lang === 'it' ? 'Livello successivo →' : 'Next level →';
+      }
     } else {
-      feedbackEl.textContent = `✗ Not quite — try again.`;
+      feedbackEl.textContent = lang === 'it' ? `✗ Non proprio — riprova.` : `✗ Not quite — try again.`;
       feedbackEl.className = 'feedback bad';
     }
   }
