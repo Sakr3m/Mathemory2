@@ -634,6 +634,67 @@ const LEVELS = [
   }
   applyLanguage();
 
+  // effetti sonori: riusa gli stessi file mp3 già ospitati per Eratostene (right,
+  // wrong, winner, badge, tap), via Web Audio API per latenza minima. "badge" è
+  // caricato ma non ancora usato da nessuna parte: Pitagora non ha ancora un
+  // sistema di rango, resta pronto per quando (se) arriverà. Il trascinamento dei
+  // vertici resta sempre silenzioso, nessun suono legato al drag
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const soundBuffers = {};
+  const pendingSounds = new Set();
+  function loadSound(name, url){
+    fetch(url)
+      .then(res => res.arrayBuffer())
+      .then(data => audioCtx.decodeAudioData(data))
+      .then(buffer => {
+        soundBuffers[name] = buffer;
+        if (pendingSounds.has(name)){
+          pendingSounds.delete(name);
+          playSound(name);
+        }
+      })
+      .catch(() => {});
+  }
+  loadSound('right', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_right.mp3');
+  loadSound('wrong', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_wrong.mp3');
+  loadSound('winner', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_winner.mp3');
+  loadSound('badge', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_badge.mp3');
+  loadSound('tap', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/tap.mp3');
+
+  const SOUND_LEVELS = { badge: { desktop: 1, mobile: 0.5 }, winner: { desktop: 1, mobile: 1.1 } };
+  function getSoundLevel(name){
+    const level = SOUND_LEVELS[name];
+    if (level === undefined) return 1;
+    if (typeof level === 'number') return level;
+    const isMobileNow = window.innerWidth <= 900;
+    const value = isMobileNow ? level.mobile : level.desktop;
+    return typeof value === 'number' ? value : 1;
+  }
+
+  function playSound(name){
+    const buffer = soundBuffers[name];
+    if (!buffer){
+      pendingSounds.add(name);
+      return;
+    }
+    if (window.MathemoryAudio && window.MathemoryAudio.isMuted()) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    const gainNode = audioCtx.createGain();
+    const baseVolume = window.MathemoryAudio ? window.MathemoryAudio.getSfxVolume() : 1;
+    gainNode.gain.value = baseVolume * getSoundLevel(name);
+    source.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    source.start(0);
+
+    if (window.MathemoryAudio && window.MathemoryAudio.duckMusic){
+      if (name === 'badge') window.MathemoryAudio.duckMusic(0.15, 1000);
+      if (name === 'winner') window.MathemoryAudio.duckMusic(0.15, 1500);
+    }
+  }
+
   const STORAGE_KEY = 'pythagoras_thetheorem_last';
   const TOTAL_TIME_KEY = 'pythagoras_thetheorem_total_race_time';
   const SESSION_OPEN_KEY = 'pythagoras_thetheorem_session_open';
@@ -683,6 +744,7 @@ const LEVELS = [
   // Home: uscita volontaria ma il livello corrente NON è stato risolto. Deposito
   // comunque il tempo, senza penalità
   function recordHomeExit(){
+    playSound('tap');
     const elapsed = (Date.now() - levelStartTime) / 1000;
     const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
     localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + elapsed).toFixed(1));
@@ -791,10 +853,12 @@ const LEVELS = [
   }
 
   function checkAnswer(){
+    playSound('tap');
     const level = LEVELS[currentLevelIndex];
     const given = parseFloat(answerInput.value);
     const lang = currentLang();
     if (isNaN(given)){
+      playSound('wrong');
       feedbackEl.textContent = lang === 'it' ? '✗ Scrivi prima un numero.' : '✗ Type a number first.';
       feedbackEl.className = 'feedback bad';
       return;
@@ -811,6 +875,7 @@ const LEVELS = [
       if (currentLevelIndex === LEVELS.length - 1){
         // ultimo livello: il check porta dritto al popup, stesso comportamento di
         // Eratostene — nessun passaggio intermedio "Vedi il risultato" da cliccare
+        playSound('winner');
         localStorage.setItem(STORAGE_KEY, '1');
         document.getElementById('finishTotalTime').textContent = (localStorage.getItem(TOTAL_TIME_KEY) || '0') + 's';
         finishModalEl.classList.add('visible');
@@ -818,9 +883,11 @@ const LEVELS = [
         // livello intermedio: il check porta dritto al livello successivo, senza
         // messaggio intermedio né pulsante da cliccare — stesso comportamento di
         // Eratostene ("risposta corretta: si passa subito al livello successivo")
+        playSound('right');
         loadLevel(currentLevelIndex + 1);
       }
     } else {
+      playSound('wrong');
       feedbackEl.textContent = lang === 'it' ? `✗ Non proprio — riprova.` : `✗ Not quite — try again.`;
       feedbackEl.className = 'feedback bad';
     }

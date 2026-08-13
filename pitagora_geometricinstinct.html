@@ -397,7 +397,7 @@
 
   <div class="wrap">
     <div class="title-icon-row">
-      <a class="icon-btn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
+      <a class="icon-btn" id="homeBtn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
       <h1 id="levelTitle">Pythagoras <span class="accent">·</span> Geometric Instinct <span class="accent">·</span> Level 1</h1>
       <button type="button" class="icon-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></button>
     </div>
@@ -524,6 +524,67 @@ const LEVELS = [
   }
   applyLanguage();
 
+  // effetti sonori: riusa gli stessi file mp3 già ospitati per Eratostene (right,
+  // wrong, winner, badge, tap), via Web Audio API per latenza minima. "badge" è
+  // caricato ma non ancora usato da nessuna parte: Pitagora non ha ancora un
+  // sistema di rango, resta pronto per quando (se) arriverà. Il trascinamento dei
+  // vertici resta sempre silenzioso, nessun suono legato al drag
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const soundBuffers = {};
+  const pendingSounds = new Set();
+  function loadSound(name, url){
+    fetch(url)
+      .then(res => res.arrayBuffer())
+      .then(data => audioCtx.decodeAudioData(data))
+      .then(buffer => {
+        soundBuffers[name] = buffer;
+        if (pendingSounds.has(name)){
+          pendingSounds.delete(name);
+          playSound(name);
+        }
+      })
+      .catch(() => {});
+  }
+  loadSound('right', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_right.mp3');
+  loadSound('wrong', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_wrong.mp3');
+  loadSound('winner', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_winner.mp3');
+  loadSound('badge', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_badge.mp3');
+  loadSound('tap', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/tap.mp3');
+
+  const SOUND_LEVELS = { badge: { desktop: 1, mobile: 0.5 }, winner: { desktop: 1, mobile: 1.1 } };
+  function getSoundLevel(name){
+    const level = SOUND_LEVELS[name];
+    if (level === undefined) return 1;
+    if (typeof level === 'number') return level;
+    const isMobileNow = window.innerWidth <= 900;
+    const value = isMobileNow ? level.mobile : level.desktop;
+    return typeof value === 'number' ? value : 1;
+  }
+
+  function playSound(name){
+    const buffer = soundBuffers[name];
+    if (!buffer){
+      pendingSounds.add(name);
+      return;
+    }
+    if (window.MathemoryAudio && window.MathemoryAudio.isMuted()) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    const gainNode = audioCtx.createGain();
+    const baseVolume = window.MathemoryAudio ? window.MathemoryAudio.getSfxVolume() : 1;
+    gainNode.gain.value = baseVolume * getSoundLevel(name);
+    source.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    source.start(0);
+
+    if (window.MathemoryAudio && window.MathemoryAudio.duckMusic){
+      if (name === 'badge') window.MathemoryAudio.duckMusic(0.15, 1000);
+      if (name === 'winner') window.MathemoryAudio.duckMusic(0.15, 1500);
+    }
+  }
+
   const STORAGE_KEY = 'pythagoras_last';
   const params = new URLSearchParams(window.location.search);
   const requestedLevel = parseInt(params.get('n'));
@@ -533,6 +594,7 @@ const LEVELS = [
 
   const ORIGIN = { x: 70, y: 370 };
   const svg = document.getElementById('board');
+  document.getElementById('homeBtn').addEventListener('click', () => { playSound('tap'); });
   const measureRowsEl = document.getElementById('measureRows');
   const levelTitleEl = document.getElementById('levelTitle');
   const levelSubEl = document.getElementById('levelSub');
@@ -750,6 +812,7 @@ const LEVELS = [
   }
 
   checkBtn.addEventListener('click', () => {
+    playSound('tap');
     const level = LEVELS[currentLevelIndex];
     const pct = computeScorePercent();
     paintReadout(); // la barra si aggiorna SEMPRE qui, che il tentativo sia giusto o no
@@ -761,15 +824,18 @@ const LEVELS = [
       if (currentLevelIndex === LEVELS.length - 1){
         // ultimo livello: il check porta dritto al popup, stesso comportamento di
         // Eratostene — nessun passaggio intermedio "Vedi il risultato" da cliccare
+        playSound('winner');
         localStorage.setItem(STORAGE_KEY, '1');
         congratsModalEl.classList.add('visible');
       } else {
         // livello intermedio: il check porta dritto al livello successivo, senza
         // messaggio intermedio né pulsante da cliccare — stesso comportamento di
         // Eratostene ("risposta corretta: si passa subito al livello successivo")
+        playSound('right');
         loadLevel(currentLevelIndex + 1);
       }
     } else {
+      playSound('wrong');
       feedbackEl.textContent = lang === 'it'
         ? `✗ ${pct}% — questo livello richiede almeno il ${level.precision}%.`
         : `✗ ${pct}% — this level needs at least ${level.precision}%.`;
