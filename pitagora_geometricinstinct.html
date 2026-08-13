@@ -40,10 +40,11 @@
   .title-icon-row{
     display:flex;
     align-items:center;
-    justify-content:center;
+    justify-content:space-between;
     gap: 1rem;
     margin-bottom: 0.6rem;
   }
+  .title-icon-row h1{ margin: 0; flex: 1; min-width: 0; text-align: center; }
   .icon-btn{
     flex-shrink:0;
     width: 55px; height:55px;
@@ -509,7 +510,6 @@ const LEVELS = [
       row.innerHTML = `
         <span class="measure-label">${r.label}</span>
         <span class="measure-target ${isMissing ? 'unknown' : ''}">${isMissing ? '?' : level[r.key]}</span>
-        <span class="measure-live" id="live-${r.key}">—</span>
       `;
       measureRowsEl.appendChild(row);
     });
@@ -539,12 +539,6 @@ const LEVELS = [
   // 15 livelli); dal 16esimo in poi la vista resta ferma finché non si preme Check
   function paintReadout(){
     const level = LEVELS[currentLevelIndex];
-    const m = currentMeasures();
-    ['legA','legB','hyp'].forEach(key => {
-      const el = document.getElementById('live-' + key);
-      const liveUnits = m[key] / level.scale;
-      el.textContent = liveUnits.toFixed(1);
-    });
     const pct = computeScorePercent();
     precisionPctEl.textContent = pct + '%';
     precisionFillEl.style.width = pct + '%';
