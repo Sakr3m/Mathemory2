@@ -89,6 +89,12 @@
     max-width: 640px;
   }
 
+  /* spazio riservato sopra la griglia/pannello, stesso identico ingombro del box
+     badge+descrizione di Eratostene (.rank-callout in eratostene_thesieve.html):
+     Pitagora non ha ancora un sistema di rango, ma lo spazio resta prenotato cosi'
+     il ritmo verticale è coerente col resto del sito e non ci sara' da spostare
+     nulla quando (se) verra' aggiunto */
+  .rank-callout-space{ height: 26.78px; margin: 0 0 0.9rem; }
   .level-layout{
     display:grid;
     grid-template-columns: 529px 1fr;
@@ -97,6 +103,7 @@
   }
   @media (max-width: 1100px){
     .level-layout{ grid-template-columns: 1fr; }
+    .rank-callout-space{ height: 20px; margin: 0 0 0.6rem; }
   }
 
   .board-card{
@@ -433,6 +440,7 @@
     .icon-btn{ width: 44px; height: 44px; }
     .icon-btn svg{ width: 20px; height: 20px; }
     .instructions{ display: none; } /* niente spazio per il paragrafo qui, il titolo basta - stesso criterio di Eratosthenes */
+    .rank-callout-space{ height: 16px; margin: 0 0 0.5rem; }
     .level-layout{ gap: 0.8rem; }
     .board-card{ padding: 0.6rem; max-width: 90%; margin: 0.6rem auto 0; }
     .triangle-label{ font-size: 20px; }
@@ -484,6 +492,8 @@
       <button type="button" class="icon-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></button>
     </div>
     <p class="instructions" data-en="The triangle doesn't move. Two sides are given — work out the third with the Pythagorean theorem and type your answer." data-it="Il triangolo non si muove. Sono dati due lati: calcola il terzo con il teorema di Pitagora e scrivi la risposta.">The triangle doesn't move. Two sides are given — work out the third with the Pythagorean theorem and type your answer.</p>
+
+    <div class="rank-callout-space" aria-hidden="true"></div>
 
     <div class="level-layout" id="stage">
       <div class="board-card">
@@ -684,7 +694,10 @@ const LEVELS = [
 
     buildMeasureRows(level);
     render(level);
-    answerInput.focus();
+    // il focus automatico apre la tastiera virtuale su mobile appena si entra nel
+    // livello, anche senza che l'utente abbia toccato l'input: comodo su desktop
+    // (puoi scrivere subito), fastidioso su mobile (tastiera indesiderata)
+    if (window.innerWidth > 900) answerInput.focus();
   }
 
   function buildMeasureRows(level){
