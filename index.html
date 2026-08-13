@@ -2261,7 +2261,7 @@
       hrefKey: 'pythagoras_geometricinstinct_last', hrefBase: 'pitagora_geometricinstinct.html',
       preview: buildMiniTriangle(),
       modes: [
-        { name: 'Steady Hands', desc: '35 unforgiving levels, no precision gauge to help you.', descIT: '35 livelli spietati, senza barra di precisione ad aiutarti.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_steadyhands.html', normalFile: 'pitagora_steadyhands.html', hrefKey: 'pythagoras_steadyhands_last', accent: 'red', requiresSieveFinish: true, stars: 3.5 },
+        { name: 'Steady Hands', desc: '35 unforgiving levels, no precision gauge to help you.', descIT: '35 livelli spietati, senza barra di precisione ad aiutarti.', details: 'No time limit · no progress saved.', detailsIT: 'Nessun limite di tempo · progressi non salvati.', file: 'pitagora_steadyhands.html', normalFile: 'pitagora_steadyhands.html', hrefKey: 'pythagoras_steadyhands_last', accent: 'red', requiresSieveFinish: true, stars: 3.5 },
         { name: 'The Theorem', desc: '50 static triangles: calculate the missing side yourself.', descIT: '50 triangoli fermi: calcola tu stesso il lato mancante.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_thetheorem.html', normalFile: 'pitagora_thetheorem.html', hrefKey: 'pythagoras_thetheorem_last', accent: 'orange', requiresSieveFinish: true, stars: 2.5 },
         { name: 'Geometric Instinct', desc: '50 levels, from generous guesses to near-perfect precision.', descIT: '50 livelli, da un margine ampio a una precisione quasi perfetta.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_geometricinstinct.html', normalFile: 'pitagora_geometricinstinct.html', hrefKey: 'pythagoras_geometricinstinct_last', accent: 'yellow', stars: 3 },
         { name: 'Triangles Everywhere', desc: 'Endless levels, precision climbing until it maxes out.', descIT: 'Livelli infiniti, precisione che sale fino al massimo.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'pitagora_triangleseverywhere.html', normalFile: 'pitagora_triangleseverywhere.html', hrefKey: 'pythagoras_triangleseverywhere_last', accent: 'teal', requiresSieveFinish: true, stars: 2 },
@@ -2389,6 +2389,8 @@
   let cachedPodium = null;
   let cachedPrimeRushPodium = null;
   let cachedScholarsGlancePodium = null;
+  let cachedPythagorasTheTheoremPodium = null;
+  let cachedPythagorasSteadyHandsPodium = null;
   let eratoOverlayEl = null; // riferimento alla card animata (se già creata), per aggiornare la classifica quando arrivano dati freschi dal Worker
   let pythagorasOverlayEl = null; // stesso ruolo di eratoOverlayEl qui sopra, ma per la card di Pitagora — mai lo stesso elemento
   let pythagorasOverlayBuilt = false; // true dopo la primissima volta che si naviga su Pitagora: da lì in poi la card esiste già, va solo mostrata/riposizionata
@@ -2415,6 +2417,21 @@
     lbHalf.innerHTML = freshHtml;
     lbHalf._realLbHtml = lbHalf.innerHTML;
     // l'allineamento a destra è statico nel CSS (margin-right:0), non serve calcolarlo
+  }
+
+  // stesso identico meccanismo di refreshEratoLeaderboard qui sopra, ma per la card
+  // di Pitagora — aggiorna la classifica dentro la card già visibile, se esiste
+  function refreshPythagorasLeaderboard(){
+    if (!pythagorasOverlayEl) return;
+    const lbHalf = pythagorasOverlayEl.querySelector('.erato-leaderboard-half');
+    if (!lbHalf) return;
+    const freshHtml = pythagorasRightHtml(games[1]);
+    if (lbHalf._isShowingRules){
+      lbHalf._realLbHtml = freshHtml;
+      return;
+    }
+    lbHalf.innerHTML = freshHtml;
+    lbHalf._realLbHtml = lbHalf.innerHTML;
   }
   const LEADERBOARD_API = 'https://eratostene.sl-eternal-lux.workers.dev';
 
@@ -2460,6 +2477,32 @@
         cachedScholarsGlancePodium = data.podium || [];
         render();
         refreshEratoLeaderboard();
+      })
+      .catch(() => {
+        // se il Worker non risponde, restano i trattini: nessun errore mostrato all'utente
+      });
+  }
+
+  // --- Pitagora: stessi identici endpoint, stessa cache/refresh, cambia solo il
+  // percorso e la card che va aggiornata ---
+  function fetchPythagorasTheTheoremLeaderboard(){
+    fetch(`${LEADERBOARD_API}/leaderboard-pythagoras-thetheorem`)
+      .then(r => r.json())
+      .then(data => {
+        cachedPythagorasTheTheoremPodium = data.podium || [];
+        refreshPythagorasLeaderboard();
+      })
+      .catch(() => {
+        // se il Worker non risponde, restano i trattini: nessun errore mostrato all'utente
+      });
+  }
+
+  function fetchPythagorasSteadyHandsLeaderboard(){
+    fetch(`${LEADERBOARD_API}/leaderboard-pythagoras-steadyhands`)
+      .then(r => r.json())
+      .then(data => {
+        cachedPythagorasSteadyHandsPodium = data.podium || [];
+        refreshPythagorasLeaderboard();
       })
       .catch(() => {
         // se il Worker non risponde, restano i trattini: nessun errore mostrato all'utente
@@ -2653,7 +2696,7 @@
       <div class="lb-half">
         <h2>The Theorem</h2>
         <div class="lb-section">
-          ${podiumRowsHtml(null)}
+          ${podiumRowsHtml(cachedPythagorasTheTheoremPodium)}
         </div>
       </div>
       <svg class="lb-divider" viewBox="0 0 356 10" preserveAspectRatio="none" aria-hidden="true">
@@ -2670,7 +2713,7 @@
       <div class="lb-half">
         <h2>Steady Hands</h2>
         <div class="lb-section">
-          ${podiumRowsHtml(null)}
+          ${podiumRowsHtml(cachedPythagorasSteadyHandsPodium)}
         </div>
       </div>`;
   }
@@ -4180,10 +4223,14 @@
     fetchLeaderboard();
     fetchPrimeRushLeaderboard();
     fetchScholarsGlanceLeaderboard();
+    fetchPythagorasTheTheoremLeaderboard();
+    fetchPythagorasSteadyHandsLeaderboard();
   }, 3500);
   setInterval(fetchLeaderboard, 24 * 60 * 60 * 1000); // refresh una volta al giorno
   setInterval(fetchPrimeRushLeaderboard, 24 * 60 * 60 * 1000);
   setInterval(fetchScholarsGlanceLeaderboard, 24 * 60 * 60 * 1000);
+  setInterval(fetchPythagorasTheTheoremLeaderboard, 24 * 60 * 60 * 1000);
+  setInterval(fetchPythagorasSteadyHandsLeaderboard, 24 * 60 * 60 * 1000);
 
   // --- popup del regolamento ---
   // ============================================================
