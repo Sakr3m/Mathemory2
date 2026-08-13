@@ -180,9 +180,13 @@
   }
   .answer-block input:focus{ outline: none; border-color: var(--yellow); }
 
-  .check-btn{
-    width:100%;
+  .check-skip-row{
+    display: flex;
+    gap: 0.6rem;
     margin-top: 1rem;
+  }
+  .check-btn{
+    flex: 1 1 auto;
     font-family:'Space Mono', monospace;
     font-weight:700;
     background: var(--yellow);
@@ -202,6 +206,21 @@
     cursor: not-allowed;
     border: 1px solid var(--rule);
   }
+  .skip-btn{
+    flex: 0 0 auto;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    background: transparent;
+    color: var(--ink-dim);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 0.92rem 1.1rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+  }
+  .skip-btn:hover{ color: var(--ink); border-color: var(--ink); }
 
   .feedback{
     margin-top: 0.8rem;
@@ -357,34 +376,6 @@
     margin: 0.4rem 0 0;
   }
 
-  .jump-row{
-    display:flex; gap:0.5rem; margin-top:0.9rem;
-    font-family:'Space Mono', monospace; font-size:0.72rem;
-  }
-  .jump-row input{
-    width: 4.5rem;
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    color: var(--ink);
-    font-family:'Space Mono', monospace;
-    font-size: 0.78rem;
-    padding: 0.4rem 0.5rem;
-  }
-  .jump-row button{
-    background: transparent;
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    color: var(--ink-dim);
-    font-family:'Space Mono', monospace;
-    font-size: 0.7rem;
-    padding: 0.4rem 0.7rem;
-    cursor:pointer;
-    text-transform:uppercase;
-    letter-spacing:0.03em;
-  }
-  .jump-row button:hover{ color: var(--ink); border-color: var(--rule); }
-
   @media (max-width: 900px){
     html, body{
       overflow: hidden;
@@ -410,17 +401,18 @@
     .icon-btn svg{ width: 20px; height: 20px; }
     .instructions{ display: none; } /* niente spazio per il paragrafo qui, il titolo basta - stesso criterio di Eratosthenes */
     .level-layout{ gap: 0.8rem; }
-    .board-card{ padding: 0.6rem; }
-    .triangle-label{ font-size: 22px; }
+    .board-card{ padding: 0.6rem; max-width: 90%; margin: 0.6rem auto 0; }
+    .triangle-label{ font-size: 20px; }
     .side-panel-card{ padding: 0.9rem 0.95rem; }
     .side-panel-card h2{ font-size: 1.05rem; }
     .level-sub{ font-size: 0.58rem; }
     .measure-row{ font-size: 0.8rem; padding: 0.45rem 0; }
+    .answer-block{ margin: 0.6rem 0 0.1rem; }
     .answer-block input{ font-size: 1.15rem; padding: 0.75rem 0.8rem; }
     .check-btn, .next-btn{ padding: 0.85rem; font-size: 0.76rem; }
-    .jump-row{ flex-wrap: wrap; }
-    .jump-row input{ flex: 1 1 5rem; }
-    .jump-row button{ flex: 1 1 auto; }
+    .check-skip-row{ margin-top: 0.6rem; }
+    .check-skip-row .check-btn,
+    .check-skip-row .skip-btn{ flex: 1 1 50%; padding: 0.85rem 0.5rem; font-size: 0.76rem; }
   }  /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
   .rotate-lock-overlay{ display: none; }
   @media (orientation: landscape) and (max-width: 900px), (orientation: landscape) and (max-height: 500px){
@@ -471,13 +463,24 @@
             <input type="number" step="0.01" id="answerInput" placeholder="0.00">
           </div>
 
-          <button type="button" class="check-btn" id="checkBtn" data-en="Check" data-it="Verifica">Check</button>
+          <div class="check-skip-row">
+            <button type="button" class="check-btn" id="checkBtn">Check</button>
+            <button type="button" class="skip-btn" id="skipBtn" aria-label="Skip" data-en="Skip" data-it="Salta">Skip</button>
+          </div>
           <p class="feedback" id="feedback"></p>
           <button type="button" class="next-btn" id="nextBtn">Next level →</button>
+        </div>
+      </div>
 
-          <div class="jump-row">
-            <input type="number" id="jumpInput" min="1" max="50" data-placeholder-en="1-50" data-placeholder-it="1-50" placeholder="1-50">
-            <button type="button" id="jumpBtn" data-en="Go to level" data-it="Vai al livello">Go to level</button>
+      <div class="modal-overlay" id="skipModal">
+        <div class="modal-card" style="position:relative;">
+          <button type="button" id="skipCloseBtn" aria-label="Close" style="position:absolute; top:0.7rem; right:0.7rem; width:2rem; height:2rem; border-radius:50%; border:none; background:var(--bg); color:var(--ink); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+          <h3 data-en="Skip levels" data-it="Salta livelli">Skip levels</h3>
+          <div class="modal-buttons" style="flex-wrap:wrap;">
+            <button type="button" class="modal-btn yes" id="skip1Btn">+1</button>
+            <button type="button" class="modal-btn yes" id="skip5Btn">+5</button>
+            <button type="button" class="modal-btn yes" id="skip10Btn">+10</button>
+            <button type="button" class="modal-btn no" id="skipResetBtn" data-en="Reset" data-it="Reset">Reset</button>
           </div>
         </div>
       </div>
@@ -595,8 +598,6 @@ const LEVELS = [
   const nextBtn = document.getElementById('nextBtn');
   const feedbackEl = document.getElementById('feedback');
   const stageEl = document.getElementById('stage');
-  const jumpInput = document.getElementById('jumpInput');
-  const jumpBtn = document.getElementById('jumpBtn');
 
   let currentLevelIndex = startLevel - 1;
 
@@ -764,11 +765,29 @@ const LEVELS = [
     window.location.href = 'index.html';
   });
 
-  jumpBtn.addEventListener('click', () => {
-    const n = parseInt(jumpInput.value);
-    if (n >= 1 && n <= LEVELS.length){
-      loadLevel(n - 1);
-    }
+  // pulsante Skip: apre un popup con salto rapido di livelli + reset del solo
+  // salvataggio di questo gioco (mai gli altri)
+  const skipModalEl = document.getElementById('skipModal');
+  document.getElementById('skipBtn').addEventListener('click', () => {
+    skipModalEl.classList.add('visible');
+  });
+  document.getElementById('skipCloseBtn').addEventListener('click', () => {
+    skipModalEl.classList.remove('visible');
+  });
+  skipModalEl.addEventListener('click', (e) => {
+    if (e.target === skipModalEl) skipModalEl.classList.remove('visible');
+  });
+  function skipBy(n){
+    skipModalEl.classList.remove('visible');
+    loadLevel(Math.min(LEVELS.length - 1, currentLevelIndex + n));
+  }
+  document.getElementById('skip1Btn').addEventListener('click', () => skipBy(1));
+  document.getElementById('skip5Btn').addEventListener('click', () => skipBy(5));
+  document.getElementById('skip10Btn').addEventListener('click', () => skipBy(10));
+  document.getElementById('skipResetBtn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    skipModalEl.classList.remove('visible');
+    loadLevel(0);
   });
 
   loadLevel(currentLevelIndex);
