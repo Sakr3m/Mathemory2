@@ -228,35 +228,57 @@
   .next-btn.visible{ display:block; }
   .next-btn:hover{ background: rgba(95,168,160,0.14); }
 
-  .final-card{
+  .modal-overlay{
     display:none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 10000;
+    align-items:center;
+    justify-content:center;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+  .modal-overlay.visible{ display:flex; }
+  .modal-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 2rem;
+    max-width: 480px;
+    width: 100%;
     text-align:center;
-    padding: 4rem 1.5rem;
+    box-sizing: border-box;
   }
-  .final-card.visible{ display:block; }
-  .final-card h2{
+  .modal-card h3{
     font-family:'Kalam', cursive;
-    font-size: 2.2rem;
-    margin: 0 0 0.6rem;
+    font-size: 1.6rem;
+    margin: 0 0 1rem;
+    color: var(--ink);
   }
-  .final-card p{ color: var(--ink-dim); }
-  .restart-btn{
-    margin-top: 1.4rem;
+  .modal-card p{
+    font-family:'Space Mono', monospace;
+    font-size: 0.95rem;
+    color: var(--ink-dim);
+    margin: 0 0 1.2rem;
+    line-height: 1.5;
+  }
+  .modal-buttons{
+    display:flex;
+    justify-content:center;
+    gap: 1rem;
+  }
+  .modal-btn{
     font-family:'Space Mono', monospace;
     font-weight:700;
-    padding: 0.8rem 1.8rem;
-    border: 1px solid var(--rule);
+    font-size: 1rem;
+    border: none;
     border-radius: 6px;
-    background: var(--bg-panel);
-    color: var(--ink);
-    font-size: 0.8rem;
-    letter-spacing:0.02em;
-    text-transform: uppercase;
+    padding: 0.7rem 1.8rem;
     cursor:pointer;
-    text-decoration:none;
-    display:inline-block;
   }
-  .restart-btn:hover{ background: rgba(232,196,104,0.14); border-color: rgba(232,196,104,0.5); }
+  .modal-btn.yes{ background: var(--yellow); color: var(--bg); }
+  .modal-btn.no{ background: transparent; color: var(--ink-dim); border: 1px solid var(--rule); }
 
   .jump-row{
     display:flex; gap:0.5rem; margin-top:0.9rem;
@@ -364,10 +386,14 @@
       </div>
     </div>
 
-    <div class="final-card" id="finalCard">
-      <h2>All 50 levels complete.</h2>
-      <p>From the classic 3-4-5 to reconstructing a missing side from a single leg and the hypotenuse.</p>
-      <a class="restart-btn" href="?n=1" id="restartBtn">Restart from level 1</a>
+    <div class="modal-overlay" id="simpleCongratsModal">
+      <div class="modal-card">
+        <h3 data-en="🎉 Congratulations!" data-it="🎉 Congratulazioni!">🎉 Congratulations!</h3>
+        <p data-en="You've completed all 50 levels of Geometric Instinct. Well done!" data-it="Hai completato tutti i 50 livelli di Geometric Instinct. Ben fatto!">You've completed all 50 levels of Geometric Instinct. Well done!</p>
+        <div class="modal-buttons">
+          <button type="button" class="modal-btn yes" id="congratsHomeBtn" data-en="Back to home" data-it="Torna alla home">Back to home</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -425,6 +451,19 @@ const LEVELS = [
     { legA:88, legB:105, hyp:137, missing:'legB', scale:3.24, precision:99, liveBar:false }
   ];
 
+  // sistema di lingua: mancava del tutto in questo file, stesso identico di
+  // Eratostene — legge la lingua scelta nella home (stessa chiave localStorage)
+  function currentLang(){
+    return localStorage.getItem('mathemory_lang') || 'en';
+  }
+  function applyLanguage(){
+    const lang = currentLang();
+    document.querySelectorAll('[data-en][data-it]').forEach(el => {
+      el.textContent = lang === 'it' ? el.dataset.it : el.dataset.en;
+    });
+  }
+  applyLanguage();
+
   const STORAGE_KEY = 'pythagoras_last';
   const params = new URLSearchParams(window.location.search);
   const requestedLevel = parseInt(params.get('n'));
@@ -445,7 +484,7 @@ const LEVELS = [
   const nextBtn = document.getElementById('nextBtn');
   const feedbackEl = document.getElementById('feedback');
   const stageEl = document.getElementById('stage');
-  const finalCardEl = document.getElementById('finalCard');
+  const congratsModalEl = document.getElementById('simpleCongratsModal');
   const jumpInput = document.getElementById('jumpInput');
   const jumpBtn = document.getElementById('jumpBtn');
 
@@ -668,17 +707,21 @@ const LEVELS = [
     if (currentLevelIndex < LEVELS.length - 1){
       loadLevel(currentLevelIndex + 1);
     } else {
-      stageEl.style.display = 'none';
-      finalCardEl.classList.add('visible');
       localStorage.setItem(STORAGE_KEY, '1');
+      congratsModalEl.classList.add('visible');
     }
   });
+
+  // popup di congratulazioni: nessuna classifica su questa modalità, solo un messaggio
+  // semplice. Torna alla home al click, oppure da sola dopo 180s (nessun timer mostrato)
+  document.getElementById('congratsHomeBtn').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+  setTimeout(() => { window.location.href = 'index.html'; }, 180000);
 
   jumpBtn.addEventListener('click', () => {
     const n = parseInt(jumpInput.value);
     if (n >= 1 && n <= LEVELS.length){
-      stageEl.style.display = '';
-      finalCardEl.classList.remove('visible');
       loadLevel(n - 1);
     }
   });
