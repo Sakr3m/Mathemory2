@@ -487,7 +487,7 @@
 
   <div class="wrap">
     <div class="title-icon-row">
-      <a class="icon-btn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
+      <a class="icon-btn" id="homeBtn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
       <h1 id="levelTitle">Pythagoras <span class="accent">·</span> The Theorem <span class="accent">·</span> Level 1</h1>
       <button type="button" class="icon-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></button>
     </div>
@@ -543,11 +543,11 @@
       <div class="modal-card">
         <h3 data-en="🎉 You finished The Theorem!" data-it="🎉 Hai finito The Theorem!">🎉 You finished The Theorem!</h3>
         <div class="finish-stat">
-          <span class="finish-stat-label" data-en="Levels completed" data-it="Livelli completati">Levels completed</span>
-          <span class="finish-stat-value">50/50</span>
+          <span class="finish-stat-label" data-en="Your total race time" data-it="Il tuo tempo totale di gara">Your total race time</span>
+          <span class="finish-stat-value" id="finishTotalTime"></span>
         </div>
         <div class="finish-input-block">
-          <p class="finish-instruction" data-en="Enter a nickname to be remembered for this run." data-it="Inserisci un nickname per essere ricordato in questa run.">Enter a nickname to be remembered for this run.</p>
+          <p class="finish-instruction" data-en="Enter a nickname to be remembered for this race — it will be sent for the leaderboard." data-it="Inserisci un nickname per essere ricordato in questa gara: verrà inviato per la classifica.">Enter a nickname to be remembered for this race — it will be sent for the leaderboard.</p>
           <input type="text" id="finishNickname" maxlength="12" data-placeholder-en="Your nickname" data-placeholder-it="Il tuo nickname" placeholder="Your nickname">
           <p class="nickname-hint" data-en="3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine)." data-it="Da 3 a 12 caratteri. Solo lettere, numeri, spazi, - _ . (qualsiasi lingua/alfabeto va bene).">3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine).</p>
         </div>
@@ -557,7 +557,8 @@
         </div>
         <p class="modal-note" id="finishNote"></p>
         <div class="modal-footnotes">
-          <p data-en="This nickname is saved on your device — there's no shared leaderboard for this mode yet." data-it="Questo nickname resta salvato sul tuo dispositivo: per questa modalità non c'è ancora una classifica condivisa.">This nickname is saved on your device — there's no shared leaderboard for this mode yet.</p>
+          <p data-en="📸 Tip: screenshot this screen if you get a new record — submissions can occasionally fail to go through." data-it="📸 Consiglio: fai uno screenshot di questa schermata se ottieni un nuovo record: a volte l'invio non va a buon fine.">📸 Tip: screenshot this screen if you get a new record — submissions can occasionally fail to go through.</p>
+          <p data-en="⚠️ Nicknames containing &quot;sakrem&quot; (any case or variant) are reserved for testing and auto-removed after 5 minutes." data-it="⚠️ I nickname che contengono &quot;sakrem&quot; (in qualsiasi variante) sono riservati ai test e vengono rimossi automaticamente dopo 5 minuti.">⚠️ Nicknames containing "sakrem" (any case or variant) are reserved for testing and auto-removed after 5 minutes.</p>
         </div>
       </div>
     </div>
@@ -634,6 +635,21 @@ const LEVELS = [
   applyLanguage();
 
   const STORAGE_KEY = 'pythagoras_thetheorem_last';
+  const TOTAL_TIME_KEY = 'pythagoras_thetheorem_total_race_time';
+  const SESSION_OPEN_KEY = 'pythagoras_thetheorem_session_open';
+  const HEARTBEAT_KEY = 'pythagoras_thetheorem_heartbeat_seconds';
+
+  // se troviamo una sessione rimasta "aperta" dalla volta scorsa (pagina chiusa
+  // bruscamente), deposito onestamente l'ultimo tempo conosciuto — nessuna penalità,
+  // stesso meccanismo (senza anti-cheat) usato da Prime Rush
+  if (localStorage.getItem(SESSION_OPEN_KEY) === 'true'){
+    const lastHeartbeat = parseFloat(localStorage.getItem(HEARTBEAT_KEY)) || 0;
+    const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
+    localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + lastHeartbeat).toFixed(1));
+  }
+  localStorage.removeItem(SESSION_OPEN_KEY);
+  localStorage.removeItem(HEARTBEAT_KEY);
+
   const params = new URLSearchParams(window.location.search);
   const requestedLevel = parseInt(params.get('n'));
   const savedLevel = parseInt(localStorage.getItem(STORAGE_KEY));
@@ -652,6 +668,29 @@ const LEVELS = [
   const feedbackEl = document.getElementById('feedback');
 
   let currentLevelIndex = startLevel - 1;
+  let levelStartTime = null;
+  let heartbeatInterval = null;
+
+  // deposita nel totale il tempo passato su QUESTO livello quando lo risolvi (Check
+  // giusto). Nessuna penalità: stesso spirito di Prime Rush, non di The Sieve
+  function commitElapsedTime(){
+    const elapsed = (Date.now() - levelStartTime) / 1000;
+    const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
+    localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + elapsed).toFixed(1));
+    return elapsed;
+  }
+
+  // Home: uscita volontaria ma il livello corrente NON è stato risolto. Deposito
+  // comunque il tempo, senza penalità
+  function recordHomeExit(){
+    const elapsed = (Date.now() - levelStartTime) / 1000;
+    const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
+    localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + elapsed).toFixed(1));
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    localStorage.removeItem(SESSION_OPEN_KEY);
+    localStorage.removeItem(HEARTBEAT_KEY);
+  }
+  document.getElementById('homeBtn').addEventListener('click', recordHomeExit);
 
   function ns(tag){ return document.createElementNS('http://www.w3.org/2000/svg', tag); }
 
@@ -671,6 +710,7 @@ const LEVELS = [
   function loadLevel(index){
     currentLevelIndex = index;
     const level = LEVELS[index];
+    levelStartTime = Date.now();
 
     const lang = currentLang();
     const levelWord = lang === 'it' ? 'Livello' : 'Level';
@@ -766,11 +806,13 @@ const LEVELS = [
     const ok = Math.abs(given - level.answer) <= tolerance;
 
     if (ok){
+      const elapsed = commitElapsedTime();
       checkBtn.disabled = true;
       if (currentLevelIndex === LEVELS.length - 1){
         // ultimo livello: il check porta dritto al popup, stesso comportamento di
         // Eratostene — nessun passaggio intermedio "Vedi il risultato" da cliccare
         localStorage.setItem(STORAGE_KEY, '1');
+        document.getElementById('finishTotalTime').textContent = (localStorage.getItem(TOTAL_TIME_KEY) || '0') + 's';
         finishModalEl.classList.add('visible');
       } else {
         // livello intermedio: il check porta dritto al livello successivo, senza
@@ -795,9 +837,7 @@ const LEVELS = [
     loadLevel(currentLevelIndex + 1);
   });
 
-  // stessa validazione di Prime Rush, ma nessun invio reale a un Worker — Pitagora
-  // non ha ancora un backend di classifica, il nickname resta solo locale (vedi nota
-  // onesta nel popup)
+  // invio reale al Worker per il podio globale, stessa identica logica di Prime Rush
   document.getElementById('finishConfirmBtn').addEventListener('click', () => {
     const nickname = document.getElementById('finishNickname').value.trim();
     const note = document.getElementById('finishNote');
@@ -812,6 +852,17 @@ const LEVELS = [
       return;
     }
     localStorage.setItem('pythagoras_thetheorem_finisher_nickname', nickname);
+    const totalRaceTime = localStorage.getItem(TOTAL_TIME_KEY) || '0';
+    const timeValue = parseFloat(totalRaceTime);
+
+    // invio il tempo al Worker per il podio globale; se fallisce (rete assente, Worker
+    // giù) l'utente prosegue comunque, non è bloccante
+    fetch('https://eratostene.sl-eternal-lux.workers.dev/submit-pythagoras-thetheorem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nickname, time: timeValue })
+    }).catch(() => {});
+
     window.location.href = 'index.html';
   });
 
@@ -845,6 +896,23 @@ const LEVELS = [
   });
 
   loadLevel(currentLevelIndex);
+
+  // il cronometro vero e l'heartbeat partono una sola volta (non a ogni livello,
+  // qui non c'è un reload di pagina tra un livello e l'altro): quando i font sono
+  // davvero pronti, non al semplice caricamento del DOM — stessa tecnica di Prime Rush
+  let timerReallyStarted = false;
+  function reallyStartTimer(){
+    if (timerReallyStarted) return;
+    timerReallyStarted = true;
+    levelStartTime = Date.now();
+    localStorage.setItem(SESSION_OPEN_KEY, 'true');
+    heartbeatInterval = setInterval(() => {
+      const elapsed = (Date.now() - levelStartTime) / 1000;
+      localStorage.setItem(HEARTBEAT_KEY, elapsed.toFixed(1));
+    }, 5000);
+  }
+  const fontsPromise = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  fontsPromise.then(reallyStartTimer);
 </script>
 <script>window.MATHEMORY_MUSIC_VOLUME_MULTIPLIER = { desktop: 1.25, mobile: 1.875 };</script>
 <script src="mathemory-audio.js"></script>
