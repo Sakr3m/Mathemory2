@@ -766,10 +766,6 @@ const LEVELS = [
     const ok = Math.abs(given - level.answer) <= tolerance;
 
     if (ok){
-      feedbackEl.textContent = lang === 'it'
-        ? `✓ Corretto — ${level.answer} (±${tolerance.toFixed(2)} accettato).`
-        : `✓ Correct — ${level.answer} (±${tolerance.toFixed(2)} accepted).`;
-      feedbackEl.className = 'feedback good';
       checkBtn.disabled = true;
       if (currentLevelIndex === LEVELS.length - 1){
         // ultimo livello: il check porta dritto al popup, stesso comportamento di
@@ -777,8 +773,10 @@ const LEVELS = [
         localStorage.setItem(STORAGE_KEY, '1');
         finishModalEl.classList.add('visible');
       } else {
-        nextBtn.classList.add('visible');
-        nextBtn.textContent = lang === 'it' ? 'Livello successivo →' : 'Next level →';
+        // livello intermedio: il check porta dritto al livello successivo, senza
+        // messaggio intermedio né pulsante da cliccare — stesso comportamento di
+        // Eratostene ("risposta corretta: si passa subito al livello successivo")
+        loadLevel(currentLevelIndex + 1);
       }
     } else {
       feedbackEl.textContent = lang === 'it' ? `✗ Non proprio — riprova.` : `✗ Not quite — try again.`;

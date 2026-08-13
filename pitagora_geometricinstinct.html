@@ -757,10 +757,6 @@ const LEVELS = [
     const lang = currentLang();
 
     if (ok){
-      feedbackEl.textContent = lang === 'it'
-        ? `✓ ${pct}% — soddisfa il requisito del ${level.precision}% di questo livello.`
-        : `✓ ${pct}% — meets this level's ${level.precision}% requirement.`;
-      feedbackEl.className = 'feedback good';
       checkBtn.disabled = true;
       if (currentLevelIndex === LEVELS.length - 1){
         // ultimo livello: il check porta dritto al popup, stesso comportamento di
@@ -768,8 +764,10 @@ const LEVELS = [
         localStorage.setItem(STORAGE_KEY, '1');
         congratsModalEl.classList.add('visible');
       } else {
-        nextBtn.classList.add('visible');
-        nextBtn.textContent = lang === 'it' ? 'Livello successivo →' : 'Next level →';
+        // livello intermedio: il check porta dritto al livello successivo, senza
+        // messaggio intermedio né pulsante da cliccare — stesso comportamento di
+        // Eratostene ("risposta corretta: si passa subito al livello successivo")
+        loadLevel(currentLevelIndex + 1);
       }
     } else {
       feedbackEl.textContent = lang === 'it'

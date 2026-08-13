@@ -809,13 +809,12 @@ const POOL = [
     const lang = currentLang();
 
     if (ok){
-      feedbackEl.textContent = lang === 'it'
-        ? `✓ ${pct}% — soddisfa il requisito del ${level.precision}% di questo livello.`
-        : `✓ ${pct}% — meets this level's ${level.precision}% requirement.`;
-      feedbackEl.className = 'feedback good';
       checkBtn.disabled = true;
-      nextBtn.classList.add('visible');
-      nextBtn.textContent = lang === 'it' ? 'Livello successivo →' : 'Next level →';
+      // il check porta dritto al livello successivo, senza messaggio intermedio né
+      // pulsante da cliccare — stesso comportamento di Eratostene ("risposta corretta:
+      // si passa subito al livello successivo"). Essendo infinita non c'è mai un
+      // ultimo livello da gestire a parte
+      loadLevel(currentLevelIndex + 1);
     } else {
       feedbackEl.textContent = lang === 'it'
         ? `✗ ${pct}% — questo livello richiede almeno il ${level.precision}%.`
