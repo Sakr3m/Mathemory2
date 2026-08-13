@@ -860,6 +860,16 @@
 
 <div class="rotate-lock-overlay">Please rotate your device back to portrait to continue.</div>
 
+<div class="modal-overlay" id="simpleCongratsModal">
+  <div class="modal-card">
+    <h3 data-en="🎉 Congratulations!" data-it="🎉 Congratulazioni!">🎉 Congratulations!</h3>
+    <p data-en="You've completed The Sieve again. Well done!" data-it="Hai completato di nuovo The Sieve. Ben fatto!">You've completed The Sieve again. Well done!</p>
+    <div class="modal-buttons">
+      <button type="button" class="modal-btn yes" id="congratsHomeBtn" data-en="Back to home" data-it="Torna alla home">Back to home</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="finishModal">
   <div class="modal-card">
     <h3 data-en="🎉 You finished the race!" data-it="🎉 Hai finito la gara!">🎉 You finished the race!</h3>
@@ -1505,9 +1515,12 @@
           const alreadyFinishedOnce = localStorage.getItem(FINISHED_ONCE_KEY) === 'true';
 
           if (raceEnded || alreadyFinishedOnce){
-            // la gara è finita per davvero, oppure l'occasione è già stata usata: niente popup, dritti in home
+            // niente più ritorno silenzioso: un popup di congratulazioni semplice,
+            // senza però riproporre il nickname (già usato, o gara ormai chiusa).
+            // Ritorno automatico dopo 180s se non si tocca nulla (timer invisibile)
             resetForNewRun();
-            window.location.href = 'index.html';
+            document.getElementById('simpleCongratsModal').classList.add('visible');
+            setTimeout(() => { window.location.href = 'index.html'; }, 180000);
             return;
           } else {
             // prima volta che si finisce, gara ancora in corso: unica occasione per il nickname
@@ -1582,6 +1595,12 @@
 
   document.getElementById('finishSkipBtn').addEventListener('click', () => {
     resetForNewRun();
+    window.location.href = 'index.html';
+  });
+
+  // popup di congratulazioni semplice (dalla seconda run in poi, o gara chiusa):
+  // torna alla home al click sul pulsante
+  document.getElementById('congratsHomeBtn').addEventListener('click', () => {
     window.location.href = 'index.html';
   });
 </script>
