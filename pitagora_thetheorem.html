@@ -168,17 +168,44 @@
     font-size: 0.64rem; letter-spacing:0.06em; text-transform:uppercase;
     color: var(--ink-dim); margin-bottom:0.4rem;
   }
-  .answer-block input{
-    width: 100%;
+  .answer-input-wrap{
+    position: relative;
     background: var(--bg);
     border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  /* solo per i test su Mathemory2: la risposta corretta del livello, in trasparenza
+     dentro la stessa casella dell'input — stesso identico meccanismo della somma dei
+     primi in Eratostene, così non serve chiedere la soluzione in chat. In produzione
+     questo elemento semplicemente non c'è (nessun dato da nascondere) */
+  .answer-bg-hint{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 0.9rem;
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: rgba(232,196,104,0.7);
+    pointer-events: none;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .answer-block input{
+    position: relative;
+    width: 100%;
+    background: transparent;
+    border: none;
     border-radius: 6px;
     color: var(--ink);
     font-family:'Space Mono', monospace;
     font-size: 1.1rem;
     padding: 0.7rem 0.9rem;
   }
-  .answer-block input:focus{ outline: none; border-color: var(--yellow); }
+  .answer-block input:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
 
   .check-skip-row{
     display: flex;
@@ -465,7 +492,10 @@
 
           <div class="answer-block">
             <label for="answerInput" data-en="Your answer" data-it="La tua risposta">Your answer</label>
-            <input type="number" step="0.01" id="answerInput" placeholder="0.00">
+            <div class="answer-input-wrap">
+              <span class="answer-bg-hint" id="answerBgHint"></span>
+              <input type="number" step="0.01" id="answerInput" placeholder="0.00">
+            </div>
           </div>
 
           <div class="check-skip-row">
@@ -639,6 +669,9 @@ const LEVELS = [
     feedbackEl.textContent = '';
     feedbackEl.className = 'feedback';
     answerInput.value = '';
+    // solo test Mathemory2: la risposta corretta in trasparenza dietro l'input
+    const bgHintEl = document.getElementById('answerBgHint');
+    if (bgHintEl) bgHintEl.textContent = level.answer;
 
     localStorage.setItem(STORAGE_KEY, String(index + 1));
 

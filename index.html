@@ -1449,7 +1449,13 @@
       gap: 0.6rem;
     }
     .mobile-preview-block .mini-sieve{ width: auto; max-width: 196px; margin: 0; }
-    .mobile-preview-block .mini-triangle{ width: auto; max-width: 196px; margin: 0; padding: 0.5rem; }
+    /* larghezza fissa a 122px: è la larghezza reale che il mini-setaccio raggiunge
+       naturalmente (grid a 5 colonne, si stringe da solo sul contenuto). Il triangolo
+       usa un <svg width:100%>, che invece si espande fino al max-width consentito —
+       senza questo fix restava molto più grande del setaccio, sbilanciando la card
+       (anteprima enorme, descrizione schiacciata a destra, testo tagliato su schermi
+       stretti) */
+    .mobile-preview-block .mini-triangle{ width: 122px; margin: 0; padding: 0.5rem; }
     /* il cerchio si scala già da solo col viewBox: la proporzione giusta è quella originale (r=21) */
     .mobile-preview-block .mc{ font-size: 0.91rem; }
     /* stessa proporzione di riduzione usata sopra per i numeri del mini-setaccio
@@ -4461,10 +4467,11 @@
         else gateNote.style.display = 'none';
       }
 
-      // sblocca lo scroll (bloccato di default, vedi html.intro-gate-active) e i
-      // simboli fluttuanti di sfondo, prima nascosti insieme al resto della chrome
-      document.documentElement.classList.remove('intro-gate-active');
-      document.body.classList.remove('intro-gate-active');
+      // NOTA: lo sblocco dello scroll (rimozione di intro-gate-active) NON avviene
+      // qui — prima veniva tolto subito al click, ma l'animazione dura ancora 1.5s
+      // (mobile) o 2.5s (desktop): scrollare durante il viaggio del titolo mandava
+      // in bug il layout. Ora lo sblocco è spostato in fondo, sincronizzato con la
+      // scomparsa reale del gate (stessi setTimeout di gate.style.display='none')
       const constellation = document.querySelector('.math-constellation');
       if (constellation) constellation.style.opacity = '1';
 
@@ -4541,10 +4548,14 @@
         }, 1500);
         setTimeout(() => {
           gate.style.display = 'none';
+          document.documentElement.classList.remove('intro-gate-active');
+          document.body.classList.remove('intro-gate-active');
         }, 2500);
       } else {
         setTimeout(() => {
           gate.style.display = 'none';
+          document.documentElement.classList.remove('intro-gate-active');
+          document.body.classList.remove('intro-gate-active');
         }, 1500);
       }
     });
