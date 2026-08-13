@@ -241,35 +241,130 @@
   .next-btn.visible{ display:block; }
   .next-btn:hover{ background: rgba(95,168,160,0.14); }
 
-  .final-card{
+  .modal-overlay{
     display:none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 10000;
+    align-items:center;
+    justify-content:center;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+  .modal-overlay.visible{ display:flex; }
+  .modal-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 2rem;
+    max-width: 480px;
+    width: 100%;
     text-align:center;
-    padding: 4rem 1.5rem;
+    box-sizing: border-box;
   }
-  .final-card.visible{ display:block; }
-  .final-card h2{
+  .modal-card h3{
     font-family:'Kalam', cursive;
-    font-size: 2.2rem;
-    margin: 0 0 0.6rem;
+    font-size: 1.6rem;
+    margin: 0 0 1rem;
+    color: var(--ink);
   }
-  .final-card p{ color: var(--ink-dim); }
-  .restart-btn{
-    margin-top: 1.4rem;
+  .modal-card p{
     font-family:'Space Mono', monospace;
-    font-weight:700;
-    padding: 0.8rem 1.8rem;
+    font-size: 0.95rem;
+    color: var(--ink-dim);
+    margin: 0 0 1.2rem;
+    line-height: 1.5;
+  }
+  .modal-card input[type="text"]{
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--bg);
     border: 1px solid var(--rule);
     border-radius: 6px;
-    background: var(--bg-panel);
     color: var(--ink);
-    font-size: 0.8rem;
-    letter-spacing:0.02em;
-    text-transform: uppercase;
-    cursor:pointer;
-    text-decoration:none;
-    display:inline-block;
+    font-family:'Space Mono', monospace;
+    font-size: 1.05rem;
+    padding: 0.7rem;
+    margin-bottom: 1.4rem;
   }
-  .restart-btn:hover{ background: rgba(232,196,104,0.14); border-color: rgba(232,196,104,0.5); }
+  .modal-card input[type="text"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+  .finish-stat{
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin: 0 0 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .finish-stat-label{
+    font-family:'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .finish-stat-value{
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--yellow);
+  }
+  .finish-input-block{ margin-bottom: 1.3rem; }
+  .finish-instruction{
+    font-family:'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    margin: 0 0 0.8rem;
+    line-height: 1.5;
+  }
+  .finish-input-block input[type="text"]{ margin-bottom: 0.5rem; }
+  .modal-footnotes{
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .modal-footnotes p{
+    font-family:'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    line-height: 1.4;
+    text-align: left;
+    margin: 0;
+  }
+  .modal-buttons{
+    display:flex;
+    justify-content:center;
+    gap: 1rem;
+  }
+  .modal-btn{
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.8rem;
+    cursor:pointer;
+  }
+  .modal-btn.yes{ background: var(--yellow); color: var(--bg); }
+  .modal-btn.no{ background: transparent; color: var(--ink-dim); border: 1px solid var(--rule); }
+  .modal-note{
+    font-family:'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    margin-top: 0.8rem;
+  }
+  .nickname-hint{
+    font-family:'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    margin: 0.4rem 0 0;
+  }
 
   .jump-row{
     display:flex; gap:0.5rem; margin-top:0.9rem;
@@ -382,10 +477,27 @@
       </div>
     </div>
 
-    <div class="final-card" id="finalCard">
-      <h2>All 35 levels complete.</h2>
-      <p>From the classic 3-4-5 to reconstructing a missing side from a single leg and the hypotenuse.</p>
-      <a class="restart-btn" href="?n=1" id="restartBtn">Restart from level 1</a>
+    <div class="modal-overlay" id="finishModal">
+      <div class="modal-card">
+        <h3 data-en="🎉 You finished Steady Hands!" data-it="🎉 Hai finito Steady Hands!">🎉 You finished Steady Hands!</h3>
+        <div class="finish-stat">
+          <span class="finish-stat-label" data-en="Levels completed" data-it="Livelli completati">Levels completed</span>
+          <span class="finish-stat-value">35/35</span>
+        </div>
+        <div class="finish-input-block">
+          <p class="finish-instruction" data-en="Enter a nickname to be remembered for this run." data-it="Inserisci un nickname per essere ricordato in questa run.">Enter a nickname to be remembered for this run.</p>
+          <input type="text" id="finishNickname" maxlength="12" data-placeholder-en="Your nickname" data-placeholder-it="Il tuo nickname" placeholder="Your nickname">
+          <p class="nickname-hint" data-en="3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine)." data-it="Da 3 a 12 caratteri. Solo lettere, numeri, spazi, - _ . (qualsiasi lingua/alfabeto va bene).">3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine).</p>
+        </div>
+        <div class="modal-buttons">
+          <button type="button" class="modal-btn yes" id="finishConfirmBtn" data-en="Confirm" data-it="Conferma">Confirm</button>
+          <button type="button" class="modal-btn no" id="finishSkipBtn" data-en="Skip" data-it="Salta">Skip</button>
+        </div>
+        <p class="modal-note" id="finishNote"></p>
+        <div class="modal-footnotes">
+          <p data-en="This nickname is saved on your device — there's no shared leaderboard for this mode yet." data-it="Questo nickname resta salvato sul tuo dispositivo: per questa modalità non c'è ancora una classifica condivisa.">This nickname is saved on your device — there's no shared leaderboard for this mode yet.</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -428,6 +540,22 @@ const LEVELS = [
     { legA:40.8, legB:46.75, hyp:62.05, scale:7.27, precision:99, liveBar:false }
   ];
 
+  // sistema di lingua: mancava del tutto in questo file, stesso identico di
+  // Eratostene — legge la lingua scelta nella home (stessa chiave localStorage)
+  function currentLang(){
+    return localStorage.getItem('mathemory_lang') || 'en';
+  }
+  function applyLanguage(){
+    const lang = currentLang();
+    document.querySelectorAll('[data-en][data-it]').forEach(el => {
+      el.textContent = lang === 'it' ? el.dataset.it : el.dataset.en;
+    });
+    document.querySelectorAll('[data-placeholder-en][data-placeholder-it]').forEach(el => {
+      el.placeholder = lang === 'it' ? el.dataset.placeholderIt : el.dataset.placeholderEn;
+    });
+  }
+  applyLanguage();
+
   const STORAGE_KEY = 'pythagoras_last';
   const params = new URLSearchParams(window.location.search);
   const requestedLevel = parseInt(params.get('n'));
@@ -446,7 +574,6 @@ const LEVELS = [
   const nextBtn = document.getElementById('nextBtn');
   const feedbackEl = document.getElementById('feedback');
   const stageEl = document.getElementById('stage');
-  const finalCardEl = document.getElementById('finalCard');
   const jumpInput = document.getElementById('jumpInput');
   const jumpBtn = document.getElementById('jumpBtn');
 
@@ -640,21 +767,44 @@ const LEVELS = [
     }
   });
 
+  const finishModalEl = document.getElementById('finishModal');
+
   nextBtn.addEventListener('click', () => {
     if (currentLevelIndex < LEVELS.length - 1){
       loadLevel(currentLevelIndex + 1);
     } else {
-      stageEl.style.display = 'none';
-      finalCardEl.classList.add('visible');
       localStorage.setItem(STORAGE_KEY, '1');
+      finishModalEl.classList.add('visible');
     }
+  });
+
+  // stessa validazione di Prime Rush, ma nessun invio reale a un Worker — Pitagora
+  // non ha ancora un backend di classifica, il nickname resta solo locale (vedi nota
+  // onesta nel popup)
+  document.getElementById('finishConfirmBtn').addEventListener('click', () => {
+    const nickname = document.getElementById('finishNickname').value.trim();
+    const note = document.getElementById('finishNote');
+    if (!nickname || /^-+$/.test(nickname)){
+      note.textContent = currentLang() === 'it' ? 'Inserisci prima un nickname.' : 'Please enter a nickname first.';
+      note.style.color = 'var(--red)';
+      return;
+    }
+    if (nickname.length < 3){
+      note.textContent = currentLang() === 'it' ? 'Il nickname deve avere almeno 3 caratteri.' : 'Nickname must be at least 3 characters.';
+      note.style.color = 'var(--red)';
+      return;
+    }
+    localStorage.setItem('pythagoras_steadyhands_finisher_nickname', nickname);
+    window.location.href = 'index.html';
+  });
+
+  document.getElementById('finishSkipBtn').addEventListener('click', () => {
+    window.location.href = 'index.html';
   });
 
   jumpBtn.addEventListener('click', () => {
     const n = parseInt(jumpInput.value);
     if (n >= 1 && n <= LEVELS.length){
-      stageEl.style.display = '';
-      finalCardEl.classList.remove('visible');
       loadLevel(n - 1);
     }
   });
