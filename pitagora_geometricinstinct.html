@@ -586,6 +586,7 @@ const LEVELS = [
   }
 
   const STORAGE_KEY = 'pythagoras_last';
+  const FINISHED_ONCE_KEY = 'pythagoras_geometricinstinct_finished_once';
   const params = new URLSearchParams(window.location.search);
   const requestedLevel = parseInt(params.get('n'));
   const savedLevel = parseInt(localStorage.getItem(STORAGE_KEY));
@@ -826,6 +827,7 @@ const LEVELS = [
         // Eratostene — nessun passaggio intermedio "Vedi il risultato" da cliccare
         playSound('winner');
         localStorage.setItem(STORAGE_KEY, '1');
+        localStorage.setItem(FINISHED_ONCE_KEY, 'true');
         congratsModalEl.classList.add('visible');
       } else {
         // livello intermedio: il check porta dritto al livello successivo, senza

@@ -4309,8 +4309,12 @@
     const g = games[gameIndex];
     const isIT = currentLang() === 'it';
     const sieveFinished = forceUnlockAll || localStorage.getItem('erato_basic_v2_finished_once') === 'true';
+    // Pitagora si sblocca finendo Geometric Instinct, non The Sieve (che è di
+    // Eratostene) — chiave separata, mai la stessa di sieveFinished
+    const geometricInstinctFinished = forceUnlockAll || localStorage.getItem('pythagoras_geometricinstinct_finished_once') === 'true';
+    const unlocked = gameIndex === 1 ? geometricInstinctFinished : sieveFinished;
     modeOptionsEl.innerHTML = g.modes.map(m => {
-      const isLocked = (m.requiresSieveFinish && !sieveFinished) || m.comingSoon;
+      const isLocked = (m.requiresSieveFinish && !unlocked) || m.comingSoon;
       // Play now sinistro (forceUnlockAll=false): pagine identiche al Mathemory pubblico
       // (niente skip, niente suggerimenti/soluzioni). Play now destro: le pagine di test,
       // sempre sbloccate. Le chiavi di progresso (hrefKey) restano le stesse in entrambi
@@ -4321,15 +4325,16 @@
       const details = isIT && m.detailsIT ? m.detailsIT : m.details;
 
       if (isLocked){
+        const unlockModeName = gameIndex === 1 ? 'Geometric Instinct' : 'The Sieve';
         const lockMessage = m.comingSoon
           ? details
-          : (isIT ? '🔒 Si sblocca finendo The Sieve.' : '🔒 Unlocks after finishing The Sieve.');
+          : (isIT ? `🔒 Si sblocca finendo ${unlockModeName}.` : `🔒 Unlocks after finishing ${unlockModeName}.`);
+        // niente stelline finché la modalità è bloccata: si vedono solo una volta sbloccata
         return `
           <div class="mode-option mode-option-locked" style="--mode-color: var(--${m.accent})">
             <div class="mode-option-text">
               <div class="mode-option-title-row">
                 <h4>${m.name}</h4>
-                ${renderStars(m.stars)}
               </div>
               <p class="mode-option-details">${lockMessage}</p>
             </div>
