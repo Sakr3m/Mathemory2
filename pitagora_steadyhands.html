@@ -401,18 +401,32 @@
      superfici di presa (che su schermo piccolo erano troppo piccole
      per un dito) ============================================================ */
   @media (max-width: 900px){
-    .wrap{
-      max-width: 100%;
-      padding: calc(4vh + 20px) 1rem 5vh;
+    html, body{
+      overflow: hidden;
+      height: 100%;
+      overscroll-behavior: none;
     }
-    .title-icon-row{ gap: 0.6rem; margin-bottom: 0.5rem; }
-    .icon-btn{ width: 46px; height: 46px; }
-    .icon-btn svg{ width: 22px; height: 22px; }
-    h1{ font-size: 1.85rem; line-height: 1.25; }
+    /* stesso identico contenitore di Eratostene: 92% di larghezza, mai oltre 480px,
+       centrato — prima qui .wrap andava a piena larghezza, uno spazio diverso da
+       quello delle pagine di Eratostene */
+    .wrap{
+      width: 92%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 2vh 0 3vh;
+      box-sizing: border-box;
+      overflow-y: auto;
+      max-height: 100vh;
+      max-height: 100dvh;
+    }
+    .title-icon-row{ gap: 0.5rem; margin-bottom: 0.4rem; width: 100%; }
+    .title-icon-row h1{ font-size: 0.85rem; line-height: 1.3; }
+    .icon-btn{ width: 44px; height: 44px; }
+    .icon-btn svg{ width: 20px; height: 20px; }
     .instructions{ display: none; } /* niente spazio per il paragrafo qui, il titolo basta - stesso criterio di Eratosthenes */
 
-    .level-layout{ gap: 1.2rem; }
-    .board-card{ padding: 0.7rem; max-width: 92vw; margin: 0 auto; }
+    .level-layout{ gap: 0.8rem; }
+    .board-card{ padding: 0.6rem; }
 
     /* la presa vera resta la stessa (eventi pointer sull'intero <g>), solo il
        cerchio visibile e il suo alone si ingrandiscono: su desktop un alone di
@@ -421,19 +435,40 @@
     .handle circle:first-child{ r: 30px; } /* alone */
     .handle circle:last-child{ r: 13px; }  /* punto vero */
 
-    .side-panel-card{ padding: 1.1rem 1.15rem; }
-    .side-panel-card h2{ font-size: 1.2rem; }
-    .measure-row{ font-size: 0.85rem; padding: 0.5rem 0; }
-    .measure-live{ font-size: 0.72rem; }
+    .side-panel-card{ padding: 0.9rem 0.95rem; }
+    .side-panel-card h2{ font-size: 1.05rem; }
+    .level-sub{ font-size: 0.58rem; }
+    .measure-row{ font-size: 0.8rem; padding: 0.45rem 0; }
+    .measure-live{ font-size: 0.68rem; }
 
-    .check-btn, .next-btn{ padding: 1rem; font-size: 0.82rem; }
+    .check-btn, .next-btn{ padding: 0.85rem; font-size: 0.76rem; }
     .jump-row{ flex-wrap: wrap; }
     .jump-row input{ flex: 1 1 5rem; }
     .jump-row button{ flex: 1 1 auto; }
+  }  /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
+  .rotate-lock-overlay{ display: none; }
+  @media (orientation: landscape) and (max-width: 900px), (orientation: landscape) and (max-height: 500px){
+    .rotate-lock-overlay{
+      display: flex;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg);
+      color: var(--ink);
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      font-family:'Space Mono', monospace;
+      font-size: 1rem;
+    }
+    .wrap{ display: none; }
   }
 </style>
 </head>
 <body>
+  <div class="rotate-lock-overlay" data-en="Please rotate your device back to portrait to continue." data-it="Ruota di nuovo il dispositivo in verticale per continuare.">Please rotate your device back to portrait to continue.</div>
+
   <div class="wrap">
     <div class="title-icon-row">
       <a class="icon-btn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
