@@ -762,10 +762,13 @@ const LEVELS = [
         : `✓ ${pct}% — meets this level's ${level.precision}% requirement.`;
       feedbackEl.className = 'feedback good';
       checkBtn.disabled = true;
-      nextBtn.classList.add('visible');
       if (currentLevelIndex === LEVELS.length - 1){
-        nextBtn.textContent = lang === 'it' ? 'Vedi il risultato →' : 'See the result →';
+        // ultimo livello: il check porta dritto al popup, stesso comportamento di
+        // Eratostene — nessun passaggio intermedio "Vedi il risultato" da cliccare
+        localStorage.setItem(STORAGE_KEY, '1');
+        congratsModalEl.classList.add('visible');
       } else {
+        nextBtn.classList.add('visible');
         nextBtn.textContent = lang === 'it' ? 'Livello successivo →' : 'Next level →';
       }
     } else {
@@ -777,12 +780,7 @@ const LEVELS = [
   });
 
   nextBtn.addEventListener('click', () => {
-    if (currentLevelIndex < LEVELS.length - 1){
-      loadLevel(currentLevelIndex + 1);
-    } else {
-      localStorage.setItem(STORAGE_KEY, '1');
-      congratsModalEl.classList.add('visible');
-    }
+    loadLevel(currentLevelIndex + 1);
   });
 
   // popup di congratulazioni: nessuna classifica su questa modalità, solo un messaggio
