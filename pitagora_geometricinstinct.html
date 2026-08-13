@@ -354,7 +354,7 @@
       <h1 id="levelTitle">Pythagoras <span class="accent">·</span> Geometric Instinct <span class="accent">·</span> Level 1</h1>
       <div class="icon-btn" aria-hidden="true" style="cursor:default;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></div>
     </div>
-    <p class="instructions">Drag the two moving vertices to build the right triangle asked for. Fewer measurements are given as you go — the last levels ask you to solve for one before you can even start dragging.</p>
+    <p class="instructions" data-en="Drag the two moving vertices to build the right triangle asked for. Fewer measurements are given as you go — the last levels ask you to solve for one before you can even start dragging." data-it="Trascina i due vertici mobili per costruire il triangolo rettangolo richiesto. Le misure fornite diminuiscono man mano che avanzi: gli ultimi livelli ti chiedono di calcolarne una prima ancora di poter iniziare a trascinare.">Drag the two moving vertices to build the right triangle asked for. Fewer measurements are given as you go — the last levels ask you to solve for one before you can even start dragging.</p>
 
     <div class="level-layout" id="stage">
       <div class="board-card">
@@ -365,22 +365,22 @@
 
       <div class="side-panel">
         <div class="side-panel-card">
-          <h2>Measures</h2>
+          <h2 data-en="Measures" data-it="Misure">Measures</h2>
           <p class="level-sub" id="levelSub">All measures known</p>
           <div id="measureRows"></div>
 
           <div class="precision-block">
-            <div class="precision-label"><span>Precision</span><span id="precisionPct">0%</span></div>
+            <div class="precision-label"><span data-en="Precision" data-it="Precisione">Precision</span><span id="precisionPct">0%</span></div>
             <div class="precision-track"><div class="precision-fill" id="precisionFill"></div></div>
           </div>
 
-          <button type="button" class="check-btn" id="checkBtn">Check</button>
+          <button type="button" class="check-btn" id="checkBtn" data-en="Check" data-it="Verifica">Check</button>
           <p class="feedback" id="feedback"></p>
           <button type="button" class="next-btn" id="nextBtn">Next level →</button>
 
           <div class="jump-row">
-            <input type="number" id="jumpInput" min="1" max="50" placeholder="1-50">
-            <button type="button" id="jumpBtn">Go to level</button>
+            <input type="number" id="jumpInput" min="1" max="50" data-placeholder-en="1-50" data-placeholder-it="1-50" placeholder="1-50">
+            <button type="button" id="jumpBtn" data-en="Go to level" data-it="Vai al livello">Go to level</button>
           </div>
         </div>
       </div>
@@ -509,13 +509,19 @@ const LEVELS = [
     pointH = { ...start.h };
     pointV = { ...start.v };
 
-    levelTitleEl.innerHTML = `Pythagoras <span class="accent">·</span> Geometric Instinct <span class="accent">·</span> Level ${index + 1}`;
+    const lang = currentLang();
+    const levelWord = lang === 'it' ? 'Livello' : 'Level';
+    levelTitleEl.innerHTML = `Pythagoras <span class="accent">·</span> Geometric Instinct <span class="accent">·</span> ${levelWord} ${index + 1}`;
     const missingNote = level.missing
-      ? (level.missing === 'hyp' ? ' — hypotenuse missing, work it out first' : ' — one leg missing, work it out first')
+      ? (level.missing === 'hyp'
+          ? (lang === 'it' ? ' — ipotenusa mancante, calcolala prima' : ' — hypotenuse missing, work it out first')
+          : (lang === 'it' ? ' — un cateto mancante, calcolalo prima' : ' — one leg missing, work it out first'))
       : '';
-    const barNote = level.liveBar ? '' : ' — bar frozen until Check';
-    levelSubEl.textContent = `Requires ${level.precision}% precision${missingNote}${barNote}`;
-    levelProgressEl.textContent = `Level ${index + 1} of ${LEVELS.length}`;
+    const barNote = level.liveBar ? '' : (lang === 'it' ? ' — barra ferma finché non premi Verifica' : ' — bar frozen until Check');
+    const precisionWord = lang === 'it' ? 'Richiede' : 'Requires';
+    const precisionWord2 = lang === 'it' ? 'di precisione' : 'precision';
+    levelSubEl.textContent = `${precisionWord} ${level.precision}% ${precisionWord2}${missingNote}${barNote}`;
+    levelProgressEl.textContent = lang === 'it' ? `Livello ${index + 1} di ${LEVELS.length}` : `Level ${index + 1} of ${LEVELS.length}`;
     levelProgressFillEl.style.width = (((index + 1) / LEVELS.length) * 100) + '%';
     checkBtn.disabled = false;
     nextBtn.classList.remove('visible');
@@ -537,10 +543,11 @@ const LEVELS = [
 
   function buildMeasureRows(level){
     measureRowsEl.innerHTML = '';
+    const lang = currentLang();
     const rows = [
-      { key: 'legA', label: 'Leg A' },
-      { key: 'legB', label: 'Leg B' },
-      { key: 'hyp',  label: 'Hypotenuse' },
+      { key: 'legA', label: lang === 'it' ? 'Cateto A' : 'Leg A' },
+      { key: 'legB', label: lang === 'it' ? 'Cateto B' : 'Leg B' },
+      { key: 'hyp',  label: lang === 'it' ? 'Ipotenusa' : 'Hypotenuse' },
     ];
     rows.forEach(r => {
       const row = document.createElement('div');
@@ -690,15 +697,24 @@ const LEVELS = [
     const pct = computeScorePercent();
     paintReadout(); // la barra si aggiorna SEMPRE qui, che il tentativo sia giusto o no
     const ok = pct >= level.precision;
+    const lang = currentLang();
 
     if (ok){
-      feedbackEl.textContent = `✓ ${pct}% — meets this level's ${level.precision}% requirement.`;
+      feedbackEl.textContent = lang === 'it'
+        ? `✓ ${pct}% — soddisfa il requisito del ${level.precision}% di questo livello.`
+        : `✓ ${pct}% — meets this level's ${level.precision}% requirement.`;
       feedbackEl.className = 'feedback good';
       checkBtn.disabled = true;
       nextBtn.classList.add('visible');
-      nextBtn.textContent = currentLevelIndex === LEVELS.length - 1 ? 'See the result →' : 'Next level →';
+      if (currentLevelIndex === LEVELS.length - 1){
+        nextBtn.textContent = lang === 'it' ? 'Vedi il risultato →' : 'See the result →';
+      } else {
+        nextBtn.textContent = lang === 'it' ? 'Livello successivo →' : 'Next level →';
+      }
     } else {
-      feedbackEl.textContent = `✗ ${pct}% — this level needs at least ${level.precision}%.`;
+      feedbackEl.textContent = lang === 'it'
+        ? `✗ ${pct}% — questo livello richiede almeno il ${level.precision}%.`
+        : `✗ ${pct}% — this level needs at least ${level.precision}%.`;
       feedbackEl.className = 'feedback bad';
     }
   });
