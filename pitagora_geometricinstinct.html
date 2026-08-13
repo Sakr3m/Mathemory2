@@ -449,11 +449,11 @@ const LEVELS = [
     { legA:13, legB:84, hyp:85, missing:null, scale:4.05, precision:87, liveBar:true },
     { legA:44, legB:117, hyp:125, missing:null, scale:2.91, precision:87, liveBar:true },
     { legA:22, legB:120, hyp:122, missing:null, scale:2.83, precision:88, liveBar:true },
-    { legA:24, legB:143, hyp:145, missing:null, scale:2.38, precision:88, liveBar:false },
-    { legA:69, legB:260, hyp:269, missing:null, scale:1.31, precision:89, liveBar:false },
-    { legA:15, legB:112, hyp:113, missing:null, scale:3.04, precision:90, liveBar:false },
-    { legA:16, legB:30, hyp:34, missing:null, scale:11.33, precision:90, liveBar:false },
-    { legA:9, legB:12, hyp:15, missing:null, scale:28.33, precision:91, liveBar:false },
+    { legA:24, legB:143, hyp:145, missing:null, scale:2.38, precision:88, liveBar:true },
+    { legA:69, legB:260, hyp:269, missing:null, scale:1.31, precision:89, liveBar:true },
+    { legA:15, legB:112, hyp:113, missing:null, scale:3.04, precision:90, liveBar:true },
+    { legA:16, legB:30, hyp:34, missing:null, scale:11.33, precision:90, liveBar:true },
+    { legA:9, legB:12, hyp:15, missing:null, scale:28.33, precision:91, liveBar:true },
     { legA:36, legB:105, hyp:111, missing:null, scale:3.24, precision:91, liveBar:false },
     { legA:10, legB:24, hyp:26, missing:null, scale:14.17, precision:92, liveBar:false },
     { legA:56, legB:90, hyp:106, missing:null, scale:3.78, precision:92, liveBar:false },
@@ -617,7 +617,7 @@ const LEVELS = [
 
   // aggiorna sia i numeri live sia la barra di precisione — chiamata sempre da Check,
   // e durante il trascinamento solo se il livello corrente ha liveBar:true (i primi
-  // 15 livelli); dal 16esimo in poi la vista resta ferma finché non si preme Check
+  // 20 livelli); dal 21esimo in poi la vista resta ferma finché non si preme Check
   function paintReadout(){
     const level = LEVELS[currentLevelIndex];
     const pct = computeScorePercent();
