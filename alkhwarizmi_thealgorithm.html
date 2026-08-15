@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al-Khwarizmi — The Algorithm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #1E2C23;
+    --bg-panel: #2E4636;
+    --ink: #F3EFE4;
+    --ink-dim: #9FB0A2;
+    --yellow: #E8C468;
+    --red: #C1554B;
+    --teal: #5FA8A0;
+    --rule: rgba(243,239,228,0.14);
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+  }
+  body{
+    background-image:
+      radial-gradient(circle at 6% 96%, rgba(243,239,228,0.09), transparent 38%),
+      radial-gradient(circle at 95% 4%, rgba(243,239,228,0.09), transparent 38%);
+  }
+  .wrap{
+    max-width: min(1127px, calc(100% - 170px));
+    margin: 0 auto;
+    padding: calc(6vh + 32.7px) 1.5rem 6vh;
+  }
+  .title-icon-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 1rem;
+    margin-bottom: 0.6rem;
+  }
+  .title-icon-row h1{ margin: 0; flex: 1; min-width: 0; text-align: center; }
+  .icon-btn{
+    flex-shrink:0;
+    width: 55px; height:55px;
+    display:flex; align-items:center; justify-content:center;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    background: var(--bg-panel);
+    color: var(--ink-dim);
+    text-decoration:none;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, box-shadow 0.2s ease;
+  }
+  .icon-btn:hover{
+    color: var(--yellow);
+    border-color: rgba(232,196,104,0.75);
+    background: rgba(232,196,104,0.22);
+    box-shadow: 0 0 16px 3px rgba(232,196,104,0.48);
+  }
+  .icon-btn svg{ width: 26.5px; height:26.5px; }
+  .audio-toggle-btn{ cursor: pointer; }
+  /* stato "acceso" del volume (audio non muto): stessa illuminazione usata altrove nel sito,
+     l'icona resta sempre la stessa, cambia solo questo */
+  .audio-toggle-btn.audio-on{
+    color: #1C1F16;
+    background: var(--yellow);
+    border-color: var(--yellow);
+    box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
+  }
+  h1{
+    font-family:'Kalam', cursive;
+    font-size: 2.6rem;
+    margin: 0;
+    text-align:center;
+  }
+  h1 .accent{ color: var(--yellow); }
+  .instructions{
+    color: var(--ink-dim);
+    font-size: 1.05rem;
+    line-height:1.5;
+    margin: 0 auto 1.8rem;
+    text-align: center;
+    max-width: 640px;
+  }
+
+  /* spazio riservato sopra la griglia/pannello, stesso identico ingombro del box
+     badge+descrizione di Eratostene (.rank-callout in eratostene_thesieve.html):
+     Pitagora non ha ancora un sistema di rango, ma lo spazio resta prenotato cosi'
+     il ritmo verticale è coerente col resto del sito e non ci sara' da spostare
+     nulla quando (se) verra' aggiunto */
+  .rank-callout-space{ height: 26.78px; margin: 0 0 0.9rem; }
+  .level-layout{
+    display:grid;
+    grid-template-columns: 529px 1fr;
+    gap: 2.3rem;
+    align-items:stretch;
+  }
+  @media (max-width: 1100px){
+    .level-layout{ grid-template-columns: 1fr; }
+    .rank-callout-space{ height: 20px; margin: 0 0 0.6rem; }
+  }
+
+  .board-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1rem;
+    position: relative;
+  }
+  .board-card svg{ display:block; width:100%; height:auto; }
+  .expression-display{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height: 280px;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size: 2rem;
+    letter-spacing: 0.02em;
+    color: var(--yellow);
+    padding: 1rem;
+    word-break: break-word;
+    line-height: 1.35;
+  }
+
+  .level-progress{
+    margin: 1rem 0 0;
+    text-align:center;
+    font-family:'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+  }
+  .level-progress-track{
+    margin-top: 0.4rem;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--bg);
+    overflow:hidden;
+  }
+  .level-progress-fill{
+    height:100%;
+    background: var(--yellow);
+  }
+
+  .side-panel{ display:flex; flex-direction:column; gap: 1.2rem; }
+  .side-panel-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.3rem 1.4rem;
+  }
+  .side-panel-card h2{
+    font-family:'Kalam', cursive;
+    font-size: 1.4rem;
+    margin: 0 0 0.15rem;
+  }
+  .level-sub{
+    font-family:'Space Mono', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 0 0 1.1rem;
+  }
+
+  .answer-block{ margin: 1.2rem 0 0.2rem; }
+  .answer-block label{
+    display:block;
+    font-family:'Space Mono', monospace;
+    font-size: 0.64rem; letter-spacing:0.06em; text-transform:uppercase;
+    color: var(--ink-dim); margin-bottom:0.4rem;
+  }
+  .answer-input-wrap{
+    position: relative;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  /* solo per i test su Mathemory2: la risposta corretta del livello, in trasparenza
+     dentro la stessa casella dell'input — stesso identico meccanismo della somma dei
+     primi in Eratostene, così non serve chiedere la soluzione in chat. In produzione
+     questo elemento semplicemente non c'è (nessun dato da nascondere) */
+  .answer-bg-hint{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 0.9rem;
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: rgba(232,196,104,0.7);
+    pointer-events: none;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .answer-block input{
+    position: relative;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--ink);
+    font-family:'Space Mono', monospace;
+    font-size: 1.1rem;
+    padding: 0.7rem 0.9rem;
+  }
+  .answer-block input:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+
+  .check-skip-row{
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+  .check-btn{
+    flex: 1 1 auto;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    background: var(--yellow);
+    color: var(--bg);
+    border:none;
+    border-radius: 6px;
+    padding: 0.92rem 1.61rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+  }
+  .check-btn:hover{ background:#f0d488; }
+  .check-btn:disabled{
+    background: var(--bg);
+    color: var(--ink-dim);
+    cursor: not-allowed;
+    border: 1px solid var(--rule);
+  }
+  .skip-btn{
+    flex: 0 0 auto;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    background: transparent;
+    color: var(--ink-dim);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 0.92rem 1.1rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+  }
+  .skip-btn:hover{ color: var(--ink); border-color: var(--ink); }
+
+  .feedback{
+    margin-top: 0.8rem;
+    font-family:'Space Mono', monospace;
+    font-size: 0.8rem;
+    line-height:1.4;
+    min-height: 2.4em;
+  }
+  .feedback.good{ color: var(--teal); }
+  .feedback.bad{ color: var(--red); }
+
+  .next-btn{
+    display:none;
+    width:100%;
+    margin-top: 0.6rem;
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    border: 1px solid var(--teal);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--teal);
+    padding: 0.75rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    cursor:pointer;
+  }
+  .next-btn.visible{ display:block; }
+  .next-btn:hover{ background: rgba(95,168,160,0.14); }
+
+  .modal-overlay{
+    display:none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 10000;
+    align-items:center;
+    justify-content:center;
+    padding: 1.5rem;
+    box-sizing: border-box;
+  }
+  .modal-overlay.visible{ display:flex; }
+  .modal-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 2rem;
+    max-width: 480px;
+    width: 100%;
+    text-align:center;
+    box-sizing: border-box;
+  }
+  .modal-card h3{
+    font-family:'Kalam', cursive;
+    font-size: 1.6rem;
+    margin: 0 0 1rem;
+    color: var(--ink);
+  }
+  .modal-card p{
+    font-family:'Space Mono', monospace;
+    font-size: 0.95rem;
+    color: var(--ink-dim);
+    margin: 0 0 1.2rem;
+    line-height: 1.5;
+  }
+  .modal-card input[type="text"]{
+    width: 100%;
+    box-sizing: border-box;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--ink);
+    font-family:'Space Mono', monospace;
+    font-size: 1.05rem;
+    padding: 0.7rem;
+    margin-bottom: 1.4rem;
+  }
+  .modal-card input[type="text"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
+  .finish-stat{
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin: 0 0 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .finish-stat-label{
+    font-family:'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .finish-stat-value{
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--yellow);
+  }
+  .finish-input-block{ margin-bottom: 1.3rem; }
+  .finish-instruction{
+    font-family:'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    margin: 0 0 0.8rem;
+    line-height: 1.5;
+  }
+  .finish-input-block input[type="text"]{ margin-bottom: 0.5rem; }
+  .modal-footnotes{
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .modal-footnotes p{
+    font-family:'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    line-height: 1.4;
+    text-align: left;
+    margin: 0;
+  }
+  .modal-buttons{
+    display:flex;
+    justify-content:center;
+    gap: 1rem;
+  }
+  .modal-btn{
+    font-family:'Space Mono', monospace;
+    font-weight:700;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.8rem;
+    cursor:pointer;
+  }
+  .modal-btn.yes{ background: var(--yellow); color: var(--bg); }
+  .modal-btn.no{ background: transparent; color: var(--ink-dim); border: 1px solid var(--rule); }
+  .modal-note{
+    font-family:'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    margin-top: 0.8rem;
+  }
+  .nickname-hint{
+    font-family:'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    margin: 0.4rem 0 0;
+  }
+
+  @media (max-width: 900px){
+    html, body{
+      overflow: hidden;
+      height: 100%;
+      overscroll-behavior: none;
+    }
+    /* stesso identico contenitore di Eratostene: 92% di larghezza, mai oltre 480px,
+       centrato — prima qui .wrap andava a piena larghezza, uno spazio diverso da
+       quello delle pagine di Eratostene */
+    .wrap{
+      width: 92%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 2vh 0 3vh;
+      box-sizing: border-box;
+    }
+    .title-icon-row{ gap: 0.5rem; margin-bottom: 0.4rem; width: 100%; }
+    .title-icon-row h1{ font-size: 0.85rem; line-height: 1.3; }
+    .icon-btn{ width: 44px; height: 44px; }
+    .icon-btn svg{ width: 20px; height: 20px; }
+    .instructions{ display: none; } /* niente spazio per il paragrafo qui, il titolo basta - stesso criterio di Eratosthenes */
+    .rank-callout-space{ height: 16px; margin: 0 0 0.5rem; }
+    .level-layout{ gap: 0.8rem; }
+    .board-card{ padding: 0.6rem; max-width: 90%; margin: 0.6rem auto 0; }
+    .expression-display{ font-size: 1.3rem; min-height: 170px; padding: 0.5rem; }
+    .side-panel-card{ padding: 0.6075rem 0.64125rem; }
+    .side-panel-card h2{ font-size: 0.70875rem; }
+    .level-sub{ font-size: 0.3915rem; }
+    .answer-block{ margin: 0.36rem 0 0.09rem; }
+    .answer-block input{ font-size: 1.035rem; padding: 0.54rem 0.72rem; }
+    .check-btn, .next-btn{ padding: 0.85rem; font-size: 0.76rem; }
+    .check-skip-row{ margin-top: 0.6rem; }
+    .check-skip-row .check-btn,
+    .check-skip-row .skip-btn{ flex: 1 1 50%; padding: 0.57375rem 0.3375rem; font-size: 0.513rem; }
+    /* la tabella deve chiudersi appena sotto Check/Skip: tolto lo spazio riservato
+       al feedback (min-height fissa per non far "saltare" il layout su desktop) —
+       su mobile serve il contrario, il pannello deve finire qui per entrare in una
+       sola schermata; il testo, quando compare, spinge semplicemente in basso */
+    .feedback{ margin-top: 0.27rem; min-height: 0; }
+  }  /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
+  .rotate-lock-overlay{ display: none; }
+  @media (orientation: landscape) and (max-width: 900px), (orientation: landscape) and (max-height: 500px){
+    .rotate-lock-overlay{
+      display: flex;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg);
+      color: var(--ink);
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      font-family:'Space Mono', monospace;
+      font-size: 1rem;
+    }
+    .wrap{ display: none; }
+  }
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" src="https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_thesieve.mp3" loop preload="none"></audio>
+  <div class="rotate-lock-overlay" data-en="Please rotate your device back to portrait to continue." data-it="Ruota di nuovo il dispositivo in verticale per continuare.">Please rotate your device back to portrait to continue.</div>
+
+  <div class="wrap">
+    <div class="title-icon-row">
+      <a class="icon-btn" id="homeBtn" href="index.html" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></a>
+      <h1 id="levelTitle">Al-Khwarizmi <span class="accent">·</span> The Algorithm <span class="accent">·</span> Level 1</h1>
+      <button type="button" class="icon-btn audio-toggle-btn" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg></button>
+    </div>
+    <p class="instructions" data-en="Calculate the result of the expression, respecting the order of operations, and type your answer." data-it="Calcola il risultato dell'espressione, rispettando l'ordine delle operazioni, e scrivi la risposta.">Calculate the result of the expression, respecting the order of operations, and type your answer.</p>
+
+    <div class="rank-callout-space" aria-hidden="true"></div>
+
+    <div class="level-layout" id="stage">
+      <div class="board-card">
+        <div class="expression-display" id="expressionDisplay"></div>
+        <p class="level-progress" id="levelProgress">Level 1 of 100</p>
+        <div class="level-progress-track"><div class="level-progress-fill" id="levelProgressFill"></div></div>
+      </div>
+
+      <div class="side-panel">
+        <div class="side-panel-card">
+          <h2 data-en="Calculate the result" data-it="Calcola il risultato">Calculate the result</h2>
+          <p class="level-sub" id="levelSub"></p>
+
+          <div class="answer-block">
+            <label for="answerInput" data-en="Your answer" data-it="La tua risposta">Your answer</label>
+            <div class="answer-input-wrap">
+              <span class="answer-bg-hint" id="answerBgHint"></span>
+              <input type="number" step="0.01" id="answerInput" placeholder="0.00">
+            </div>
+          </div>
+
+          <div class="check-skip-row">
+            <button type="button" class="check-btn" id="checkBtn">Check</button>
+            <button type="button" class="skip-btn" id="skipBtn" aria-label="Skip">Skip</button>
+          </div>
+          <p class="feedback" id="feedback"></p>
+          <button type="button" class="next-btn" id="nextBtn">Next level →</button>
+        </div>
+      </div>
+
+      <div class="modal-overlay" id="skipModal">
+        <div class="modal-card" style="position:relative;">
+          <button type="button" id="skipCloseBtn" aria-label="Close" style="position:absolute; top:0.7rem; right:0.7rem; width:2rem; height:2rem; border-radius:50%; border:none; background:var(--bg); color:var(--ink); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
+          <h3 data-en="Skip levels" data-it="Salta livelli">Skip levels</h3>
+          <div class="modal-buttons" style="flex-wrap:wrap;">
+            <button type="button" class="modal-btn yes" id="skip1Btn">+1</button>
+            <button type="button" class="modal-btn yes" id="skip5Btn">+5</button>
+            <button type="button" class="modal-btn yes" id="skip10Btn">+10</button>
+            <button type="button" class="modal-btn no" id="skipResetBtn" data-en="Reset" data-it="Reset">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="finishModal">
+      <div class="modal-card">
+        <h3 data-en="🎉 You finished The Algorithm!" data-it="🎉 Hai finito The Algorithm!">🎉 You finished The Algorithm!</h3>
+        <div class="finish-stat">
+          <span class="finish-stat-label" data-en="Your total race time" data-it="Il tuo tempo totale di gara">Your total race time</span>
+          <span class="finish-stat-value" id="finishTotalTime"></span>
+        </div>
+        <div class="finish-input-block">
+          <p class="finish-instruction" data-en="Enter a nickname to be remembered for this race." data-it="Inserisci un nickname per essere ricordato in questa gara.">Enter a nickname to be remembered for this race.</p>
+          <input type="text" id="finishNickname" maxlength="12" data-placeholder-en="Your nickname" data-placeholder-it="Il tuo nickname" placeholder="Your nickname">
+          <p class="nickname-hint" data-en="3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine)." data-it="Da 3 a 12 caratteri. Solo lettere, numeri, spazi, - _ . (qualsiasi lingua/alfabeto va bene).">3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine).</p>
+        </div>
+        <div class="modal-buttons">
+          <button type="button" class="modal-btn yes" id="finishConfirmBtn" data-en="Confirm" data-it="Conferma">Confirm</button>
+          <button type="button" class="modal-btn no" id="finishSkipBtn" data-en="Skip" data-it="Salta">Skip</button>
+        </div>
+        <p class="modal-note" id="finishNote"></p>
+        <div class="modal-footnotes">
+          <p data-en="This nickname is saved on your device — there's no shared leaderboard for this mode yet." data-it="Questo nickname resta salvato sul tuo dispositivo: per questa modalità non c'è ancora una classifica condivisa.">This nickname is saved on your device — there's no shared leaderboard for this mode yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const LEVELS = [
+    { display:"2 + 5 x 4", answer:22 },
+    { display:"7 x 6 - 2", answer:40 },
+    { display:"7 x 3 + 5", answer:26 },
+    { display:"8 x 6 - 6", answer:42 },
+    { display:"2 x 5 + 7", answer:17 },
+    { display:"10 x 9 + 2", answer:92 },
+    { display:"8 + 5 x 3", answer:23 },
+    { display:"7 + 7 x 3", answer:28 },
+    { display:"10 x 8 - 2", answer:78 },
+    { display:"10 x 8 + 6", answer:86 },
+    { display:"12 x 3 - 6", answer:30 },
+    { display:"12 x 3 - 14", answer:22 },
+    { display:"9 x 7 + 2", answer:65 },
+    { display:"15 + 8 x 2", answer:31 },
+    { display:"13 x 13 - 13", answer:156 },
+    { display:"9 x 3 + 4", answer:31 },
+    { display:"2 x 13 + 13", answer:39 },
+    { display:"6 x 16 + 7", answer:103 },
+    { display:"11 + 5 x 10", answer:61 },
+    { display:"17 x 13 + 8", answer:229 },
+    { display:"3 x (2 + 7)", answer:27 },
+    { display:"(3 - 2) x 3", answer:3 },
+    { display:"(5 + 9) x 4", answer:56 },
+    { display:"(4 + 6) x 7", answer:70 },
+    { display:"11 x (3 + 6)", answer:99 },
+    { display:"(9 - 6) x 7", answer:21 },
+    { display:"6 x (2 + 2)", answer:24 },
+    { display:"(7 - 4) x 8", answer:24 },
+    { display:"9 x (10 + 8)", answer:162 },
+    { display:"11 x (3 + 10)", answer:143 },
+    { display:"(14 - 8) x 5", answer:30 },
+    { display:"7 x (6 - 3)", answer:21 },
+    { display:"5 x (10 + 7)", answer:85 },
+    { display:"(13 + 6) x 10", answer:190 },
+    { display:"(5 + 17) x 3", answer:66 },
+    { display:"14 x (2 + 5)", answer:98 },
+    { display:"13 x (3 + 6)", answer:117 },
+    { display:"11 x (6 + 15)", answer:231 },
+    { display:"(14 - 9) x 12", answer:60 },
+    { display:"14 x (2 + 14)", answer:224 },
+    { display:"3 - 4 x 3 + 8", answer:-1 },
+    { display:"3 x 6 - 4 x 5", answer:-2 },
+    { display:"4 - 7 - 7 x 9", answer:-66 },
+    { display:"2 - 5 + 2 x 5", answer:7 },
+    { display:"9 - 5 - 4 x 9", answer:-32 },
+    { display:"10 + 12 - 10 x 10", answer:-78 },
+    { display:"7 - 10 x 6 - 11", answer:-64 },
+    { display:"9 - 7 - 8 x 12", answer:-94 },
+    { display:"9 - 8 x 3 - 14", answer:-29 },
+    { display:"12 + 10 - 13 x 11", answer:-121 },
+    { display:"3 - 3 - 8 x 10", answer:-80 },
+    { display:"5 - 4 - 14 x 8", answer:-111 },
+    { display:"16 - 17 x 16 + 13", answer:-243 },
+    { display:"8 - 12 x 14 + 6", answer:-154 },
+    { display:"4 + 12 - 7 x 7", answer:-33 },
+    { display:"5 - 6 x 16 + 14", answer:-77 },
+    { display:"16 - 17 - 19 x 12", answer:-229 },
+    { display:"16 + 8 - 8 x 20", answer:-136 },
+    { display:"14 - 13 x 21 + 20", answer:-239 },
+    { display:"4 - 21 x 20 + 3", answer:-413 },
+    { display:"((3 + 5) x 6) / 4", answer:12 },
+    { display:"((5 + 4) - 3) / 2", answer:3 },
+    { display:"((7 - 4) x 6) / 6", answer:3 },
+    { display:"((4 + 2) + 8) / 7", answer:2 },
+    { display:"((4 + 6) x 2) / 10", answer:2 },
+    { display:"((4 + 5) + 9) / 9", answer:2 },
+    { display:"((4 + 2) - 2) / 2", answer:2 },
+    { display:"((10 - 4) + 2) / 4", answer:2 },
+    { display:"((8 + 3) - 5) / 3", answer:2 },
+    { display:"((2 + 2) x 3) / 3", answer:4 },
+    { display:"((11 - 2) x 3) / 9", answer:3 },
+    { display:"((5 + 9) - 8) / 3", answer:2 },
+    { display:"((7 + 10) + 11) / 7", answer:4 },
+    { display:"((7 - 4) x 9) / 9", answer:3 },
+    { display:"((12 + 13) x 10) / 50", answer:5 },
+    { display:"((8 - 5) x 3) / 3", answer:3 },
+    { display:"((11 + 12) + 9) / 2", answer:16 },
+    { display:"((15 + 4) + 6) / 5", answer:5 },
+    { display:"((2 + 12) - 8) / 2", answer:3 },
+    { display:"((15 + 14) x 6) / 6", answer:29 },
+    { display:"(4.4 - 4)² + 4 x (6 + 4)", answer:40.16 },
+    { display:"(5 + 2)² - 4 x 3.9", answer:33.4 },
+    { display:"(6.3 - 4)² + 2 x (4 + 5)", answer:23.29 },
+    { display:"(7 + 5)² - 6 x 6.8", answer:103.2 },
+    { display:"(5 + 4)² - 4 x 5.9", answer:57.4 },
+    { display:"(7.2 - 7)² + 6 x (7 + 7)", answer:84.04 },
+    { display:"3² + (5.2 + 5) x 5 - 8", answer:52 },
+    { display:"5² + (3.4 + 9) x 2 - 6", answer:43.8 },
+    { display:"9² + (8.6 + 7) x 6 - 9", answer:165.6 },
+    { display:"(3.7 - 2)² + 7 x (5 + 4)", answer:65.89 },
+    { display:"(2 + 5)² - 10 x 9.7", answer:-48 },
+    { display:"10² + (5.5 + 5) x 4 - 6", answer:136 },
+    { display:"11³ + (5.8 + 2) x 5 - 5", answer:1365 },
+    { display:"9³ + (3.4 + 2) x 11 - 4", answer:784.4 },
+    { display:"3² + (7.3 + 5) x 11 - 8", answer:136.3 },
+    { display:"(9.7 - 3)² + 8 x (7 + 4)", answer:132.89 },
+    { display:"(3 + 11)³ - 13 x 6.1", answer:2664.7 },
+    { display:"4³ + (11.3 + 3) x 12 - 8", answer:227.6 },
+    { display:"3² + (8.9 + 14) x 11 - 11", answer:249.9 },
+    { display:"(3 + 14)² - 3 x 4.9", answer:274.3 },
+  ];
+
+  // sistema di lingua: mancava del tutto in questo file, stesso identico di
+  // Eratostene — legge la lingua scelta nella home (stessa chiave localStorage)
+  function currentLang(){
+    return localStorage.getItem('mathemory_lang') || 'en';
+  }
+  function applyLanguage(){
+    const lang = currentLang();
+    document.querySelectorAll('[data-en][data-it]').forEach(el => {
+      el.textContent = lang === 'it' ? el.dataset.it : el.dataset.en;
+    });
+    document.querySelectorAll('[data-placeholder-en][data-placeholder-it]').forEach(el => {
+      el.placeholder = lang === 'it' ? el.dataset.placeholderIt : el.dataset.placeholderEn;
+    });
+  }
+  applyLanguage();
+
+  // effetti sonori: riusa gli stessi file mp3 già ospitati per Eratostene (right,
+  // wrong, winner, badge, tap), via Web Audio API per latenza minima. "badge" è
+  // caricato ma non ancora usato da nessuna parte: Pitagora non ha ancora un
+  // sistema di rango, resta pronto per quando (se) arriverà. Il trascinamento dei
+  // vertici resta sempre silenzioso, nessun suono legato al drag
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const soundBuffers = {};
+  const pendingSounds = new Set();
+  function loadSound(name, url){
+    fetch(url)
+      .then(res => res.arrayBuffer())
+      .then(data => audioCtx.decodeAudioData(data))
+      .then(buffer => {
+        soundBuffers[name] = buffer;
+        if (pendingSounds.has(name)){
+          pendingSounds.delete(name);
+          playSound(name);
+        }
+      })
+      .catch(() => {});
+  }
+  loadSound('right', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_right.mp3');
+  loadSound('wrong', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_wrong.mp3');
+  loadSound('winner', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_winner.mp3');
+  loadSound('badge', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/eratostene_badge.mp3');
+  loadSound('tap', 'https://pub-312772d8d5f64507a7ad27b167cd19c4.r2.dev/tap.mp3');
+
+  const SOUND_LEVELS = { badge: { desktop: 1, mobile: 0.5 }, winner: { desktop: 1, mobile: 1.1 } };
+  function getSoundLevel(name){
+    const level = SOUND_LEVELS[name];
+    if (level === undefined) return 1;
+    if (typeof level === 'number') return level;
+    const isMobileNow = window.innerWidth <= 900;
+    const value = isMobileNow ? level.mobile : level.desktop;
+    return typeof value === 'number' ? value : 1;
+  }
+
+  function playSound(name){
+    const buffer = soundBuffers[name];
+    if (!buffer){
+      pendingSounds.add(name);
+      return;
+    }
+    if (window.MathemoryAudio && window.MathemoryAudio.isMuted()) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    const source = audioCtx.createBufferSource();
+    source.buffer = buffer;
+    const gainNode = audioCtx.createGain();
+    const baseVolume = window.MathemoryAudio ? window.MathemoryAudio.getSfxVolume() : 1;
+    gainNode.gain.value = baseVolume * getSoundLevel(name);
+    source.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    source.start(0);
+
+    if (window.MathemoryAudio && window.MathemoryAudio.duckMusic){
+      if (name === 'badge') window.MathemoryAudio.duckMusic(0.15, 1000);
+      if (name === 'winner') window.MathemoryAudio.duckMusic(0.15, 1500);
+    }
+  }
+
+  const STORAGE_KEY = 'alkhwarizmi_thealgorithm_last';
+  const TOTAL_TIME_KEY = 'alkhwarizmi_thealgorithm_total_race_time';
+  const SESSION_OPEN_KEY = 'alkhwarizmi_thealgorithm_session_open';
+  const HEARTBEAT_KEY = 'alkhwarizmi_thealgorithm_heartbeat_seconds';
+
+  // se troviamo una sessione rimasta "aperta" dalla volta scorsa (pagina chiusa
+  // bruscamente), deposito onestamente l'ultimo tempo conosciuto — nessuna penalità,
+  // stesso meccanismo (senza anti-cheat) usato da Prime Rush
+  if (localStorage.getItem(SESSION_OPEN_KEY) === 'true'){
+    const lastHeartbeat = parseFloat(localStorage.getItem(HEARTBEAT_KEY)) || 0;
+    const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
+    localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + lastHeartbeat).toFixed(1));
+  }
+  localStorage.removeItem(SESSION_OPEN_KEY);
+  localStorage.removeItem(HEARTBEAT_KEY);
+
+  const params = new URLSearchParams(window.location.search);
+  const requestedLevel = parseInt(params.get('n'));
+  const savedLevel = parseInt(localStorage.getItem(STORAGE_KEY));
+  let startLevel = requestedLevel || savedLevel || 1;
+  if (startLevel < 1 || startLevel > LEVELS.length) startLevel = 1;
+
+  const expressionDisplayEl = document.getElementById('expressionDisplay');
+  const levelTitleEl = document.getElementById('levelTitle');
+  const levelSubEl = document.getElementById('levelSub');
+  const levelProgressEl = document.getElementById('levelProgress');
+  const levelProgressFillEl = document.getElementById('levelProgressFill');
+  const answerInput = document.getElementById('answerInput');
+  const checkBtn = document.getElementById('checkBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const feedbackEl = document.getElementById('feedback');
+
+  let currentLevelIndex = startLevel - 1;
+  let levelStartTime = null;
+  let heartbeatInterval = null;
+
+  // deposita nel totale il tempo passato su QUESTO livello quando lo risolvi (Check
+  // giusto). Nessuna penalità: stesso spirito di Prime Rush, non di The Sieve
+  function commitElapsedTime(){
+    const elapsed = (Date.now() - levelStartTime) / 1000;
+    const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
+    localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + elapsed).toFixed(1));
+    return elapsed;
+  }
+
+  // Home: uscita volontaria ma il livello corrente NON è stato risolto. Deposito
+  // comunque il tempo, senza penalità
+  function recordHomeExit(){
+    playSound('tap');
+    const elapsed = (Date.now() - levelStartTime) / 1000;
+    const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
+    localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + elapsed).toFixed(1));
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    localStorage.removeItem(SESSION_OPEN_KEY);
+    localStorage.removeItem(HEARTBEAT_KEY);
+  }
+  document.getElementById('homeBtn').addEventListener('click', recordHomeExit);
+
+  function loadLevel(index){
+    currentLevelIndex = index;
+    const level = LEVELS[index];
+    levelStartTime = Date.now();
+
+    const lang = currentLang();
+    const levelWord = lang === 'it' ? 'Livello' : 'Level';
+    levelTitleEl.innerHTML = `Al-Khwarizmi <span class="accent">·</span> The Algorithm <span class="accent">·</span> ${levelWord} ${index + 1}`;
+    const hasDecimals = /\./.test(level.display) || !Number.isInteger(level.answer);
+    levelSubEl.textContent = lang === 'it'
+      ? (hasDecimals ? 'Attento ai decimali' : 'Numeri puliti')
+      : (hasDecimals ? 'Watch the decimals' : 'Clean numbers');
+    levelProgressEl.textContent = lang === 'it' ? `Livello ${index + 1} di ${LEVELS.length}` : `Level ${index + 1} of ${LEVELS.length}`;
+    levelProgressFillEl.style.width = (((index + 1) / LEVELS.length) * 100) + '%';
+    checkBtn.disabled = false;
+    nextBtn.classList.remove('visible');
+    feedbackEl.textContent = '';
+    feedbackEl.className = 'feedback';
+    answerInput.value = '';
+    expressionDisplayEl.textContent = level.display.replace(/x/g, '×').replace(/\//g, '÷');
+    // solo test Mathemory2: la risposta corretta in trasparenza dietro l'input
+    const bgHintEl = document.getElementById('answerBgHint');
+    if (bgHintEl) bgHintEl.textContent = level.answer;
+
+    localStorage.setItem(STORAGE_KEY, String(index + 1));
+
+    // il focus automatico apre la tastiera virtuale su mobile appena si entra nel
+    // livello, anche senza che l'utente abbia toccato l'input: comodo su desktop
+    // (puoi scrivere subito), fastidioso su mobile (tastiera indesiderata)
+    if (window.innerWidth > 900) answerInput.focus();
+  }
+
+  function checkAnswer(){
+    playSound('tap');
+    const level = LEVELS[currentLevelIndex];
+    const given = parseFloat(answerInput.value);
+    const lang = currentLang();
+    if (isNaN(given)){
+      playSound('wrong');
+      feedbackEl.textContent = lang === 'it' ? '✗ Scrivi prima un numero.' : '✗ Type a number first.';
+      feedbackEl.className = 'feedback bad';
+      return;
+    }
+    // tolleranza: 1% del valore assoluto vero, minimo 0.05 — uso il valore assoluto
+    // perché qui (a differenza di Pitagora) le risposte possono essere negative, e
+    // level.answer * 0.01 su un numero negativo darebbe una tolleranza negativa
+    const tolerance = Math.max(0.05, Math.abs(level.answer) * 0.01);
+    const ok = Math.abs(given - level.answer) <= tolerance;
+
+    if (ok){
+      const elapsed = commitElapsedTime();
+      checkBtn.disabled = true;
+      if (currentLevelIndex === LEVELS.length - 1){
+        // ultimo livello: il check porta dritto al popup, stesso comportamento di
+        // Eratostene — nessun passaggio intermedio "Vedi il risultato" da cliccare
+        playSound('winner');
+        localStorage.setItem(STORAGE_KEY, '1');
+        document.getElementById('finishTotalTime').textContent = (localStorage.getItem(TOTAL_TIME_KEY) || '0') + 's';
+        finishModalEl.classList.add('visible');
+      } else {
+        // livello intermedio: il check porta dritto al livello successivo, senza
+        // messaggio intermedio né pulsante da cliccare — stesso comportamento di
+        // Eratostene ("risposta corretta: si passa subito al livello successivo")
+        playSound('right');
+        loadLevel(currentLevelIndex + 1);
+      }
+    } else {
+      playSound('wrong');
+      feedbackEl.textContent = lang === 'it' ? `✗ Non proprio — riprova.` : `✗ Not quite — try again.`;
+      feedbackEl.className = 'feedback bad';
+    }
+  }
+
+  checkBtn.addEventListener('click', checkAnswer);
+  answerInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !checkBtn.disabled) checkAnswer();
+  });
+
+  const finishModalEl = document.getElementById('finishModal');
+
+  nextBtn.addEventListener('click', () => {
+    loadLevel(currentLevelIndex + 1);
+  });
+
+  // stessa validazione di Prime Rush/The Theorem, ma nessun invio reale a un Worker —
+  // Al-Khwarizmi non ha ancora un backend di classifica, il nickname resta solo
+  // locale (vedi nota onesta nel popup)
+  document.getElementById('finishConfirmBtn').addEventListener('click', () => {
+    const nickname = document.getElementById('finishNickname').value.trim();
+    const note = document.getElementById('finishNote');
+    if (!nickname || /^-+$/.test(nickname)){
+      note.textContent = currentLang() === 'it' ? 'Inserisci prima un nickname.' : 'Please enter a nickname first.';
+      note.style.color = 'var(--red)';
+      return;
+    }
+    if (nickname.length < 3){
+      note.textContent = currentLang() === 'it' ? 'Il nickname deve avere almeno 3 caratteri.' : 'Nickname must be at least 3 characters.';
+      note.style.color = 'var(--red)';
+      return;
+    }
+    localStorage.setItem('alkhwarizmi_thealgorithm_finisher_nickname', nickname);
+    window.location.href = 'index.html';
+  });
+
+  document.getElementById('finishSkipBtn').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+  // pulsante Skip: apre un popup con salto rapido di livelli + reset del solo
+  // salvataggio di questo gioco (mai gli altri)
+  const skipModalEl = document.getElementById('skipModal');
+  document.getElementById('skipBtn').addEventListener('click', () => {
+    skipModalEl.classList.add('visible');
+  });
+  document.getElementById('skipCloseBtn').addEventListener('click', () => {
+    skipModalEl.classList.remove('visible');
+  });
+  skipModalEl.addEventListener('click', (e) => {
+    if (e.target === skipModalEl) skipModalEl.classList.remove('visible');
+  });
+  function skipBy(n){
+    skipModalEl.classList.remove('visible');
+    loadLevel(Math.min(LEVELS.length - 1, currentLevelIndex + n));
+  }
+  document.getElementById('skip1Btn').addEventListener('click', () => skipBy(1));
+  document.getElementById('skip5Btn').addEventListener('click', () => skipBy(5));
+  document.getElementById('skip10Btn').addEventListener('click', () => skipBy(10));
+  document.getElementById('skipResetBtn').addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    skipModalEl.classList.remove('visible');
+    loadLevel(0);
+  });
+
+  loadLevel(currentLevelIndex);
+
+  // il cronometro vero e l'heartbeat partono una sola volta (non a ogni livello,
+  // qui non c'è un reload di pagina tra un livello e l'altro): quando i font sono
+  // davvero pronti, non al semplice caricamento del DOM — stessa tecnica di Prime Rush
+  let timerReallyStarted = false;
+  function reallyStartTimer(){
+    if (timerReallyStarted) return;
+    timerReallyStarted = true;
+    levelStartTime = Date.now();
+    localStorage.setItem(SESSION_OPEN_KEY, 'true');
+    heartbeatInterval = setInterval(() => {
+      const elapsed = (Date.now() - levelStartTime) / 1000;
+      localStorage.setItem(HEARTBEAT_KEY, elapsed.toFixed(1));
+    }, 5000);
+  }
+  const fontsPromise = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  fontsPromise.then(reallyStartTimer);
+</script>
+<script>window.MATHEMORY_MUSIC_VOLUME_MULTIPLIER = { desktop: 1.25, mobile: 1.875 };</script>
+<script src="mathemory-audio.js"></script>
+
+</body>
+</html>

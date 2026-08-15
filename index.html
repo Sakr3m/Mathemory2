@@ -512,6 +512,66 @@
     color: var(--yellow);
   }
 
+  /* Al-Khwarizmi ha per ora una sola modalità pronta: la sua unica .lb-half, dentro
+     un contenitore flex-row pensato per DUE metà, si allargherebbe a piena larghezza
+     (flex:1 1 0 senza un fratello con cui dividersi lo spazio) — il titolo lungo
+     "The Algorithm" finiva così troppo a sinistra, sotto il tag REGOLE. La blocco
+     alla stessa larghezza che avrebbe in una card a due metà */
+  /* "Al-Khwarizmi" è più lungo di "Eratostene"/"Pitagora": alla dimensione standard
+     (3.192rem) andava comunque a capo dentro la larghezza della card */
+  .alkhwarizmi-card-overlay .game-title-centered{ font-size: 2.8rem; }
+
+  .alkhwarizmi-card-overlay .lb-half{ flex: 0 1 50%; }
+
+  /* "Al-Khwarizmi" è largo abbastanza da estendersi fin sotto l'etichetta "GIOCO 3"
+     (posizionata in assoluto al centro verticale della riga, pensata per titoli più
+     corti come "Eratostene"/"Pitagora"). Invece di rimpicciolire ancora il titolo
+     (stonerebbe rispetto alle altre due card), impilo l'etichetta sopra invece di
+     sovrapporla al centro */
+  .alkhwarizmi-card-overlay .erato-title-row{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+  .alkhwarizmi-card-overlay .erato-gamex-label{
+    position: static;
+    transform: none;
+  }
+
+  .mini-algorithm{
+    width: 306px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding: 0.9rem;
+    background: var(--bg-panel-locked);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    text-align: center;
+  }
+  .mini-algorithm-inner{
+    position: relative;
+    height: 122px;
+  }
+  .mini-expr{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family:'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--yellow);
+    opacity: 0;
+    animation: mini-expr-cycle 9s ease-in-out infinite;
+  }
+  @keyframes mini-expr-cycle{
+    0%, 3%{ opacity: 0; }
+    8%, 28%{ opacity: 1; }
+    33%, 100%{ opacity: 0; }
+  }
+
   .mc{
     position:relative;
     aspect-ratio:1;
@@ -1483,6 +1543,9 @@
        (1.65rem→0.91rem): prima restava alla dimensione desktop, il triangolo
        sembrava più "grande" del setaccio a parità di larghezza del riquadro */
     .mobile-preview-block .mini-triangle-formula{ font-size: 0.52rem; margin-top: 0.3rem; }
+    .mobile-preview-block .mini-algorithm{ width: 122px; margin: 0; padding: 0.5rem; }
+    .mobile-preview-block .mini-algorithm-inner{ height: 82px; }
+    .mobile-preview-block .mini-expr{ font-size: 0.6rem; }
     .mobile-device-note-full{
       width: 100%;
       text-align: center;
@@ -2072,6 +2135,20 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="alkhwarizmiRulesModal">
+  <div class="rules-modal-card">
+    <button type="button" class="rules-close-btn" id="alkhwarizmiRulesCloseBtn" aria-label="Close">✕</button>
+    <h3><span data-en="Rules" data-it="Regole">Rules</span> <span class="accent">·</span> Al-Khwarizmi</h3>
+    <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="calculate the result of the expression, respecting the order of operations, and type your answer." data-it="calcola il risultato dell'espressione, rispettando l'ordine delle operazioni, e scrivi la risposta.">calculate the result of the expression, respecting the order of operations, and type your answer.</span></p>
+    <p><em data-en="Happy calculating." data-it="Buon calcolo.">Happy calculating.</em></p>
+    <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
+    <ul class="rules-modes-list">
+      <li><strong>The Algorithm</strong><span data-en=" — " data-it=": "> </span><span data-en="100 levels of pure calculation, from a simple two-step sum to nested parentheses, powers and decimals." data-it="100 livelli di puro calcolo, da una semplice somma in due passaggi fino a parentesi annidate, potenze e decimali.">100 levels of pure calculation, from a simple two-step sum to nested parentheses, powers and decimals.</span></li>
+    </ul>
+    <p class="rules-stars-note" data-en="★ The stars next to each mode in the mode picker are my own difficulty rating, from half a star (easiest) to 5 (hardest)." data-it="★ Le stelline accanto a ogni modalità nel popup di scelta indicano una mia valutazione personale della difficoltà, da mezza stella (più facile) a 5 (più difficile).">★ The stars next to each mode in the mode picker are my own difficulty rating, from half a star (easiest) to 5 (hardest).</p>
+  </div>
+</div>
+
 <div class="modal-overlay" id="kofiModal">
   <div class="rules-modal-card">
     <button type="button" class="rules-close-btn" id="kofiCloseBtn" aria-label="Close">✕</button>
@@ -2229,7 +2306,21 @@
       </div>`;
   }
 
-  // --- una sola card attiva: Eratosthenes ---
+  // --- anteprima per la card di Al-Khwarizmi: 3 espressioni di esempio in
+  // dissolvenza incrociata, stesso ruolo del mini-setaccio/mini-triangolo — pura
+  // CSS, nessun JS, ciclo continuo ---
+  function buildMiniCalculator(){
+    return `
+      <div class="mini-algorithm">
+        <div class="mini-algorithm-inner">
+          <span class="mini-expr" style="animation-delay:0s">6 + 4 × 2 = 14</span>
+          <span class="mini-expr" style="animation-delay:3s">(6 + 4) × 2 = 20</span>
+          <span class="mini-expr" style="animation-delay:6s">9² − 15 ÷ 3 = 76</span>
+        </div>
+      </div>`;
+  }
+
+  // --- tre card attive: Eratosthenes, Pitagora, Al-Khwarizmi ---
   const games = [
     {
       title: 'Eratosthenes',
@@ -2265,6 +2356,21 @@
         { name: 'The Theorem', desc: '50 static triangles: calculate the missing side yourself.', descIT: '50 triangoli fermi: calcola tu stesso il lato mancante.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_thetheorem.html', normalFile: 'pitagora_thetheorem.html', hrefKey: 'pythagoras_thetheorem_last', accent: 'orange', requiresSieveFinish: true, stars: 2.5 },
         { name: 'Geometric Instinct', desc: '50 levels, from generous guesses to near-perfect precision.', descIT: '50 livelli, da un margine ampio a una precisione quasi perfetta.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'pitagora_geometricinstinct.html', normalFile: 'pitagora_geometricinstinct.html', hrefKey: 'pythagoras_geometricinstinct_last', accent: 'yellow', stars: 3 },
         { name: 'Triangles Everywhere', desc: 'Endless levels, precision climbing until it maxes out.', descIT: 'Livelli infiniti, precisione che sale fino al massimo.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'pitagora_triangleseverywhere.html', normalFile: 'pitagora_triangleseverywhere.html', hrefKey: 'pythagoras_triangleseverywhere_last', accent: 'teal', requiresSieveFinish: true, stars: 2 },
+      ]
+    },
+    {
+      title: 'Al-Khwarizmi',
+      titleIT: 'Al-Khwarizmi',
+      descTitle: 'Order of Operations Game',
+      descTitleIT: 'Il gioco dell\'ordine delle operazioni',
+      desc: 'Solve the arithmetic expression, respecting the order of operations, from the simplest calculation to some genuinely tough ones. 100 levels, only the first mode built so far.',
+      descIT: 'Risolvi l\'espressione aritmetica rispettando l\'ordine delle operazioni, dal calcolo più semplice fino a qualcuno davvero ostico. 100 livelli, per ora solo la prima modalità è pronta.',
+      mobileDesc: 'Solve the arithmetic expression, respecting the order of operations. 100 levels, from very easy to very hard.',
+      mobileDescIT: 'Risolvi l\'espressione aritmetica rispettando l\'ordine delle operazioni. 100 livelli, dal facilissimo al molto difficile.',
+      hrefKey: 'alkhwarizmi_thealgorithm_last', hrefBase: 'alkhwarizmi_thealgorithm.html',
+      preview: buildMiniCalculator(),
+      modes: [
+        { name: 'The Algorithm', desc: '100 levels of pure calculation: order of operations from easy to genuinely tough.', descIT: '100 livelli di puro calcolo: ordine delle operazioni dal facile al davvero ostico.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'alkhwarizmi_thealgorithm.html', normalFile: 'alkhwarizmi_thealgorithm.html', hrefKey: 'alkhwarizmi_thealgorithm_last', accent: 'yellow', stars: 3 },
       ]
     },
   ];
@@ -2394,6 +2500,8 @@
   let eratoOverlayEl = null; // riferimento alla card animata (se già creata), per aggiornare la classifica quando arrivano dati freschi dal Worker
   let pythagorasOverlayEl = null; // stesso ruolo di eratoOverlayEl qui sopra, ma per la card di Pitagora — mai lo stesso elemento
   let pythagorasOverlayBuilt = false; // true dopo la primissima volta che si naviga su Pitagora: da lì in poi la card esiste già, va solo mostrata/riposizionata
+  let alkhwarizmiOverlayEl = null; // stesso ruolo, per la card di Al-Khwarizmi
+  let alkhwarizmiOverlayBuilt = false;
 
   // NOTA: c'era qui una funzione (applyEratoLbMargin) che misurava via JS un margine
   // destro per allineare la classifica al bordo della card. Da quando le due metà
@@ -2721,6 +2829,43 @@
   }
 
   // ============================================================
+  // SEZIONE: AL-KHWARIZMI — stesso impianto di Pitagora/Eratosthenes qui sopra,
+  // ma con una sola modalità pronta finora (The Algorithm) e nessun backend di
+  // classifica ancora collegato: podiumRowsHtml(null) qui è genuino (non un bug
+  // come lo era per Pitagora), non c'è alcun dato da recuperare
+  // ============================================================
+  function alkhwarizmiContentHtml(g){
+    return `
+      <div class="erato-title-row">
+        <div class="erato-gamex-label" data-en="GAME 3" data-it="GIOCO 3">GAME 3</div>
+        <h2 class="game-title-centered" data-en="${g.title}" data-it="${g.titleIT}">${g.title}</h2>
+      </div>
+      <div class="erato-gamex-tag" id="alkhwarizmiRulesBtn" data-en="RULES" data-it="REGOLE">RULES</div>
+      <div class="play-preview-block">
+        <div class="play-now-split">
+          <button type="button" class="cta-inline cta-split" onclick="openModeModal(2, false)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="cta-split-sub">Normal (locked)</span></button>
+          <button type="button" class="cta-inline cta-split" onclick="openModeModal(2, true)"><span data-en="Play now" data-it="Gioca ora">Play now</span><span class="cta-split-sub">All unlocked</span></button>
+        </div>
+        <div class="preview-row">
+          ${g.preview || ''}
+          <div class="preview-text-col">
+            <p class="desc"><span class="desc-title" data-en="${g.descTitle}" data-it="${g.descTitleIT}">${g.descTitle}</span><span data-en="${g.desc}" data-it="${g.descIT}">${g.desc}</span></p>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function alkhwarizmiRightHtml(g){
+    return `
+      <div class="lb-half">
+        <h2>The Algorithm</h2>
+        <div class="lb-section">
+          ${podiumRowsHtml(null)}
+        </div>
+      </div>`;
+  }
+
+  // ============================================================
   // SEZIONE: CARD DEI GIOCHI — generazione HTML (mobile)
   // ============================================================
   function mobileNavRowHtml(){
@@ -2759,7 +2904,7 @@
       <div class="mobile-shifted-content">
         <h2 class="mobile-game-title" data-en="${g.title}" data-it="${g.titleIT}">${g.title}</h2>
         <div class="mobile-game-header">
-          <button type="button" class="mobile-game-number" onclick="${number === 2 ? 'openPythagorasRulesModal()' : 'openRulesModal()'}">${currentLang() === 'it' ? `Gioco ${number} - Regole` : `Game ${number} - Rules`}</button>
+          <button type="button" class="mobile-game-number" onclick="${number === 2 ? 'openPythagorasRulesModal()' : number === 3 ? 'openAlKhwarizmiRulesModal()' : 'openRulesModal()'}">${currentLang() === 'it' ? `Gioco ${number} - Regole` : `Game ${number} - Rules`}</button>
           <p class="mobile-tap-hint">${currentLang() === 'it' ? `Tocca Gioco ${number} per leggere le regole.` : `Tap Game ${number} to read the rules.`}</p>
         </div>
         <div class="mobile-play-preview-block">
@@ -2770,7 +2915,7 @@
           <div class="mobile-preview-block">
             ${g.preview || ''}
             <div class="mobile-desc-block">
-              <span class="desc-title">${g.descTitle}</span>
+              <span class="desc-title" data-en="${g.descTitle}" data-it="${g.descTitleIT}">${g.descTitle}</span>
               <p class="mobile-desc" data-en="${g.mobileDesc || g.desc}" data-it="${g.mobileDescIT || g.descIT}">${g.mobileDesc || g.desc}</p>
             </div>
           </div>
@@ -2832,6 +2977,22 @@
           <h2>Steady Hands</h2>
           <div class="lb-section">
             ${podiumRowsHtml(cachedPythagorasSteadyHandsPodium)}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // stessa struttura, ma per Al-Khwarizmi: una sola modalità pronta, nessun blocco
+  // gemello. podiumRowsHtml(null) qui è genuino, non c'è ancora un backend
+  function mobileAlKhwarizmiLeaderboardSectionHtml(g){
+    const navAndDivider = mobileNavRowHtml();
+    return `
+      <div class="mobile-shifted-content">
+        ${navAndDivider}
+        <div class="mobile-lb-block">
+          <h2>The Algorithm</h2>
+          <div class="lb-section">
+            ${podiumRowsHtml(null)}
           </div>
         </div>
       </div>`;
@@ -2977,9 +3138,58 @@
         pythagorasOverlayEl.style.display = 'flex';
         pythagorasOverlayEl.style.opacity = '1';
       }
+    } else if (gameState(g) === 'open' && number === 3 && window.innerWidth > 900){
+      // ============================================================
+      // percorso di Al-Khwarizmi: stessa identica logica di Pitagora qui sopra,
+      // stesso motivo — mai la primissima pagina caricata, ci si arriva solo per
+      // navigazione
+      // ============================================================
+      if (eratoOverlayEl) eratoOverlayEl.style.display = 'none';
+      if (pythagorasOverlayEl) pythagorasOverlayEl.style.display = 'none';
+      Object.values(comingSoonOverlays).forEach(el => { el.style.display = 'none'; });
+      const geometry = computeAlKhwarizmiCardGeometry(g, number);
+      if (!alkhwarizmiOverlayBuilt){
+        alkhwarizmiOverlayBuilt = true;
+        alkhwarizmiOverlayEl = buildAlKhwarizmiOverlay(g, number, geometry);
+        playCardNavAnimation(alkhwarizmiOverlayEl, geometry.top, geometry.left, geometry.width, geometry.height, () => {
+          finalizeAlKhwarizmiLayout(alkhwarizmiOverlayEl);
+        });
+      } else if (isNavigation){
+        const dividerLine = alkhwarizmiOverlayEl.querySelector('.erato-mid-divider');
+        const gamexTag = alkhwarizmiOverlayEl.querySelector('.erato-gamex-tag');
+        const lbHalfNav = alkhwarizmiOverlayEl.querySelector('.erato-leaderboard-half');
+        [dividerLine, gamexTag].forEach(el => {
+          if (!el) return;
+          el.style.transition = 'none';
+          el.style.opacity = '0';
+        });
+        if (lbHalfNav){ lbHalfNav.style.transition = 'none'; lbHalfNav.style.opacity = '0'; }
+        if (gamexTag) gamexTag.style.pointerEvents = 'none';
+        playCardNavAnimation(alkhwarizmiOverlayEl, geometry.top, geometry.left, geometry.width, geometry.height, () => {
+          [dividerLine, gamexTag].forEach(el => {
+            if (!el) return;
+            void el.offsetWidth;
+            el.style.transition = 'opacity 1s ease';
+            el.style.opacity = '1';
+          });
+          if (gamexTag) setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
+          if (lbHalfNav){
+            void lbHalfNav.offsetWidth;
+            lbHalfNav.style.transition = 'opacity 500ms ease';
+            lbHalfNav.style.opacity = '1';
+          }
+        });
+      } else {
+        alkhwarizmiOverlayEl.style.top = geometry.top + 'px';
+        alkhwarizmiOverlayEl.style.left = geometry.left + 'px';
+        alkhwarizmiOverlayEl.style.width = geometry.width + 'px';
+        alkhwarizmiOverlayEl.style.height = geometry.height + 'px';
+        alkhwarizmiOverlayEl.style.display = 'flex';
+        alkhwarizmiOverlayEl.style.opacity = '1';
+      }
     } else {
-      // pagina diversa da Eratosthenes/Pitagora: entrambe le loro card vanno nascoste,
-      // altrimenti resterebbero visibili sopra a tutto anche qui
+      // pagina diversa da Eratosthenes/Pitagora/Al-Khwarizmi: tutte e 3 le loro card
+      // vanno nascoste, altrimenti resterebbero visibili sopra a tutto anche qui
       if (eratoOverlayEl){
         eratoOverlayEl.style.display = 'none';
         // se la sequenza di apertura era ancora in corso (utente ha cliccato "next"
@@ -2990,6 +3200,7 @@
         eratoIntroTimeoutIds.length = 0;
       }
       if (pythagorasOverlayEl) pythagorasOverlayEl.style.display = 'none';
+      if (alkhwarizmiOverlayEl) alkhwarizmiOverlayEl.style.display = 'none';
       showComingSoonPage(currentIndex, isNavigation);
     }
 
@@ -3019,11 +3230,12 @@
       if (lastMobileGameIndex !== currentIndex){
         lastMobileGameIndex = currentIndex;
         snapGame.innerHTML = mobileGameSectionHtml(g, number);
+        applyLanguage(); // il markup appena iniettato ha i suoi data-en/data-it mai ancora tradotti
         document.querySelectorAll('.mobile-prev').forEach(el => el.onclick = () => step(-1));
         document.querySelectorAll('.mobile-next').forEach(el => el.onclick = () => step(1));
       }
       // questa invece dipende dai dati di classifica: va sempre aggiornata
-      snapLeaderboard.innerHTML = number === 2 ? mobilePythagorasLeaderboardSectionHtml(g) : mobileLeaderboardSectionHtml(g);
+      snapLeaderboard.innerHTML = number === 2 ? mobilePythagorasLeaderboardSectionHtml(g) : number === 3 ? mobileAlKhwarizmiLeaderboardSectionHtml(g) : mobileLeaderboardSectionHtml(g);
 
       // ingresso/uscita dalla schermata di Eratostene su mobile: ora che il DOM sopra
       // non viene più ricostruito se currentIndex resta lo stesso, questo scatta solo
@@ -3157,6 +3369,30 @@
 
     const geometry = { top: targetTop, left: targetLeft, width: targetWidth, height: targetHeight };
     if (fontsReadyForGeometry) pythagorasCardGeometry = geometry;
+    return geometry;
+  }
+
+  // stessa identica logica delle due qui sopra, ma per Al-Khwarizmi — cache separata
+  // (alkhwarizmiCardGeometry), l'altezza di questa card è quasi certamente diversa
+  // dalle altre due (una sola modalità, niente doppia sezione classifica)
+  let alkhwarizmiCardGeometry = null;
+  function computeAlKhwarizmiCardGeometry(g, number){
+    if (alkhwarizmiCardGeometry) return alkhwarizmiCardGeometry;
+    const grid = document.getElementById('gamesGrid');
+    const gridRect = grid.getBoundingClientRect();
+    const gridStyle = getComputedStyle(grid);
+    const gap = parseFloat(gridStyle.columnGap || gridStyle.gap) || 0;
+    const singleColWidth = (gridRect.width - gap) / 2;
+
+    const viewportCenter = window.innerWidth / 2;
+    const targetWidth = singleColWidth * 2;
+    const targetLeft = viewportCenter - singleColWidth;
+    const targetTop = gridRect.top + window.scrollY;
+
+    const targetHeight = measureAlKhwarizmiContentHeight(g, number, targetWidth);
+
+    const geometry = { top: targetTop, left: targetLeft, width: targetWidth, height: targetHeight };
+    if (fontsReadyForGeometry) alkhwarizmiCardGeometry = geometry;
     return geometry;
   }
 
@@ -3335,6 +3571,30 @@
     return measuredHeight;
   }
 
+  // stessa logica delle due misure qui sopra, per Al-Khwarizmi
+  function measureAlKhwarizmiContentHeight(g, number, totalWidth){
+    const halfWidth = totalWidth / 2;
+    const probe = document.createElement('div');
+    probe.style.position = 'absolute';
+    probe.style.visibility = 'hidden';
+    probe.style.pointerEvents = 'none';
+    probe.style.left = '-9999px';
+    probe.style.top = '0px';
+    probe.style.width = totalWidth + 'px';
+    probe.style.display = 'flex';
+    probe.style.flexDirection = 'row';
+    probe.innerHTML = `
+      <div class="erato-content-half" style="width:${halfWidth}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
+        ${alkhwarizmiContentHtml(g)}
+      </div>
+      <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem;">
+        ${alkhwarizmiRightHtml(g)}
+      </div>`;
+    document.body.appendChild(probe);
+    const measuredHeight = probe.offsetHeight;
+    document.body.removeChild(probe);
+    return measuredHeight;
+  }
   // card animata: unica card esistente per Eratosthenes, costruita direttamente in JS
   // (il contenuto non vive più come markup statico da nessuna parte nella pagina).
   // Compare al centro (comparsa 0.75s), poi scorre verso la posizione bersaglio mentre
@@ -3650,6 +3910,102 @@
     }
   }
 
+  // stessa identica logica di finalizePythagorasLayout qui sopra, ma per Al-Khwarizmi.
+  // L'anteprima Regole qui elenca una sola modalità (The Algorithm): le altre 3 non
+  // hanno ancora un nome né una pagina — quando arriveranno, si aggiungono qui come
+  // nuove <li>, stesso schema delle altre due card
+  function finalizeAlKhwarizmiLayout(overlay){
+    const lbHalf = overlay.querySelector('.erato-leaderboard-half');
+    const playButtons = overlay.querySelectorAll('.play-now-split .cta-split');
+    const rightPlayBtn = playButtons[1];
+    const firstLbRow = overlay.querySelector('.lb-row');
+    let dividerX = null;
+    if (rightPlayBtn && firstLbRow){
+      const overlayRect = overlay.getBoundingClientRect();
+      const btnRight = rightPlayBtn.getBoundingClientRect().right;
+      const rowLeft = firstLbRow.getBoundingClientRect().left;
+      dividerX = (btnRight + rowLeft) / 2 - overlayRect.left;
+
+      let dividerLine = overlay.querySelector('.erato-mid-divider');
+      if (!dividerLine){
+        dividerLine = document.createElement('div');
+        dividerLine.className = 'erato-mid-divider';
+        dividerLine.innerHTML = `
+          <svg viewBox="0 0 10 356" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="alkhwarizmiMidDividerFade" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(243,239,228,0)" />
+                <stop offset="18%" stop-color="rgba(243,239,228,0.12)" />
+                <stop offset="82%" stop-color="rgba(243,239,228,0.12)" />
+                <stop offset="100%" stop-color="rgba(243,239,228,0)" />
+              </linearGradient>
+            </defs>
+            <path d="M5,0 Q2,89 3.5,178 Q2,267 5,356 Q8,267 6.5,178 Q8,89 5,0 Z" fill="url(#alkhwarizmiMidDividerFade)" />
+          </svg>`;
+        overlay.appendChild(dividerLine);
+      }
+      dividerLine.style.left = dividerX + 'px';
+
+      const gamexTag = overlay.querySelector('.erato-gamex-tag');
+      if (gamexTag){
+        gamexTag.style.left = dividerX + 'px';
+        gamexTag.style.top = '-2px';
+        gamexTag.style.pointerEvents = 'none';
+        void gamexTag.offsetWidth;
+        gamexTag.style.transition = 'opacity 1s ease';
+        gamexTag.style.opacity = '1';
+        setTimeout(() => { gamexTag.style.pointerEvents = 'auto'; }, 1000);
+      }
+    }
+
+    if (lbHalf){
+      void lbHalf.offsetWidth;
+      lbHalf.style.transition = 'opacity 500ms ease';
+      lbHalf.style.opacity = '1';
+    }
+
+    const rulesBtn = overlay.querySelector('#alkhwarizmiRulesBtn');
+    if (rulesBtn && lbHalf && !rulesBtn.dataset.hoverBound){
+      rulesBtn.dataset.hoverBound = 'true';
+      const rulesPreviewHtml = `
+        <div class="erato-rules-preview">
+          <h3 data-en="Rules" data-it="Regole">Rules</h3>
+          <p><strong data-en="How to play:" data-it="Come si gioca:">How to play:</strong> <span data-en="calculate the result of the expression, respecting the order of operations, and type your answer." data-it="calcola il risultato dell'espressione, rispettando l'ordine delle operazioni, e scrivi la risposta.">calculate the result of the expression, respecting the order of operations, and type your answer.</span></p>
+          <p data-en="Happy calculating." data-it="Buon calcolo.">Happy calculating.</p>
+          <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
+          <ul class="rules-modes-list">
+            <li><strong>The Algorithm</strong><span data-en=" — " data-it=": "> </span><span data-en="100 levels of pure calculation, from a simple two-step sum to nested parentheses, powers and decimals." data-it="100 livelli di puro calcolo, da una semplice somma in due passaggi fino a parentesi annidate, potenze e decimali.">100 levels of pure calculation, from a simple two-step sum to nested parentheses, powers and decimals.</span></li>
+          </ul>
+          <p class="device-note-old" data-en="Progress is saved per device: switching devices restarts from level 1." data-it="I progressi sono salvati per dispositivo: cambiare dispositivo fa ripartire dal livello 1.">Progress is saved per device: switching devices restarts from level 1.</p>
+        </div>`;
+      lbHalf._realLbHtml = lbHalf.innerHTML;
+      lbHalf._isShowingRules = false;
+      let swapTimer = null;
+      const fadeMs = 350;
+
+      rulesBtn.addEventListener('click', () => {
+        const showingRules = lbHalf._isShowingRules;
+        clearTimeout(swapTimer);
+        lbHalf.style.transition = `opacity ${fadeMs}ms ease`;
+        lbHalf.style.opacity = '0';
+        swapTimer = setTimeout(() => {
+          if (showingRules){
+            lbHalf.innerHTML = lbHalf._realLbHtml;
+            lbHalf._isShowingRules = false;
+            rulesBtn.classList.remove('active');
+          } else {
+            lbHalf.innerHTML = rulesPreviewHtml;
+            applyLanguage();
+            lbHalf._isShowingRules = true;
+            rulesBtn.classList.add('active');
+          }
+          void lbHalf.offsetWidth;
+          lbHalf.style.opacity = '1';
+        }, fadeMs);
+      });
+    }
+  }
+
   // durata della comparsa iniziale (movimento verso l'alto), condivisa con qualunque
   // altra card copi questa stessa animazione al caricamento della pagina
   const CARD_INITIAL_FADE_MS = 1500;
@@ -3816,6 +4172,37 @@
       </div>
       <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem; opacity:0;">
         ${pythagorasRightHtml(g)}
+      </div>`;
+    overlay.style.cssText = `
+      position: absolute;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: none;
+      flex-direction: row;
+      background: var(--bg-panel);
+      border: 1px solid rgba(232,196,104,0.85);
+      border-radius: 6px;
+      box-shadow: 0 0 0 1px rgba(232,196,104,0.55), 0 0 0 2px rgba(232,196,104,0.25);
+      animation: erato-border-cycle 14s ease-in-out infinite;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+    `;
+    document.body.appendChild(overlay);
+    applyLanguage();
+    return overlay;
+  }
+
+  // stessa identica logica di buildPythagorasOverlay qui sopra, ma per Al-Khwarizmi
+  function buildAlKhwarizmiOverlay(g, number, geometry){
+    const overlay = document.createElement('div');
+    overlay.className = 'alkhwarizmi-card-overlay';
+    overlay.innerHTML = `
+      <div class="erato-content-half" style="width:${geometry.width / 2}px; flex-shrink:0; box-sizing:border-box; padding:0.855rem; display:flex; flex-direction:column; gap:0.475rem;">
+        ${alkhwarizmiContentHtml(g)}
+      </div>
+      <div class="erato-leaderboard-half leaderboard-card" style="flex:1 1 auto; min-width:0; box-sizing:border-box; padding:0.855rem; opacity:0;">
+        ${alkhwarizmiRightHtml(g)}
       </div>`;
     overlay.style.cssText = `
       position: absolute;
@@ -4255,6 +4642,16 @@
   document.getElementById('pythagorasRulesCloseBtn').addEventListener('click', closePythagorasRulesModal);
   pythagorasRulesModal.addEventListener('click', (e) => {
     if (e.target === pythagorasRulesModal) closePythagorasRulesModal();
+  });
+
+  // stesso meccanismo, per il popup regole di Al-Khwarizmi — mai lo stesso popup
+  // delle altre due card, stesso motivo di sempre
+  const alkhwarizmiRulesModal = document.getElementById('alkhwarizmiRulesModal');
+  function openAlKhwarizmiRulesModal(){ playSound('tap'); alkhwarizmiRulesModal.classList.add('visible'); }
+  function closeAlKhwarizmiRulesModal(){ playSound('tap'); alkhwarizmiRulesModal.classList.remove('visible'); }
+  document.getElementById('alkhwarizmiRulesCloseBtn').addEventListener('click', closeAlKhwarizmiRulesModal);
+  alkhwarizmiRulesModal.addEventListener('click', (e) => {
+    if (e.target === alkhwarizmiRulesModal) closeAlKhwarizmiRulesModal();
   });
 
   // stesso meccanismo di apertura/chiusura qui sopra, ma per il popup informativo
