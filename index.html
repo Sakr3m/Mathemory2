@@ -3031,6 +3031,7 @@
       // quando la pagina attiva è Pitagora
       // ============================================================
       if (pythagorasOverlayEl) pythagorasOverlayEl.style.display = 'none';
+      if (alkhwarizmiOverlayEl) alkhwarizmiOverlayEl.style.display = 'none';
       // la card vera (l'overlay) vive fuori dalla griglia: se era stata nascosta
       // per una pagina diversa, la rimostro; le eventuali card "Coming Soon" vanno
       // invece nascoste, altrimenti resterebbero visibili sopra a tutto anche qui
@@ -3100,6 +3101,7 @@
       // generica, non sa nulla di Eratosthenes né di Pitagora)
       // ============================================================
       if (eratoOverlayEl) eratoOverlayEl.style.display = 'none';
+      if (alkhwarizmiOverlayEl) alkhwarizmiOverlayEl.style.display = 'none';
       Object.values(comingSoonOverlays).forEach(el => { el.style.display = 'none'; });
       const geometry = computePythagorasCardGeometry(g, number);
       if (!pythagorasOverlayBuilt){
