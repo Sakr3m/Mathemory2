@@ -929,7 +929,7 @@ const LEVELS = [
 
     // invio il tempo al Worker per il podio globale; se fallisce (rete assente, Worker
     // giù) l'utente prosegue comunque, non è bloccante
-    fetch('https://eratostene.sl-eternal-lux.workers.dev/submit-pythagoras-thetheorem', {
+    fetch('https://mathemory.sl-eternal-lux.workers.dev/submit-pythagoras-thetheorem', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nickname, time: timeValue })

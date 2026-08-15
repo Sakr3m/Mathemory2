@@ -1389,7 +1389,7 @@
 
     // invio il tempo al Worker per il podio globale; se fallisce (rete assente, Worker giù)
     // l'utente prosegue comunque, non è bloccante
-    fetch('https://eratostene.sl-eternal-lux.workers.dev/submit-primerush', {
+    fetch('https://mathemory.sl-eternal-lux.workers.dev/submit-primerush', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nickname, time: timeValue })

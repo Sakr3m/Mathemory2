@@ -1696,7 +1696,7 @@
 
     // invio il tempo al Worker per il podio (terza classifica, dedicata); se fallisce
     // (rete assente, Worker giù) l'utente prosegue comunque, non è bloccante
-    fetch('https://eratostene.sl-eternal-lux.workers.dev/submit-scholarsglance', {
+    fetch('https://mathemory.sl-eternal-lux.workers.dev/submit-scholarsglance', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nickname, time: timeValue })

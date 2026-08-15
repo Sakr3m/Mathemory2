@@ -956,7 +956,7 @@ const LEVELS = [
     const totalRaceTime = localStorage.getItem(TOTAL_TIME_KEY) || '0';
     const timeValue = parseFloat(totalRaceTime);
 
-    fetch('https://eratostene.sl-eternal-lux.workers.dev/submit-pythagoras-steadyhands', {
+    fetch('https://mathemory.sl-eternal-lux.workers.dev/submit-pythagoras-steadyhands', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nickname, time: timeValue })

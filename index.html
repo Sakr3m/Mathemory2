@@ -2472,7 +2472,7 @@
     lbHalf.innerHTML = freshHtml;
     lbHalf._realLbHtml = lbHalf.innerHTML;
   }
-  const LEADERBOARD_API = 'https://eratostene.sl-eternal-lux.workers.dev';
+  const LEADERBOARD_API = 'https://mathemory.sl-eternal-lux.workers.dev';
 
   // ============================================================
   // SEZIONE: CLASSIFICHE — fetch dei dati dal Worker Cloudflare
@@ -4753,7 +4753,7 @@
     if (reportImageBlob) formData.append('image', reportImageBlob, 'report.jpg');
 
     try {
-      const res = await fetch('https://eratostene.sl-eternal-lux.workers.dev/report-bug', {
+      const res = await fetch('https://mathemory.sl-eternal-lux.workers.dev/report-bug', {
         method: 'POST',
         body: formData
       });
