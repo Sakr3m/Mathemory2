@@ -214,7 +214,6 @@
   }
   .leaderboard-card h2,
   .leaderboard-card h3,
-  .race-end-inline,
   .erato-rules-preview{
     margin-left: 0;
   }
@@ -344,25 +343,6 @@
     margin-bottom: 0.6rem;
     flex-shrink: 0;
   }
-  /* doppio titolo sopra Prime Rush / Scholar's Glance: stessa identica griglia
-     (1fr auto 1fr) delle righe .lb-row-dual sotto, così i due titoli restano
-     sempre centrati esattamente sopra le rispettive colonne di valori */
-  .lb-dual-title-row{
-    display:grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items:center;
-    gap: 0.5rem;
-    margin-bottom: 0.6rem;
-    flex-shrink: 0;
-  }
-  .lb-dual-title-row h3{
-    width: auto;
-    justify-self: stretch; /* esplicito, non affidato al default della griglia: il box deve riempire tutta la sua colonna 1fr, non restringersi al testo */
-    margin: 0;
-    font-size: 1.25rem;
-    text-align: center;
-  }
-  .lb-dual-title-spacer{ width: 1.452rem; } /* larghezza della colonna medaglia, per coerenza visiva */
   .lb-section{
     flex: 1 1 0;
     display:flex;
@@ -370,14 +350,6 @@
     justify-content: center;
     gap: 0.5rem;
     min-height: 0;
-  }
-  .race-end-inline{
-    text-align: center;
-    font-family:'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: rgba(243,239,228,0.5);
-    margin-top: 0;
-    margin-bottom: 0.6rem;
   }
   .lb-row{
     flex: 1 1 0;
@@ -391,36 +363,7 @@
     border-radius: 6px;
     padding: 0 1rem;
   }
-  /* riga a doppia colonna (Prime Rush): griglia con colonna centrale a
-     larghezza fissa (quella della medaglia stessa) — così la medaglia non
-     si sposta MAI, qualunque sia la lunghezza dei nomi ai due lati. Ogni
-     nome ha a disposizione al massimo metà riga (la sua colonna da 1fr),
-     con troncamento invece di spingere oltre se dovesse comunque eccedere */
-  .lb-row-dual{
-    display:grid;
-    grid-template-columns: 1fr 1.6rem 1fr;
-    align-items:center;
-    justify-items:center;
-    gap: 0.5rem;
-  }
-  .lb-row-dual .lb-value:first-child,
-  .lb-row-dual .lb-value:last-child{ justify-self: stretch; }
-  .lb-row-dual .lb-value:first-child{
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 0;
-  }
-  .lb-row-dual .lb-value:last-child{
-    text-align: right;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 0;
-  }
   .lb-medal{ font-size: 1.452rem; line-height:1; }
-  .lb-row-dual .lb-value{ font-size: 0.81rem; }
   .lb-value{ color: var(--yellow); font-weight:700; font-size: 1rem; }
   .lb-row.rank-1{ border-color: #E8C468; animation: rank-glow-gold 2.4s ease-in-out infinite; }
   .lb-row.rank-2{ border-color: #C7CDD6; animation: rank-glow-silver 2.4s ease-in-out infinite; }
@@ -1600,28 +1543,12 @@
       text-align:center;
       margin: 0 0 0.42rem;
     }
-    .race-end-inline{
-      width: auto;
-      margin-left: 0;
-      margin-right: 0;
-    }
     .mobile-records-block h3{
       font-family:'Kalam', cursive;
       font-size: clamp(2.1rem, 9.625vw, 2.8rem);
       text-align:center;
       color: var(--ink);
       margin: 0 0 0.42rem;
-    }
-    .mobile-records-block .lb-dual-title-row{
-      margin-bottom: 0.42rem;
-    }
-    .mobile-records-block .lb-dual-title-row h3{
-      font-size: clamp(0.98rem, 4.2vw, 1.26rem);
-      margin: 0;
-    }
-    .mobile-records-block .lb-dual-title-spacer{ width: 0.77rem; }
-    .mobile-lb-block .lb-row-dual, .mobile-records-block .lb-row-dual{
-      grid-template-columns: 1fr 0.9rem 1fr;
     }
     .mobile-lb-block .lb-row, .mobile-records-block .lb-row{
       height: auto;
@@ -1630,9 +1557,6 @@
     }
     .mobile-lb-block .lb-medal, .mobile-records-block .lb-medal{
       font-size: 0.77rem;
-    }
-    .mobile-records-block .lb-row-dual .lb-value{
-      font-size: 0.54rem;
     }
 
     /* --- popup regolamento su mobile: dimensione naturale in base al contenuto,
@@ -2114,7 +2038,7 @@
     <p><em data-en="Happy prime hunting." data-it="Buona caccia ai numeri primi.">Happy prime hunting.</em></p>
     <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
     <ul class="rules-modes-list">
-      <li><strong>The Sieve</strong><span data-en=" — " data-it=": "> </span><span data-en="the full 100-level race, at your own pace, ranked on the main leaderboard. Time-limited, progress saved, anti-cheat active in the final levels." data-it="la gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale. A tempo limitato, progressi salvati, anti-cheat attivo negli ultimi livelli.">the full 100-level race, at your own pace, ranked on the main leaderboard. Time-limited, progress saved, anti-cheat active in the final levels.</span></li>
+      <li><strong>The Sieve</strong><span data-en=" — " data-it=": "> </span><span data-en="the full 100-level path, at your own pace. Reach level 25 to unlock the other modes below. Progress saved." data-it="il percorso completo di 100 livelli, al tuo ritmo. Arriva al livello 25 per sbloccare le altre modalità qui sotto. Progressi salvati.">the full 100-level path, at your own pace. Reach level 25 to unlock the other modes below. Progress saved.</span></li>
       <li><strong>Prime Rush</strong><span data-en=" — " data-it=": "> </span><span data-en="50 levels of pure racing against the clock. No progress saved: it's all or nothing in one sitting." data-it="50 livelli di pura corsa contro il tempo. Nessun progresso salvato: tutto o niente in un'unica sessione.">50 levels of pure racing against the clock. No progress saved: it's all or nothing in one sitting.</span></li>
       <li><strong>Scholar's Glance</strong><span data-en=" — " data-it=": "> </span><span data-en="50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory." data-it="50 livelli di pura concentrazione: i numeri appaiono per un attimo, poi spariscono, e risolvi a memoria.">50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory.</span></li>
       <li><strong>Infinite Primes</strong><span data-en=" — " data-it=": "> </span><span data-en="endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going." data-it="livelli infiniti, nessuna classifica, solo tu e i numeri, per tutto il tempo che vuoi continuare.">endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going.</span></li>
@@ -2342,7 +2266,7 @@
       modes: [
         { name: "Scholar's Glance", desc: '50 levels of total concentration.', descIT: '50 livelli di pura concentrazione.', details: 'No time limit · progress saved.', detailsIT: 'Nessun limite di tempo · progressi salvati.', file: 'eratostene_scholarsglance.html', normalFile: 'eratostene_scholarsglance_normal.html', hrefKey: 'erato_scholarsglance_last', accent: 'red', requiresSieveFinish: true, stars: 3.5 },
         { name: 'Prime Rush', desc: '50 levels of pure racing against the clock.', descIT: '50 livelli di pura corsa contro il tempo.', details: 'No time limit · no progress saved.', detailsIT: 'Nessun limite di tempo · progressi non salvati.', file: 'eratostene_primerush.html', normalFile: 'eratostene_primerush_normal.html', hrefKey: 'erato_primerush_last', accent: 'orange', requiresSieveFinish: true, stars: 3 },
-        { name: 'The Sieve', desc: 'The full 100-level race, at your own pace, ranked on the main leaderboard.', descIT: 'La gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale.', details: 'Time-limited race · progress saved · anti-cheat active.', detailsIT: 'Gara a tempo limitato · progressi salvati · anti-cheat attivo.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_v2_last', accent: 'yellow', stars: 2.5 },
+        { name: 'The Sieve', desc: 'The full 100-level path, at your own pace. Reach level 25 to unlock the other modes below.', descIT: 'Il percorso completo di 100 livelli, al tuo ritmo. Arriva al livello 25 per sbloccare le altre modalità qui sotto.', details: 'Progress saved.', detailsIT: 'Progressi salvati.', file: 'eratostene_thesieve.html', normalFile: 'eratostene_thesieve_normal.html', hrefKey: 'erato_basic_v2_last', accent: 'yellow', stars: 2.5 },
         { name: 'Infinite Primes', desc: 'Endless levels, no leaderboard, just you and the numbers.', descIT: 'Livelli infiniti, nessuna classifica, solo tu e i numeri.', details: 'No leaderboard · progress saved.', detailsIT: 'Nessuna classifica · progressi salvati.', file: 'eratostene_infiniteprimes.html', normalFile: 'eratostene_infiniteprimes_normal.html', hrefKey: 'erato_infinite_last', accent: 'teal', requiresSieveFinish: true, stars: 1.5 },
       ]
     },
@@ -2396,7 +2320,9 @@
     'November 28, 2026, 23:59 (UTC+01:00)',
     'December 10, 2026, 23:59 (UTC+01:00)',
   ];
-  games[0].raceEnd = raceEndLabels[0];
+  // The Sieve non ha più una scadenza propria (non ha più una classifica da
+  // proteggere con un vero traguardo finale) — raceEndLabels[0] resta inutilizzato
+  // qui, l'array serve solo più alle card "Coming Soon" qui sotto
 
   // etichette già formattate (evita differenze di fuso tra il dispositivo dell'utente e il fuso di riferimento)
   const unlockLabels = [
@@ -2498,7 +2424,6 @@
   }
 
   // --- podio globale: letto dal Cloudflare Worker, null finché non arriva la prima risposta ---
-  let cachedPodium = null;
   let cachedPrimeRushPodium = null;
   let cachedScholarsGlancePodium = null;
   let cachedPythagorasTheTheoremPodium = null;
@@ -2552,24 +2477,10 @@
   // ============================================================
   // SEZIONE: CLASSIFICHE — fetch dei dati dal Worker Cloudflare
   // ============================================================
-  function fetchLeaderboard(){
-    fetch(`${LEADERBOARD_API}/leaderboard`)
-      .then(r => r.json())
-      .then(data => {
-        cachedPodium = data.podium || [];
-        // il Worker calcola lui la scadenza (20 giorni da oggi finché nessuno ha ancora
-        // vinto, congelata per sempre al primo vincitore vero): sostituisce il valore
-        // scritto a mano appena arriva, games[0].raceEnd resta come ripiego iniziale
-        // per il brevissimo istante prima che questa fetch risponda
-        if (data.raceEnd && data.raceEnd.label) games[0].raceEnd = data.raceEnd.label;
-        if (data.raceEnd && data.raceEnd.labelIT) games[0].raceEndIT = data.raceEnd.labelIT;
-        render();
-        refreshEratoLeaderboard();
-      })
-      .catch(() => {
-        // se il Worker non risponde, restano i trattini: nessun errore mostrato all'utente
-      });
-  }
+  // (qui c'era fetchLeaderboard(), la fetch del podio proprio di The Sieve — rimossa:
+  // The Sieve non ha più una classifica propria da leggere, né una scadenza gara da
+  // calcolare. La sua card ora mostra Scholar's Glance e Prime Rush, già letti dalle
+  // due fetch qui sotto)
 
   function fetchPrimeRushLeaderboard(){
     fetch(`${LEADERBOARD_API}/leaderboard-primerush`)
@@ -2658,30 +2569,6 @@
     });
   }
 
-  // 3 righe, ognuna ospita 2 classifiche affiancate con la stessa medaglia al centro:
-  // tempo - nickname (sinistra, già implementata) - medaglia - nickname - tempo (destra,
-  // riservata per una seconda classifica non ancora implementata: passare null lì)
-  function dualPodiumRowsHtml(leftPodium, rightPodium){
-    const medals = ['🥇', '🥈', '🥉'];
-    const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
-    const leftTimes = formatPodiumTimes(leftPodium);
-    const rightTimes = formatPodiumTimes(rightPodium);
-    let html = '';
-    for (let i = 0; i < 3; i++){
-      const leftEntry = leftPodium && leftPodium[i];
-      const rightEntry = rightPodium && rightPodium[i];
-      const leftLabel = leftEntry ? `${leftEntry.nickname} — ${leftTimes[i]}` : '—';
-      const rightLabel = rightEntry ? `${rightEntry.nickname} — ${rightTimes[i]}` : '—';
-      html += `
-        <div class="lb-row lb-row-dual ${rankClasses[i]}">
-          <span class="lb-value">${leftLabel}</span>
-          <span class="lb-medal">${medals[i]}</span>
-          <span class="lb-value">${rightLabel}</span>
-        </div>`;
-    }
-    return html;
-  }
-
   // ============================================================
   // SEZIONE: CLASSIFICHE — generazione HTML del podio
   // ============================================================
@@ -2750,10 +2637,9 @@
   function eratoLbPreviewHtml(g){
     return `
       <div class="lb-half">
-        <h2>The Sieve</h2>
-        <p class="race-end-inline">${currentLang() === 'it' ? `La gara termina il ${g.raceEndIT || g.raceEnd}` : `The race ends on ${g.raceEnd}`}</p>
+        <h2>Scholar's Glance</h2>
         <div class="lb-section">
-          ${podiumRowsHtml(cachedPodium)}
+          ${podiumRowsHtml(cachedScholarsGlancePodium)}
         </div>
       </div>
       <svg class="lb-divider" viewBox="0 0 356 10" preserveAspectRatio="none" aria-hidden="true">
@@ -2768,13 +2654,9 @@
         <path d="M0,5 Q89,2 178,3.5 Q267,2 356,5 Q267,8 178,6.5 Q89,8 0,5 Z" fill="url(#lbDividerFade)" />
       </svg>
       <div class="lb-half">
-        <div class="lb-dual-title-row">
-          <h3>Prime Rush</h3>
-          <span class="lb-dual-title-spacer"></span>
-          <h3>Scholar's Glance</h3>
-        </div>
+        <h2>Prime Rush</h2>
         <div class="lb-section">
-          ${dualPodiumRowsHtml(cachedPrimeRushPodium, cachedScholarsGlancePodium)}
+          ${podiumRowsHtml(cachedPrimeRushPodium)}
         </div>
       </div>`;
   }
@@ -2943,21 +2825,16 @@
       <div class="mobile-shifted-content">
         ${navAndDivider}
         <div class="mobile-lb-block">
-          <h2>The Sieve</h2>
-          <p class="race-end-inline">${currentLang() === 'it' ? `La gara termina il ${g.raceEndIT || g.raceEnd}` : `The race ends on ${g.raceEnd}`}</p>
+          <h2>Scholar's Glance</h2>
           <div class="lb-section">
-            ${podiumRowsHtml(cachedPodium)}
+            ${podiumRowsHtml(cachedScholarsGlancePodium)}
           </div>
         </div>
         <div class="mobile-lb-divider"></div>
         <div class="mobile-records-block">
-          <div class="lb-dual-title-row">
-            <h3>Prime Rush</h3>
-            <span class="lb-dual-title-spacer"></span>
-            <h3>Scholar's Glance</h3>
-          </div>
+          <h2>Prime Rush</h2>
           <div class="lb-section">
-            ${dualPodiumRowsHtml(cachedPrimeRushPodium, cachedScholarsGlancePodium)}
+            ${podiumRowsHtml(cachedPrimeRushPodium)}
           </div>
         </div>
       </div>`;
@@ -3766,7 +3643,7 @@
           <p data-en="Happy prime hunting." data-it="Buona caccia ai numeri primi.">Happy prime hunting.</p>
           <p class="rules-modes-title" data-en="Modes:" data-it="Modalità:">Modes:</p>
           <ul class="rules-modes-list">
-            <li><strong>The Sieve</strong><span data-en=" — " data-it=": "> </span><span data-en="the full 100-level race, at your own pace, ranked on the main leaderboard. Time-limited, progress saved, anti-cheat active in the final levels." data-it="la gara completa di 100 livelli, al tuo ritmo, in classifica nella leaderboard principale. A tempo limitato, progressi salvati, anti-cheat attivo negli ultimi livelli.">the full 100-level race, at your own pace, ranked on the main leaderboard. Time-limited, progress saved, anti-cheat active in the final levels.</span></li>
+            <li><strong>The Sieve</strong><span data-en=" — " data-it=": "> </span><span data-en="the full 100-level path, at your own pace. Reach level 25 to unlock the other modes below. Progress saved." data-it="il percorso completo di 100 livelli, al tuo ritmo. Arriva al livello 25 per sbloccare le altre modalità qui sotto. Progressi salvati.">the full 100-level path, at your own pace. Reach level 25 to unlock the other modes below. Progress saved.</span></li>
             <li><strong>Prime Rush</strong><span data-en=" — " data-it=": "> </span><span data-en="50 levels of pure racing against the clock. No progress saved: it's all or nothing in one sitting." data-it="50 livelli di pura corsa contro il tempo. Nessun progresso salvato: tutto o niente in un'unica sessione.">50 levels of pure racing against the clock. No progress saved: it's all or nothing in one sitting.</span></li>
             <li><strong>Scholar's Glance</strong><span data-en=" — " data-it=": "> </span><span data-en="50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory." data-it="50 livelli di pura concentrazione: i numeri appaiono per un attimo, poi spariscono, e risolvi a memoria.">50 levels of total concentration: the numbers flash briefly, then vanish, and you solve from memory.</span></li>
             <li><strong>Infinite Primes</strong><span data-en=" — " data-it=": "> </span><span data-en="endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going." data-it="livelli infiniti, nessuna classifica, solo tu e i numeri, per tutto il tempo che vuoi continuare.">endless levels, no leaderboard, just you and the numbers, for as long as you want to keep going.</span></li>
@@ -4617,14 +4494,12 @@
   // classifica viene ricalcolata con margini sbagliati (misurati su una larghezza ancora
   // "a metà strada", non quella finale)
   setTimeout(() => {
-    fetchLeaderboard();
     fetchPrimeRushLeaderboard();
     fetchScholarsGlanceLeaderboard();
     fetchPythagorasTheTheoremLeaderboard();
     fetchPythagorasSteadyHandsLeaderboard();
   }, 3500);
-  setInterval(fetchLeaderboard, 24 * 60 * 60 * 1000); // refresh una volta al giorno
-  setInterval(fetchPrimeRushLeaderboard, 24 * 60 * 60 * 1000);
+  setInterval(fetchPrimeRushLeaderboard, 24 * 60 * 60 * 1000); // refresh una volta al giorno
   setInterval(fetchScholarsGlanceLeaderboard, 24 * 60 * 60 * 1000);
   setInterval(fetchPythagorasTheTheoremLeaderboard, 24 * 60 * 60 * 1000);
   setInterval(fetchPythagorasSteadyHandsLeaderboard, 24 * 60 * 60 * 1000);
@@ -4733,7 +4608,7 @@
         const unlockModeName = gameIndex === 1 ? 'Geometric Instinct' : 'The Sieve';
         const lockMessage = m.comingSoon
           ? details
-          : (isIT ? `🔒 Si sblocca finendo ${unlockModeName}.` : `🔒 Unlocks after finishing ${unlockModeName}.`);
+          : (isIT ? `🔒 Si sblocca arrivando al livello 25 di ${unlockModeName}.` : `🔒 Unlocks upon reaching level 25 of ${unlockModeName}.`);
         // niente stelline finché la modalità è bloccata: si vedono solo una volta sbloccata
         return `
           <div class="mode-option mode-option-locked" style="--mode-color: var(--${m.accent})">
