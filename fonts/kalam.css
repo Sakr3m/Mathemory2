@@ -1,0 +1,18 @@
+/* Kalam, auto-ospitato (google-webfonts-helper) invece che da Google Fonts —
+   stesso schema già usato per la Forgotten Shelf. Pesi 400 (solo index.html,
+   corpo del testo introduttivo) e 700 (logo "MATHEMORY" e titoli di sezione,
+   su tutte le pagine). */
+@font-face {
+  font-family: 'Kalam';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./kalam-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Kalam';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('./kalam-latin-700-normal.woff2') format('woff2');
+}
