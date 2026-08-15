@@ -696,54 +696,6 @@
     margin-bottom: 1.4rem;
   }
   .modal-card input[type="text"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
-  .finish-stat{
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: 8px;
-    padding: 0.85rem 1rem;
-    margin: 0 0 1.3rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-  .finish-stat-label{
-    font-family:'Space Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
-  .finish-stat-value{
-    font-family:'Space Mono', monospace;
-    font-weight: 700;
-    font-size: 1.4rem;
-    color: var(--yellow);
-  }
-  .finish-input-block{ margin-bottom: 1.3rem; }
-  .finish-instruction{
-    font-family:'Space Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--ink-dim);
-    margin: 0 0 0.8rem;
-    line-height: 1.5;
-  }
-  .finish-input-block input[type="text"]{ margin-bottom: 0.5rem; }
-  .modal-footnotes{
-    margin-top: 1rem;
-    padding-top: 0.9rem;
-    border-top: 1px solid var(--rule);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .modal-footnotes p{
-    font-family:'Space Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--ink-faint);
-    line-height: 1.4;
-    text-align: left;
-    margin: 0;
-  }
   .modal-buttons{
     display:flex;
     justify-content:center;
@@ -797,66 +749,6 @@
     border-color: var(--yellow);
     box-shadow: 0 0 8px 1px var(--yellow), 0 0 20px 5px var(--yellow);
   }
-  .modal-note{
-    font-family:'Space Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--ink-faint);
-    margin-top: 0.8rem;
-  }
-  .nickname-hint{
-    font-family:'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--ink-faint);
-    margin: 0.4rem 0 0;
-  }
-  /* popup di fine run (nickname): ingrandito x1.25 su desktop, scoped a #finishModal
-     per non toccare devSkipModal e gli altri popup che condividono le stesse classi.
-     Solo desktop: il mobile mantiene la sua gabbia fissa dedicata (vedi media query
-     sotto) e non viene toccato da questa regola */
-  #finishModal .modal-card{ max-width: 450px; padding: 1.875rem; }
-  #finishModal .modal-card h3{ font-size: 2rem; margin: 0 0 1.25rem; }
-  #finishModal .modal-card p{ font-size: 0.8906rem; margin: 0 0 1.125rem; }
-  #finishModal .modal-card input[type="text"]{ font-size: 0.9844rem; padding: 0.6563rem; margin-bottom: 1.3125rem; }
-  #finishModal .finish-stat{ padding: 0.7969rem 0.9375rem; margin: 0 0 1.2188rem; }
-  #finishModal .finish-stat-label{ font-size: 0.6375rem; }
-  #finishModal .finish-stat-value{ font-size: 1.3125rem; }
-  #finishModal .finish-input-block{ margin-bottom: 1.2188rem; }
-  #finishModal .finish-instruction{ font-size: 0.7969rem; margin: 0 0 0.75rem; }
-  #finishModal .modal-footnotes{ margin-top: 0.9375rem; padding-top: 0.8438rem; gap: 0.4688rem; }
-  #finishModal .modal-footnotes p{ font-size: 0.85rem; }
-  #finishModal .modal-buttons{ gap: 0.9375rem; }
-  #finishModal .modal-btn{ font-size: 0.9375rem; padding: 0.6563rem 1.6875rem; }
-  #finishModal .modal-note{ font-size: 0.7031rem; margin-top: 0.75rem; }
-  #finishModal .nickname-hint{ font-size: 0.6563rem; margin: 0.375rem 0 0; }
-  /* popup di fine run su mobile: dimensione naturale in base al contenuto (non più
-     una gabbia fissa tra due percentuali), centrato dall'overlay come fa già di
-     default. max-height/overflow-y restano come rete di sicurezza per schermi molto
-     piccoli o testo eccezionalmente lungo, non come soluzione primaria */
-  @media (max-width: 900px){
-    #finishModal .modal-card{
-      max-width: calc(100% - 2rem);
-      width: auto;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 1rem;
-      box-sizing: border-box;
-    }
-    #finishModal .modal-card h3{ font-size: 1.1rem; margin: 0 0 0.6rem; }
-    #finishModal .modal-card p{ font-size: 0.7rem; margin: 0 0 0.6rem; line-height: 1.35; }
-    #finishModal .modal-card input[type="text"]{ font-size: 0.85rem; padding: 0.5rem; margin-bottom: 0.6rem; }
-    #finishModal .finish-stat{ padding: 0.5rem 0.7rem; margin: 0 0 0.6rem; gap: 0.15rem; }
-    #finishModal .finish-stat-label{ font-size: 0.58rem; }
-    #finishModal .finish-stat-value{ font-size: 1.05rem; }
-    #finishModal .finish-input-block{ margin-bottom: 0.6rem; }
-    #finishModal .finish-instruction{ font-size: 0.66rem; margin: 0 0 0.4rem; line-height: 1.35; }
-    #finishModal .finish-input-block input[type="text"]{ margin-bottom: 0.3rem; }
-    #finishModal .modal-footnotes{ margin-top: 0.5rem; padding-top: 0.5rem; gap: 0.3rem; }
-    #finishModal .modal-footnotes p{ font-size: 0.56rem; line-height: 1.3; }
-    #finishModal .modal-buttons{ gap: 0.6rem; }
-    #finishModal .modal-btn{ font-size: 0.8rem; padding: 0.5rem 1.1rem; }
-    #finishModal .modal-note{ font-size: 0.6rem; margin-top: 0.4rem; }
-    #finishModal .nickname-hint{ font-size: 0.56rem; margin: 0.3rem 0 0; }
-  }
 </style>
 </head>
 <body>
@@ -868,33 +760,9 @@
 <div class="modal-overlay" id="simpleCongratsModal">
   <div class="modal-card">
     <h3 data-en="🎉 Congratulations!" data-it="🎉 Congratulazioni!">🎉 Congratulations!</h3>
-    <p data-en="You've completed The Sieve again. Well done!" data-it="Hai completato di nuovo The Sieve. Ben fatto!">You've completed The Sieve again. Well done!</p>
+    <p data-en="You've completed The Sieve. Well done!" data-it="Hai completato The Sieve. Ben fatto!">You've completed The Sieve. Well done!</p>
     <div class="modal-buttons">
       <button type="button" class="modal-btn yes" id="congratsHomeBtn" data-en="Back to home" data-it="Torna alla home">Back to home</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="finishModal">
-  <div class="modal-card">
-    <h3 data-en="🎉 You finished the race!" data-it="🎉 Hai finito la gara!">🎉 You finished the race!</h3>
-    <div class="finish-stat">
-      <span class="finish-stat-label" data-en="Your total race time" data-it="Il tuo tempo totale di gara">Your total race time</span>
-      <span class="finish-stat-value" id="finishTotalTime"></span>
-    </div>
-    <div class="finish-input-block">
-      <p class="finish-instruction" data-en="Enter a nickname to be remembered for this race — it will be sent for the leaderboard." data-it="Inserisci un nickname per essere ricordato in questa gara: verrà inviato per la classifica.">Enter a nickname to be remembered for this race — it will be sent for the leaderboard.</p>
-      <input type="text" id="finishNickname" maxlength="12" placeholder="Your nickname" data-placeholder-en="Your nickname" data-placeholder-it="Il tuo nickname">
-      <p class="nickname-hint" data-en="3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine)." data-it="Da 3 a 12 caratteri. Solo lettere, numeri, spazi, - _ . (qualsiasi lingua/alfabeto va bene).">3 to 12 characters. Letters, numbers, spaces, - _ . only (any language/alphabet is fine).</p>
-    </div>
-    <div class="modal-buttons">
-      <button type="button" class="modal-btn yes" id="finishConfirmBtn" data-en="Confirm" data-it="Conferma">Confirm</button>
-      <button type="button" class="modal-btn no" id="finishSkipBtn" data-en="Skip" data-it="Salta">Skip</button>
-    </div>
-    <p class="modal-note" id="finishNote"></p>
-    <div class="modal-footnotes">
-      <p data-en="📸 Tip: screenshot this screen if you get a new record — submissions can occasionally fail to go through." data-it="📸 Consiglio: fai uno screenshot di questa schermata se ottieni un nuovo record: a volte l'invio non va a buon fine.">📸 Tip: screenshot this screen if you get a new record — submissions can occasionally fail to go through.</p>
-      <p data-en="⚠️ Nicknames containing &quot;sakrem&quot; (any case or variant) are reserved for testing and auto-removed after 5 minutes." data-it="⚠️ I nickname che contengono &quot;sakrem&quot; (in qualsiasi variante) sono riservati ai test e vengono rimossi automaticamente dopo 5 minuti.">⚠️ Nicknames containing "sakrem" (any case or variant) are reserved for testing and auto-removed after 5 minutes.</p>
     </div>
   </div>
 </div>
@@ -1060,35 +928,9 @@
   const params = new URLSearchParams(window.location.search);
   const levelNum = parseInt(params.get('n')) || 1;
   const STORAGE_KEY = 'erato_basic_v2_last';
-  const TOTAL_TIME_KEY = 'erato_basic_v2_total_race_time';
-  const SESSION_OPEN_KEY = 'erato_basic_v2_session_open';
-  const HEARTBEAT_KEY = 'erato_basic_v2_heartbeat_seconds';
-  const SUSPECT_RESUME_KEY = 'erato_basic_v2_suspect_resume';
-  const PRE_LEAVE_TIME_KEY = 'erato_basic_v2_pre_leave_time';
-  const LEAVE_THRESHOLD_SECONDS = 5;   // se sei rimasto meno di questo prima di uscire (Home o chiusura brusca)...
-  const RESUME_THRESHOLD_SECONDS = 5;  // ...E rientrando risolvi in meno di questo, è sospetto
-  const SUSPECT_PENALTY_START_LEVEL = 75;  // dal Livello 75 in poi la penalità inizia ad applicarsi
-  const SUSPECT_PENALTY_MIN = 150; // penalità al Livello 75: 2 minuti e mezzo
-  const SUSPECT_PENALTY_MAX = 600; // penalità al Livello 100: 10 minuti
-  function suspectPenaltyForLevel(lvl){
-    // scala in modo lineare da 150s (Livello 75) a 600s (Livello 100)
-    const t = Math.min(1, Math.max(0, (lvl - SUSPECT_PENALTY_START_LEVEL) / (100 - SUSPECT_PENALTY_START_LEVEL)));
-    return SUSPECT_PENALTY_MIN + (SUSPECT_PENALTY_MAX - SUSPECT_PENALTY_MIN) * t;
-  }
-
-  // se all'apertura di QUALUNQUE livello troviamo una sessione rimasta "aperta" dalla volta scorsa
-  // (nessuna uscita pulita rilevata: pagina chiusa bruscamente), deposito onestamente l'ultimo tempo
-  // conosciuto (nessuna penalità qui, chiudere per sbaglio/abitudine capita a chiunque), e registro
-  // quanto tempo era passato PRIMA di quella chiusura, per poterlo confrontare al momento del rientro.
-  if (localStorage.getItem(SESSION_OPEN_KEY) === 'true'){
-    const lastHeartbeat = parseFloat(localStorage.getItem(HEARTBEAT_KEY)) || 0;
-    const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
-    localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + lastHeartbeat).toFixed(1));
-    localStorage.setItem(PRE_LEAVE_TIME_KEY, lastHeartbeat.toFixed(1));
-    localStorage.setItem(SUSPECT_RESUME_KEY, 'true');
-  }
-  localStorage.removeItem(SESSION_OPEN_KEY);
-  localStorage.removeItem(HEARTBEAT_KEY);
+  // il livello 25 sblocca Prime Rush/Scholar's Glance/Infinite Primes — non serve
+  // più finire tutti i 100 livelli, The Sieve non ha più una classifica propria da
+  // proteggere con un vero traguardo finale
   const FINISHED_ONCE_KEY = 'erato_basic_v2_finished_once';
 
   // --- lingua: nessuno switch qui (vive solo su index.html), ma legge la stessa
@@ -1107,16 +949,6 @@
   }
   applyLanguage();
 
-  // valore di ripiego, usato solo nel breve istante prima che la fetch qui sotto
-  // risponda con la scadenza vera calcolata dal Worker (20 giorni da oggi finché
-  // nessuno ha ancora vinto, congelata per sempre al primo vincitore vero)
-  let RACE_END_DATE = new Date('2026-08-15T23:59:00+02:00');
-  fetch('https://eratostene.sl-eternal-lux.workers.dev/leaderboard')
-    .then(res => res.json())
-    .then(data => {
-      if (data.raceEnd && data.raceEnd.iso) RACE_END_DATE = new Date(data.raceEnd.iso);
-    })
-    .catch(() => {}); // se il Worker non risponde, resta il ripiego qui sopra
   const wrap = document.getElementById('wrap');
 
   // --- 3 effetti sonori: cerchio (selezione), giusto, sbagliato ---
@@ -1189,46 +1021,6 @@
       if (name === 'badge') window.MathemoryAudio.duckMusic(0.15, 1000);
       if (name === 'winner') window.MathemoryAudio.duckMusic(0.15, 1500);
     }
-  }
-  let levelStartTime = null;
-  let heartbeatInterval = null;
-
-  // deposita nel totale il tempo passato su QUESTO livello quando lo risolvi davvero (Check giusto).
-  // Se il livello era segnato come "uscita sospetta" (Home o chiusura brusca troppo rapide) E anche
-  // il rientro è stato troppo rapido, applica la penalità: entrambe le condizioni devono essere vere.
-  function commitElapsedTime(){
-    const elapsed = (Date.now() - levelStartTime) / 1000;
-    let toAdd = elapsed;
-
-    if (localStorage.getItem(SUSPECT_RESUME_KEY) === 'true'){
-      const preLeaveTime = parseFloat(localStorage.getItem(PRE_LEAVE_TIME_KEY)) || 0;
-      // sotto il Livello 75 anche un genio può risolvere in pochi secondi: il controllo non si applica
-      if (levelNum >= SUSPECT_PENALTY_START_LEVEL && preLeaveTime < LEAVE_THRESHOLD_SECONDS && elapsed < RESUME_THRESHOLD_SECONDS){
-        toAdd += suspectPenaltyForLevel(levelNum);
-      }
-      localStorage.removeItem(SUSPECT_RESUME_KEY);
-      localStorage.removeItem(PRE_LEAVE_TIME_KEY);
-    }
-
-    const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
-    localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + toAdd).toFixed(1));
-    if (heartbeatInterval) clearInterval(heartbeatInterval);
-    localStorage.removeItem(SESSION_OPEN_KEY);
-    localStorage.removeItem(HEARTBEAT_KEY);
-    return elapsed;
-  }
-
-  // Home: uscita volontaria ma il livello NON è stato risolto. Deposito il tempo, e registro
-  // quanto sei rimasto prima di uscire, per il confronto al momento del rientro.
-  function recordHomeExit(){
-    const elapsed = (Date.now() - levelStartTime) / 1000;
-    const prevTotal = parseFloat(localStorage.getItem(TOTAL_TIME_KEY)) || 0;
-    localStorage.setItem(TOTAL_TIME_KEY, (prevTotal + elapsed).toFixed(1));
-    localStorage.setItem(PRE_LEAVE_TIME_KEY, elapsed.toFixed(1));
-    localStorage.setItem(SUSPECT_RESUME_KEY, 'true');
-    if (heartbeatInterval) clearInterval(heartbeatInterval);
-    localStorage.removeItem(SESSION_OPEN_KEY);
-    localStorage.removeItem(HEARTBEAT_KEY);
   }
 
   // --- titoli di rango, a salire per livello raggiunto ---
@@ -1371,31 +1163,24 @@
     `;
     applyLanguage();
 
-    // valore di sicurezza: mai lasciare levelStartTime nullo, nel caso rarissimo in cui
-    // il giocatore interagisca prima ancora che i font risultino pronti
-    levelStartTime = Date.now();
+    // livello 25 raggiunto: sblocca Prime Rush/Scholar's Glance/Infinite Primes.
+    // Non serve più finire tutti i 100 livelli — The Sieve non ha più una classifica
+    // propria da proteggere con un vero traguardo finale, quindi lo sblocco arriva
+    // molto prima, a metà del percorso verso il rango "Cercatore di Schemi"
+    if (levelNum >= 25){
+      localStorage.setItem(FINISHED_ONCE_KEY, 'true');
+    }
 
-    // sia il battito che il cronometro vero riprendono solo quando il giocatore ha
-    // completa visione della pagina: non al caricamento del DOM, ma quando i font sono
-    // davvero pronti — stessa tecnica usata per far partire l'animazione della card di
-    // Eratosthenes sull'index. Qui è una gara: se i font non risultano pronti entro 7
-    // secondi (già un margine ampio per un caricamento normale), qualcosa non va — meglio
-    // dirlo chiaramente con un errore che far finta di niente e partire comunque
+    // il "vero" via riparte solo quando il giocatore ha completa visione della pagina:
+    // non al caricamento del DOM, ma quando i font sono davvero pronti — stessa tecnica
+    // usata per far partire l'animazione della card di Eratosthenes sull'index. Se i
+    // font non risultano pronti entro 7 secondi (già un margine ampio per un
+    // caricamento normale), qualcosa non va — meglio dirlo chiaramente con un errore
+    // che far finta di niente e partire comunque
     let timerReallyStarted = false;
     function reallyStartTimer(){
       if (timerReallyStarted) return;
       timerReallyStarted = true;
-      levelStartTime = Date.now(); // da qui in poi si conta per davvero
-
-      // segno la sessione come "aperta" e avvio il battito: se la pagina si chiude
-      // bruscamente, al prossimo caricamento troveremo qui l'ultimo tempo conosciuto
-      // invece di perderlo del tutto
-      localStorage.setItem(SESSION_OPEN_KEY, 'true');
-      if (heartbeatInterval) clearInterval(heartbeatInterval);
-      heartbeatInterval = setInterval(() => {
-        const elapsed = (Date.now() - levelStartTime) / 1000;
-        localStorage.setItem(HEARTBEAT_KEY, elapsed.toFixed(1));
-      }, 5000);
     }
     const fontsPromise = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
     fontsPromise.then(reallyStartTimer);
@@ -1405,10 +1190,8 @@
     }, 7000);
     fontsPromise.then(() => clearTimeout(fontsTimeoutId));
 
-    // Home è un'uscita volontaria come un'altra: deposito il tempo prima di lasciare la pagina
     document.getElementById('homeBtn').addEventListener('click', () => {
       playSound('tap');
-      recordHomeExit();
     });
 
     const gridEl = document.getElementById('gridEl');
@@ -1510,29 +1293,16 @@
       }
 
       if (answer === correctSum && chosenAllPrimes && foundAllPrimes){
-        // deposito il tempo di questo livello (chiude la sessione in modo pulito)
-        const elapsed = commitElapsedTime();
-
         if (levelNum >= 100){
           playSound('winner');
           localStorage.setItem(STORAGE_KEY, '100');
-          const raceEnded = Date.now() > RACE_END_DATE.getTime();
-          const alreadyFinishedOnce = localStorage.getItem(FINISHED_ONCE_KEY) === 'true';
-
-          if (raceEnded || alreadyFinishedOnce){
-            // niente più ritorno silenzioso: un popup di congratulazioni semplice,
-            // senza però riproporre il nickname (già usato, o gara ormai chiusa).
-            // Ritorno automatico dopo 180s se non si tocca nulla (timer invisibile)
-            resetForNewRun();
-            document.getElementById('simpleCongratsModal').classList.add('visible');
-            setTimeout(() => { window.location.href = 'index.html'; }, 180000);
-            return;
-          } else {
-            // prima volta che si finisce, gara ancora in corso: unica occasione per il nickname
-            localStorage.setItem(FINISHED_ONCE_KEY, 'true');
-            document.getElementById('finishTotalTime').textContent = (localStorage.getItem(TOTAL_TIME_KEY) || '0') + 's';
-            document.getElementById('finishModal').classList.add('visible');
-          }
+          // The Sieve non ha più una classifica propria: niente più nickname da
+          // proporre, sempre lo stesso popup di congratulazioni, anche la primissima
+          // volta. Ritorno automatico dopo 180s se non si tocca nulla (timer invisibile)
+          resetForNewRun();
+          document.getElementById('simpleCongratsModal').classList.add('visible');
+          setTimeout(() => { window.location.href = 'index.html'; }, 180000);
+          return;
         } else {
           playSound('right');
           // risposta corretta: si passa subito al livello successivo, senza messaggio intermedio
@@ -1560,51 +1330,15 @@
     }
   }
 
-  // --- popup di fine gara: salva il nickname (o lo salta), poi torna sempre alla home ---
-  // dopo la fine gara si riparte da zero: si azzera tutto tranne il flag "nickname già usato"
+  // dopo aver finito la gara si riparte da zero: si azzera tutto tranne il flag di
+  // sblocco (FINISHED_ONCE_KEY, ormai scattato molto prima, al livello 25)
   function resetForNewRun(){
     Object.keys(localStorage)
       .filter(k => k.startsWith('erato_basic_v2') && k !== FINISHED_ONCE_KEY)
       .forEach(k => localStorage.removeItem(k));
   }
 
-  document.getElementById('finishConfirmBtn').addEventListener('click', () => {
-    const nickname = document.getElementById('finishNickname').value.trim();
-    const note = document.getElementById('finishNote');
-    if (!nickname || /^-+$/.test(nickname)){
-      note.textContent = 'Please enter a nickname first.';
-      note.style.color = 'var(--red)';
-      return;
-    }
-    if (nickname.length < 3){
-      note.textContent = 'Nickname must be at least 3 characters.';
-      note.style.color = 'var(--red)';
-      return;
-    }
-
-    localStorage.setItem('erato_basic_v2_finisher_nickname', nickname);
-    const totalRaceTime = localStorage.getItem(TOTAL_TIME_KEY) || '0';
-    const timeValue = parseFloat(totalRaceTime);
-
-    // invio il tempo al Worker per il podio globale; se fallisce (rete assente, Worker giù)
-    // l'utente prosegue comunque, non è bloccante
-    fetch('https://eratostene.sl-eternal-lux.workers.dev/submit', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nickname, time: timeValue })
-    }).catch(() => {});
-
-    resetForNewRun();
-    window.location.href = 'index.html';
-  });
-
-  document.getElementById('finishSkipBtn').addEventListener('click', () => {
-    resetForNewRun();
-    window.location.href = 'index.html';
-  });
-
-  // popup di congratulazioni semplice (dalla seconda run in poi, o gara chiusa):
-  // torna alla home al click sul pulsante
+  // popup di congratulazioni: torna alla home al click sul pulsante
   document.getElementById('congratsHomeBtn').addEventListener('click', () => {
     window.location.href = 'index.html';
   });
