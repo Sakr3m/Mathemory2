@@ -1,0 +1,16 @@
+/* Space Mono, auto-ospitato (google-webfonts-helper) invece che da Google
+   Fonts — stesso schema di kalam.css. Pesi 400 e 700, su tutte le pagine. */
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('./space-mono-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url('./space-mono-latin-700-normal.woff2') format('woff2');
+}
