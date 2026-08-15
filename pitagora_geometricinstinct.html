@@ -648,6 +648,12 @@ const LEVELS = [
     levelSubEl.textContent = `${precisionWord} ${level.precision}% ${precisionWord2}${missingNote}${barNote}`;
     levelProgressEl.textContent = lang === 'it' ? `Livello ${index + 1} di ${LEVELS.length}` : `Level ${index + 1} of ${LEVELS.length}`;
     levelProgressFillEl.style.width = (((index + 1) / LEVELS.length) * 100) + '%';
+
+    // livello 25 raggiunto (metà del percorso): sblocca Steady Hands/The Theorem/
+    // Triangles Everywhere. Non serve più finire tutti i 50 livelli
+    if (index + 1 >= 25){
+      localStorage.setItem(FINISHED_ONCE_KEY, 'true');
+    }
     checkBtn.disabled = false;
     nextBtn.classList.remove('visible');
     feedbackEl.textContent = '';
