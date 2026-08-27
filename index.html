@@ -78,7 +78,7 @@
   .wrap{
     max-width: 2060px;
     margin: 0 auto;
-    padding: 7vh 1.5rem 4vh;
+    padding: 7vh 1.5625rem 4vh;
     position: relative;
   }
 
@@ -146,9 +146,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1.5625rem;
     text-align: center;
-    padding: 1.5rem;
+    padding: 1.5625rem;
     box-sizing: border-box;
     transition: opacity 0.6s ease;
   }
@@ -277,7 +277,7 @@
 
   .unlock-date{
     font-family:'Space Mono', monospace;
-    font-size: 1.5rem;
+    font-size: 1.5625rem;
     color: var(--ink-faint);
     margin-top: 0.4rem;
   }
@@ -295,7 +295,7 @@
     text-align: center;
     background: var(--bg-panel-locked);
     border: 1px dashed var(--rule);
-    border-radius: 6px;
+    border-radius: 5px;
     z-index: 999;
     pointer-events: none;
     opacity: 0;
@@ -360,11 +360,11 @@
     font-family:'Space Mono', monospace;
     background: var(--bg-panel-locked);
     border: 1px solid var(--rule);
-    border-radius: 6px;
-    padding: 0 1rem;
+    border-radius: 5px;
+    padding: 0 0.9375rem;
   }
   .lb-medal{ font-size: 1.452rem; line-height:1; }
-  .lb-value{ color: var(--yellow); font-weight:700; font-size: 1rem; }
+  .lb-value{ color: var(--yellow); font-weight:700; font-size: 0.9375rem; }
   .lb-row.rank-1{ border-color: #E8C468; animation: rank-glow-gold 2.4s ease-in-out infinite; }
   .lb-row.rank-2{ border-color: #C7CDD6; animation: rank-glow-silver 2.4s ease-in-out infinite; }
   .lb-row.rank-3{ border-color: #D08A52; animation: rank-glow-bronze 2.4s ease-in-out infinite; }
@@ -399,7 +399,7 @@
     color: var(--bg);
     background: var(--yellow);
     padding: 0.332rem 2.565rem;
-    border-radius: 6px;
+    border-radius: 5px;
     text-align:center;
     white-space: nowrap;
     flex-shrink: 0;
@@ -419,7 +419,7 @@
   .preview-row{
     display:flex;
     align-items:stretch;
-    gap: 1rem;
+    gap: 0.9375rem;
   }
 
   .preview-text-col{
@@ -443,7 +443,7 @@
   }
 
   .mini-triangle{
-    width: 306px;
+    width: 305px;
     flex-shrink: 0;
     align-self: flex-start;
     padding: 0.9rem;
@@ -489,7 +489,7 @@
   }
 
   .mini-algorithm{
-    width: 306px;
+    width: 305px;
     flex-shrink: 0;
     align-self: flex-start;
     padding: 0.9rem;
@@ -534,7 +534,7 @@
 
   .mc.composite{ color: var(--ink); }
   .mc.prime{
-    border-radius: 6px;
+    border-radius: 5px;
     animation: mc-light-up 1s ease forwards;
     animation-delay: calc(var(--i) * 2000ms + 3.5s);
   }
@@ -587,8 +587,8 @@
     color: var(--ink-dim);
     border: 2px solid var(--ink-dim);
     border-top: none;
-    border-radius: 0 0 6px 6px;
-    padding: 0.25rem 0.72rem;
+    border-radius: 0 0 5px 5px;
+    padding: 0.3125rem 0.72rem;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
@@ -620,14 +620,14 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    gap: 1rem;
+    gap: 0.9375rem;
     height: 100%;
     overflow-y: auto;
     /* l'illustrazione del volto (.erato-face-img) è ancorata in basso e arriva fino
        al 20.87% dell'altezza della card: questo spazio fisso (non percentuale — il
        padding percentuale in CSS si calcola sulla larghezza, non sull'altezza, quindi
        qui sarebbe stato inutile) tiene il testo sempre sopra di lei, senza sovrapporsi */
-    padding-bottom: 6.5rem;
+    padding-bottom: 6.5625rem;
     padding-top: 0.5rem;
     text-align: left;
     box-sizing: border-box;
@@ -706,12 +706,12 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap: 1rem;
+    gap: 0.9375rem;
     background: var(--bg);
     border: 1px solid var(--rule);
     border-left: 5px solid var(--mode-color, var(--yellow));
     border-radius: 8px;
-    padding: 1rem 1.3rem;
+    padding: 0.9375rem 1.3rem;
     text-decoration: none;
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease;
@@ -774,7 +774,7 @@
     font-size: 0.75rem;
     color: rgba(243,239,228,0.5);
     text-align: center;
-    margin: 1rem 0 0;
+    margin: 0.9375rem 0 0;
   }
 
   /* --- popup del regolamento --- */
@@ -793,8 +793,8 @@
   }
   .rules-close-btn{
     position: absolute;
-    top: 1rem; right: 1rem;
-    width: 36px; height: 36px;
+    top: 0.9375rem; right: 0.9375rem;
+    width: 35px; height: 35px;
     display:flex; align-items:center; justify-content:center;
     background: var(--bg);
     border: 1px solid var(--rule);
@@ -808,7 +808,7 @@
   .rules-modal-card h3{
     font-family:'Kalam', cursive;
     font-size: 1.8rem;
-    margin: 0 1.5rem 1.2rem 0;
+    margin: 0 1.5625rem 1.2rem 0;
     color: var(--ink);
   }
   .rules-modal-card p{
@@ -816,7 +816,7 @@
     font-size: 0.99rem;
     color: var(--ink-dim);
     line-height: 1.6;
-    margin: 0 0 1rem;
+    margin: 0 0 0.9375rem;
   }
   .rules-modal-card p strong{ color: var(--ink); }
   /* il testo dei popup Regole (a differenza degli altri popup che condividono lo
@@ -857,13 +857,13 @@
   /* sulla card di Pitagora il testo arrivava già quasi a ridosso del bordo destro:
      con la barra di scorrimento aggiunta non c'entrava più, urtava contro di lei.
      Riduco lo spazio utilizzabile della larghezza di una barra di scorrimento tipica */
-  .pythagoras-card-overlay .erato-rules-preview{ padding-right: 16px; }
+  .pythagoras-card-overlay .erato-rules-preview{ padding-right: 15px; }
   /* testolina di Eratostene nel popup Rules: stessa immagine della versione desktop
      (nell'anteprima a comparsa sopra la classifica), qui però ancorata in basso a
      DESTRA invece che al centro del divisore, perché il popup non ha due colonne.
      padding-bottom riservato sulla card, altrimenti il testo (in particolare l'ultimo
      paragrafo) ci finirebbe sotto */
-  #rulesModal .rules-modal-card{ padding-bottom: 6.5rem; }
+  #rulesModal .rules-modal-card{ padding-bottom: 6.5625rem; }
   #rulesModal .rules-modal-face-img{
     position: absolute;
     bottom: 0;
@@ -877,14 +877,14 @@
   .modal-buttons{
     display:flex;
     justify-content:center;
-    gap: 1rem;
+    gap: 0.9375rem;
   }
   .modal-btn{
     font-family:'Space Mono', monospace;
     font-weight:700;
-    font-size: 1rem;
+    font-size: 0.9375rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     padding: 0.7rem 1.8rem;
     cursor:pointer;
     display: inline-block;
@@ -915,7 +915,7 @@
   .report-textarea{
     display:block;
     width: 100%;
-    min-height: 6rem;
+    min-height: 5.9375rem;
     resize: vertical;
     background: var(--bg);
     border: 1px solid var(--rule);
@@ -949,8 +949,8 @@
     color: var(--ink-dim);
     background: var(--bg);
     border: 1px solid var(--rule);
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    padding: 0.5rem 0.9375rem;
     cursor: pointer;
     flex-shrink: 0;
     transition: border-color 0.15s ease, color 0.15s ease;
@@ -975,7 +975,7 @@
   }
   .report-image-preview.visible{ display:block; }
   .modal-footnotes{
-    margin-top: 1rem;
+    margin-top: 0.9375rem;
     padding-top: 0.9rem;
     border-top: 1px solid var(--rule);
     display: flex;
@@ -994,7 +994,7 @@
   .carousel-row{
     display:flex;
     align-items:center;
-    gap: 1rem;
+    gap: 0.9375rem;
   }
 
   .wrap > header, .wrap > .carousel-row, .wrap > .mobile-snap-wrap{ position: relative; z-index: 1; }
@@ -1009,7 +1009,7 @@
   }
   .math-constellation text{
     font-family:'Kalam', cursive;
-    font-size: 1.5rem;
+    font-size: 1.5625rem;
     fill: rgba(159, 176, 162, 0.20);
     will-change: transform, opacity;
   }
@@ -1087,12 +1087,12 @@
        (--mobile-audio-lang-gap) pari alla larghezza reale del pulsante Segnala bug */
     .mobile-audio-lang-row{
       position: absolute;
-      top: calc(47% + 89px); /* punto medio stimato tra fine sottotitolo e inizio REPORT BUG, alzato del 3% su richiesta */
+      top: calc(47% + 90px); /* punto medio stimato tra fine sottotitolo e inizio REPORT BUG, alzato del 3% su richiesta */
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       align-items: center;
-      gap: var(--mobile-audio-lang-gap, 24px);
+      gap: var(--mobile-audio-lang-gap, 25px);
     }
     .mobile-index-sound-btn{
       display: flex;
@@ -1113,13 +1113,13 @@
       display: flex;
       height: 50.6px;
       border: 1px solid var(--rule);
-      border-radius: 999px;
+      border-radius: 1000px;
       background: var(--bg-panel);
       overflow: hidden;
     }
     .mobile-lang-switch .lang-switch-btn{
       font-size: 0.95rem;
-      padding: 0 1rem;
+      padding: 0 0.9375rem;
     }
     /* pulsante Ko-fi mobile: stessa dimensione del pulsante volume mobile, dentro
        allo stesso contenitore flessibile — eredita lo stesso gap dallo switch lingua */
@@ -1140,7 +1140,7 @@
     .mobile-report-btn{
       display: flex;
       position: absolute;
-      top: calc(70% + 64px); /* subito sotto il pulsante audio mobile (top:70%, alto 50.6px) + margine */
+      top: calc(70% + 65px); /* subito sotto il pulsante audio mobile (top:70%, alto 50.6px) + margine */
       left: 50%;
       transform: translateX(-50%);
       align-items: center;
@@ -1188,7 +1188,7 @@
     max-width: 2390px;
     margin: 0 auto;
     align-items:start;
-    padding: 0 1rem;
+    padding: 0 0.9375rem;
     position: relative;
   }
   .ad-slot{
@@ -1197,7 +1197,7 @@
     width: 160px;
     height: 600px;
     border: 1px dashed var(--rule);
-    border-radius: 6px;
+    border-radius: 5px;
     background: var(--bg-panel);
     display:flex;
     align-items:center;
@@ -1218,7 +1218,7 @@
     width: 300px;
     height: 250px;
     border: 1px dashed var(--rule);
-    border-radius: 6px;
+    border-radius: 5px;
     background: var(--bg-panel);
     display:flex;
     align-items:center;
@@ -1238,7 +1238,7 @@
        altezza), più un margine: prima di questo, partiva dalla cima del contenitore
        e si sovrapponeva al banner rettangolare sopra di sé (z-index più alto, ci si
        vedeva sopra, sembrava un secondo box dietro quello vero) */
-    margin-top: calc(3.5vh + 250px + 24px);
+    margin-top: calc(3.5vh + 250px + 25px);
   }
   .content-col{ grid-area: content; min-width:0; max-width: 1600px; margin: 0 auto; width: 100%; position: relative; z-index: 1; }
   .mobile-snap-wrap{ display: none; }
@@ -1316,7 +1316,7 @@
       flex-direction: column;
       justify-content: safe center;
       overflow-y: auto;
-      padding: 1.5rem;
+      padding: 1.5625rem;
       box-sizing: border-box;
       flex-shrink: 0;
     }
@@ -1324,8 +1324,8 @@
     #snapIntro .mark{
       position: absolute;
       top: 15%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
       font-size: clamp(2.1rem, 9.625vw, 2.8rem);
       max-width: 100%;
       opacity: 0; /* diventa visibile quando il gate finisce (vedi initIntroGate); fade, non scatto */
@@ -1339,8 +1339,8 @@
     #snapIntro .subtitle{
       position: absolute;
       top: 30%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
       max-width: 100%;
       font-size: 0.85rem;
       margin: 0;
@@ -1348,8 +1348,8 @@
     .scroll-hint{
       position: absolute;
       top: 95%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
       font-family:'Space Mono', monospace;
       font-size: 0.749rem;
       color: var(--ink-dim);
@@ -1369,27 +1369,27 @@
     #snapGame .mobile-nav-row{
       position: absolute;
       top: 90%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
       margin: 0;
     }
     #snapLeaderboard{ position: relative; }
     #snapLeaderboard .mobile-nav-row{
       position: absolute;
       top: 15%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
       margin: 0;
     }
     .mobile-dots-row{ display: flex; flex-direction: row; gap: 0.35rem; }
-    .mobile-arrow{ min-width: 34px; min-height: 34px; }
+    .mobile-arrow{ min-width: 35px; min-height: 35px; }
 
     /* schermata del gioco: Game N a sinistra, il nome del gioco centrato sullo schermo */
     .mobile-locked-desc{
       position: absolute;
       top: 50%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
       text-align: center;
       color: var(--ink-faint);
       font-family:'Work Sans', sans-serif;
@@ -1398,8 +1398,8 @@
     .mobile-game-header{
       position: absolute;
       top: 25%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
       text-align: center;
     }
     .mobile-game-number{
@@ -1410,8 +1410,8 @@
       color: var(--ink-dim);
       background: none;
       border: 1px solid var(--rule);
-      border-radius: 6px;
-      padding: 0.25rem 0.9rem;
+      border-radius: 5px;
+      padding: 0.3125rem 0.9rem;
       cursor: pointer;
     }
     .mobile-tap-hint{
@@ -1425,8 +1425,8 @@
     .mobile-game-title{
       position: absolute;
       top: 15%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
       display: block;
       text-align: center;
       font-family:'Kalam', cursive;
@@ -1436,8 +1436,8 @@
     .mobile-play-preview-block{
       position: absolute;
       top: 39%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
     }
     .mobile-play-btn{
       display: block;
@@ -1450,7 +1450,7 @@
       color: var(--bg);
       background: var(--yellow);
       padding: 0.56rem;
-      border-radius: 6px;
+      border-radius: 5px;
       text-decoration:none;
       border: none;
       cursor: pointer;
@@ -1478,7 +1478,7 @@
       align-items: flex-start;
       gap: 0.6rem;
     }
-    .mobile-preview-block .mini-sieve{ width: auto; max-width: 196px; margin: 0; }
+    .mobile-preview-block .mini-sieve{ width: auto; max-width: 195px; margin: 0; }
     /* larghezza fissa a 122px: è la larghezza reale che il mini-setaccio raggiunge
        naturalmente (grid a 5 colonne, si stringe da solo sul contenuto). Il triangolo
        usa un <svg width:100%>, che invece si espande fino al max-width consentito —
@@ -1520,20 +1520,20 @@
     .mobile-lb-block{
       position: absolute;
       top: 25%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
     }
     .mobile-records-block{
       position: absolute;
       top: 68%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
     }
     .mobile-lb-divider{
       position: absolute;
       top: 65%;
-      left: 1.5rem;
-      right: 1.5rem;
+      left: 1.5625rem;
+      right: 1.5625rem;
       border-top: 1px solid var(--rule);
       margin: 0;
     }
@@ -1574,7 +1574,7 @@
     }
     #rulesModal .rules-modal-card h3{ font-size: 1.2rem; margin: 0 1.3rem 0.8rem 0; }
     #rulesModal .rules-modal-card p{ font-size: 0.8rem; line-height: 1.45; margin: 0 0 0.7rem; }
-    #rulesModal .rules-close-btn{ width: 32px; height: 32px; font-size: 1rem; }
+    #rulesModal .rules-close-btn{ width: 32px; height: 32px; font-size: 0.9375rem; }
     #rulesModal .rules-modal-face-img{ max-height: 5rem; right: auto; left: 75%; transform: translateX(-50%); }
 
     /* popup scelta modalità su mobile: dimensione naturale in base al contenuto
@@ -1592,10 +1592,10 @@
     }
     #modeModal .mode-modal-card h3{ font-size: 1.06875rem; margin: 0 0 0.7695rem; }
     #modeModal .mode-options{ gap: 0.513rem; }
-    #modeModal .mode-option{ min-height: 6rem; padding: 0.5985rem 0.7695rem; gap: 0.513rem; box-sizing: border-box; }
+    #modeModal .mode-option{ min-height: 5.9375rem; padding: 0.5985rem 0.7695rem; gap: 0.513rem; box-sizing: border-box; }
     #modeModal .mode-option-title-row{ margin: 0 0 0.12825rem; gap: 0.4rem; }
     #modeModal .mode-option-text h4{ font-size: 0.8721rem; margin: 0; }
-    #modeModal .mode-star{ width: 11px; height: 11px; }
+    #modeModal .mode-star{ width: 10px; height: 10px; }
     #modeModal .mode-option-text p{ font-size: 0.64125rem; line-height: 1.25; }
     #modeModal .mode-option-text p.mode-option-details{
       font-family:'Space Mono', monospace;
@@ -1645,7 +1645,7 @@
     #kofiModal .rules-modal-card h3{ font-size: 1.2rem; margin: 0 0 0.85rem; }
     #kofiModal .rules-modal-card p{ font-size: 0.86rem; line-height: 1.45; margin: 0 0 0.85rem; }
     #kofiModal .modal-buttons{ gap: 0.6rem; margin: 0.9rem 0 0; flex-wrap: wrap; }
-    #kofiModal .modal-btn{ font-size: 0.78rem; padding: 0.55rem 1rem; max-width: 45%; white-space: normal; line-height: 1.3; }
+    #kofiModal .modal-btn{ font-size: 0.78rem; padding: 0.55rem 0.9375rem; max-width: 45%; white-space: normal; line-height: 1.3; }
   }
 
   /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
@@ -1663,7 +1663,7 @@
       opacity: 0; /* compare istantaneo (niente fade in), esattamente quando il pulsante del gate finisce il viaggio (vedi initIntroGate): prende il suo posto, poi è il pulsante a sfumare via sopra di lui */
       transform: translateY(0.28125px); /* per portare il centro del titolo esattamente a 127px dal bordo alto */
     }
-    #introGateMark{ font-size: clamp(5rem, 11vw, 11rem); }
+    #introGateMark{ font-size: clamp(5rem, 11vw, 10.9375rem); }
     #introGateNote{ font-size: 1.7rem; }
     .index-sound-btn{
       position: absolute;
@@ -1752,7 +1752,7 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9375rem;
   }
   .audio-slider-row label{
     font-family:'Work Sans', sans-serif;
@@ -1782,7 +1782,7 @@
     position: absolute;
     display: flex;
     border: 1px solid var(--rule);
-    border-radius: 999px;
+    border-radius: 1000px;
     background: var(--bg-panel);
     overflow: hidden;
     z-index: 50;
@@ -1857,7 +1857,7 @@
       text-align: center;
       padding: 2rem;
       font-family:'Space Mono', monospace;
-      font-size: 1rem;
+      font-size: 0.9375rem;
     }
     .page-shell{ display: none; }
   }

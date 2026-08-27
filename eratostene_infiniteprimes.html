@@ -39,7 +39,7 @@
   .wrap{
     max-width: min(1127px, calc(100% - 170px));
     margin: 0 auto;
-    padding: calc(6vh + 32.7px) 1.5rem 6vh;
+    padding: calc(6vh + 32.7px) 1.5625rem 6vh;
     position: relative;
   }
   /* simboli decorativi di sfondo: statici (non si muovono, per non distrarre chi
@@ -54,7 +54,7 @@
   }
   .math-constellation text{
     font-family:'Kalam', cursive;
-    font-size: 1.5rem;
+    font-size: 1.5625rem;
     fill: rgba(159, 176, 162, 0.20);
   }
   .wrap > .title-icon-row, .wrap > .instructions, .wrap > .rank-callout, .wrap > .level-layout{
@@ -95,13 +95,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 409px; height: 40px;
+    width: 410px; height: 40px;
     font-family:'Space Mono', monospace;
     font-size: 0.935rem;
     font-weight:700;
     color: var(--bg);
     background: var(--circle-color, var(--yellow));
-    border-radius: 4px;
+    border-radius: 5px;
     box-sizing: border-box;
   }
   .rank-phrase{
@@ -110,7 +110,7 @@
     top: calc(41.18px + 40px + 8px);
     left: 50%;
     transform: translateX(-50%);
-    width: 409px;
+    width: 410px;
     text-align: center;
     font-family:'Space Mono', monospace;
     font-size: 0.75rem;
@@ -180,7 +180,7 @@
     justify-content:center;
     background: var(--bg-panel);
     border: 1px solid var(--rule);
-    border-radius: 6px;
+    border-radius: 5px;
     font-family:'Space Mono', monospace;
     font-weight:700;
     font-size: 1.898rem;
@@ -236,7 +236,7 @@
     font-weight:700;
     color: var(--yellow);
     background: rgba(232,196,104,0.12);
-    border-radius: 6px;
+    border-radius: 5px;
     font-size: 2.185rem; /* era 1.0925rem, dimezzata per errore rispetto agli altri giochi */
   }
   .picked-chip.empty-slot{
@@ -254,7 +254,7 @@
     position: relative;
     background: var(--bg-panel);
     border: 1px solid var(--rule);
-    border-radius: 6px;
+    border-radius: 5px;
     overflow: hidden;
   }
   /* solo per i test su Mathemory2: la somma corretta del livello, in trasparenza dentro
@@ -269,7 +269,7 @@
     padding: 0 0.92rem;
     font-family:'Space Mono', monospace;
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: 1.5625rem;
     color: rgba(232,196,104,0.7);
     pointer-events: none;
     overflow: hidden;
@@ -279,7 +279,7 @@
     position: relative;
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     color: var(--ink);
     font-family:'Space Mono', monospace;
     font-size: 1.265rem;
@@ -305,7 +305,7 @@
     background: var(--yellow);
     color: var(--bg);
     border:none;
-    border-radius: 6px;
+    border-radius: 5px;
     padding: 0.92rem 1.61rem;
     cursor:pointer;
   }
@@ -334,11 +334,11 @@
     width: 100%;
     padding: 0.5rem;
     font-family:'Space Mono', monospace;
-    font-size: 1rem;
+    font-size: 0.9375rem;
     background: transparent;
     color: var(--ink-dim);
     border: 1px dashed var(--rule);
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
     box-sizing: border-box;
   }
@@ -357,7 +357,7 @@
   .error-box{
     background: var(--bg-panel);
     border: 1px solid var(--red);
-    border-radius: 6px;
+    border-radius: 5px;
     padding: 1.2rem;
     color: var(--ink-dim);
     font-size: 0.9rem;
@@ -369,7 +369,7 @@
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap: 1rem;
+    gap: 0.9375rem;
     margin-bottom: 0.9375rem;
   }
   .title-icon-row h1{ margin: 0; flex: 1; min-width: 0; text-align: center; }
@@ -407,10 +407,10 @@
     max-width: 1980px;
     margin: 0 auto;
     align-items:start;
-    padding: 0 1rem;
+    padding: 0 0.9375rem;
     position: relative;
   }
-  .ad-a{ position: sticky; top: calc(50vh - 300px); width: 160px; height: 600px; border: 1px dashed var(--rule); border-radius: 6px; background: var(--bg-panel); display:flex; align-items:center; justify-content:center; font-family:'Space Mono', monospace; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color: var(--ink-dim); grid-area: adA; z-index: 1; }
+  .ad-a{ position: sticky; top: calc(50vh - 300px); width: 160px; height: 600px; border: 1px dashed var(--rule); border-radius: 5px; background: var(--bg-panel); display:flex; align-items:center; justify-content:center; font-family:'Space Mono', monospace; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color: var(--ink-dim); grid-area: adA; z-index: 1; }
   .ad-b-wrapper{ grid-area: adB; position: relative; align-self: stretch; z-index: 1; }
   .ad-top-rect{
     position: absolute;
@@ -419,7 +419,7 @@
     width: 300px;
     height: 250px;
     border: 1px dashed var(--rule);
-    border-radius: 6px;
+    border-radius: 5px;
     background: var(--bg-panel);
     display:flex;
     align-items:center;
@@ -436,7 +436,7 @@
     width: 160px;
     height: 300px;
     border: 1px dashed var(--rule);
-    border-radius: 6px;
+    border-radius: 5px;
     background: var(--bg-panel);
     display:flex;
     align-items:center;
@@ -522,8 +522,8 @@
       text-align: center;
     }
     .mobile-icon-btn{
-      width: 44px;
-      height: 44px;
+      width: 45px;
+      height: 45px;
       font-size: 1.2rem;
     }
     .mobile-icon-btn:active{ background: var(--rule); }
@@ -552,7 +552,7 @@
       width: 100%;
       margin-bottom: 0.5rem;
     }
-    .cell{ font-size: 1.5rem; }
+    .cell{ font-size: 1.5625rem; }
 
     .side-panel{
       display: grid;
@@ -615,7 +615,7 @@
       font-size: 1.35rem;
       text-align: center;
       border: 1px solid var(--rule);
-      border-radius: 4px;
+      border-radius: 5px;
     }
     .picked-chip.empty-slot{
       background: transparent;
@@ -638,7 +638,7 @@
       text-align: center;
       padding: 2rem;
       font-family:'Space Mono', monospace;
-      font-size: 1rem;
+      font-size: 0.9375rem;
     }
     .page-shell{ display: none; }
   }
@@ -651,7 +651,7 @@
     z-index: 10000;
     align-items:center;
     justify-content:center;
-    padding: 1.5rem;
+    padding: 1.5625rem;
     box-sizing: border-box;
   }
   .modal-overlay.visible{ display:flex; }
@@ -668,7 +668,7 @@
   .modal-card h3{
     font-family:'Kalam', cursive;
     font-size: 1.6rem;
-    margin: 0 0 1rem;
+    margin: 0 0 0.9375rem;
     color: var(--ink);
   }
   .modal-card p{
@@ -683,7 +683,7 @@
     box-sizing: border-box;
     background: var(--bg);
     border: 1px solid var(--rule);
-    border-radius: 6px;
+    border-radius: 5px;
     color: var(--ink);
     font-family:'Space Mono', monospace;
     font-size: 1.05rem;
@@ -694,14 +694,14 @@
   .modal-buttons{
     display:flex;
     justify-content:center;
-    gap: 1rem;
+    gap: 0.9375rem;
   }
   .modal-btn{
     font-family:'Space Mono', monospace;
     font-weight:700;
-    font-size: 1rem;
+    font-size: 0.9375rem;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     padding: 0.7rem 1.8rem;
     cursor:pointer;
   }
@@ -712,7 +712,7 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9375rem;
   }
   .audio-slider-row label{
     font-family:'Work Sans', sans-serif;
