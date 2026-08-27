@@ -65,7 +65,7 @@
   h1{
     font-family:'Kalam', cursive;
     font-size: 3.125rem;
-    margin: 0 0 0.6rem;
+    margin: 0 0 0.625rem;
   }
   h1 .accent{ color: var(--yellow); }
   /* font-size del titolo, calcolato con le metriche vere del font Kalam Bold (fontkit),
@@ -106,7 +106,7 @@
   .rank-phrase{
     position: absolute;
     grid-column: 2;
-    top: calc(40px + 40px + 8px); /* stesso offset del badge, più la sua altezza (40px) e 8px di margine */
+    top: calc(40px + 40px + 10px); /* stesso offset del badge, più la sua altezza (40px) e 8px di margine */
     left: 50%;
     transform: translateX(-50%);
     width: 410px; /* poco sotto il badge, stessa larghezza */
@@ -149,7 +149,7 @@
       display:inline-block;
       width: auto; height: auto;
       flex-shrink: 0;
-      padding: 0.275rem 0.77rem;
+      padding: 0.3125rem 0.625rem;
       transform: none;
       grid-column: auto;
     }
@@ -228,7 +228,7 @@
   .picked-row{
     display:grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 0.575rem;
+    gap: 0.625rem;
   }
   .picked-chip{
     aspect-ratio: 1;
@@ -248,7 +248,7 @@
     color: rgba(232,196,104,0.7); /* solo test Mathemory2: mostra il numero da trovare */
   }
   @media (min-width: 1401px){
-    .side-panel > div:first-child{ margin-bottom: -0.9rem; }
+    .side-panel > div:first-child{ margin-bottom: -0.9375rem; }
     .side-panel-wrap{ justify-content: center; } /* sostituisce alignSidePanel: centra .side-panel nell'altezza (già stretchata) del wrapper, senza bisogno di misurarla via JS */
   }
 
@@ -326,7 +326,7 @@
   }
   button.check.error:hover{ background: var(--red); }
 
-  .feedback{ font-family:'Space Mono', monospace; font-size: 0.9375rem; min-height: 1.4rem; margin: 0; }
+  .feedback{ font-family:'Space Mono', monospace; font-size: 0.9375rem; min-height: 1.25rem; margin: 0; }
   .side-panel-wrap{ display:flex; flex-direction:column; position: relative; }
   .dev-skip-btn{
     position: absolute;
@@ -334,7 +334,7 @@
     bottom: 0;
     display: block;
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.625rem;
     font-family:'Space Mono', monospace;
     font-size: 0.9375rem;
     background: transparent;
@@ -350,7 +350,7 @@
 
   .next-link{
     display:inline-block;
-    margin-top: 0.6rem;
+    margin-top: 0.625rem;
     font-family:'Space Mono', monospace;
     font-weight:700;
     color: var(--yellow);
@@ -516,8 +516,8 @@
 
     /* titolo: due righe centrate, pulsanti icona ai lati (dimensioni ridotte per mobile) */
     .title-icon-row{
-      gap: 0.5rem;
-      margin-bottom: -0.46rem;
+      gap: 0.625rem;
+      margin-bottom: -0.3125rem;
       width: 100%;
     }
     .title-icon-row h1{
@@ -537,11 +537,11 @@
       align-items: center;
       width: 100%;
       min-height: 0;
-      gap: 0.28rem;
-      margin-bottom: 0.59rem;
+      gap: 0.3125rem;
+      margin-bottom: 0.625rem;
     }
-    .rank-badge{ font-size: 0.528rem; padding: 0.18rem 0.54rem; flex-shrink: 0; }
-    .rank-phrase{ font-size: 0.456rem; width: 100%; text-align: center; margin-top: 0; }
+    .rank-badge{ font-size: 0.625rem; padding: 0.3125rem 0.625rem; flex-shrink: 0; }
+    .rank-phrase{ font-size: 0.3125rem; width: 100%; text-align: center; margin-top: 0; }
 
     /* niente più colonne fisse: un blocco solo, la griglia occupa tutta la larghezza del contenitore */
     .level-layout{
@@ -551,9 +551,9 @@
     .grid{
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 0.4rem;
+      gap: 0.3125rem;
       width: 100%;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.625rem;
     }
     .cell{ font-size: 1.5625rem; }
 
@@ -561,17 +561,17 @@
       display: grid;
       grid-template-columns: 1fr 3.4rem;
       grid-template-rows: auto auto auto;
-      column-gap: 0.6rem;
-      row-gap: 0.5rem;
+      column-gap: 0.625rem;
+      row-gap: 0.625rem;
       width: 100%;
-      margin-top: 0.5rem;
+      margin-top: 0.625rem;
     }
     .side-panel > div:first-child{ grid-column: 1; grid-row: 2; }
     .answer-row{ display: contents; }
     .answer-row .answer-input-wrap{
       grid-column: 1;
       grid-row: 1;
-      width: calc(50% - 0.3rem);
+      width: calc(50% - 0.3125rem);
       justify-self: start;
     }
     .dev-skip-btn{
@@ -580,7 +580,7 @@
       justify-self: end;
       position: static;
       margin-top: 0;
-      width: calc(50% - 0.3rem);
+      width: calc(50% - 0.3125rem);
       height: 100%;
       display: flex;
       align-items: center;
@@ -594,7 +594,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0.4rem;
+      padding: 0.3125rem;
       height: 100%;
     }
     .answer-row button.check .check-label{
@@ -608,9 +608,9 @@
       position: relative;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 0.4rem;
+      gap: 0.3125rem;
       min-height: 2.1875rem;
-      padding: 0.2rem 0.4rem 0.2rem;
+      padding: 0.3125rem 0.3125rem 0.3125rem;
       width: 100%;
       box-sizing: border-box;
     }
@@ -625,7 +625,7 @@
       border-style: dashed;
       color: rgba(232,196,104,0.7);
     }
-    input[type="number"]{ font-size: 0.9375rem; padding: 0.5rem 0.625rem; width: 100%; box-sizing: border-box; }
+    input[type="number"]{ font-size: 0.9375rem; padding: 0.625rem 0.625rem; width: 100%; box-sizing: border-box; }
   }  /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
   .rotate-lock-overlay{ display: none; }
   @media (orientation: landscape) and (max-width: 900px), (orientation: landscape) and (max-height: 500px){
@@ -691,18 +691,18 @@
     font-family:'Space Mono', monospace;
     font-size: 0.9375rem;
     padding: 0.625rem;
-    margin-bottom: 1.4rem;
+    margin-bottom: 1.25rem;
   }
   .modal-card input[type="text"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
   .finish-stat{
     background: var(--bg);
     border: 1px solid var(--rule);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 0.9375rem 0.9375rem;
     margin: 0 0 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.3125rem;
   }
   .finish-stat-label{
     font-family:'Space Mono', monospace;
@@ -714,7 +714,7 @@
   .finish-stat-value{
     font-family:'Space Mono', monospace;
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     color: var(--yellow);
   }
   .finish-input-block{ margin-bottom: 1.25rem; }
@@ -722,17 +722,17 @@
     font-family:'Space Mono', monospace;
     font-size: 0.9375rem;
     color: var(--ink-dim);
-    margin: 0 0 0.8rem;
+    margin: 0 0 0.9375rem;
     line-height: 1.5;
   }
-  .finish-input-block input[type="text"]{ margin-bottom: 0.5rem; }
+  .finish-input-block input[type="text"]{ margin-bottom: 0.625rem; }
   .modal-footnotes{
     margin-top: 0.9375rem;
     padding-top: 0.9375rem;
     border-top: 1px solid var(--rule);
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.625rem;
   }
   .modal-footnotes p{
     font-family:'Space Mono', monospace;
@@ -762,7 +762,7 @@
   .audio-slider-row{
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.9375rem;
     margin-bottom: 0.9375rem;
   }
   .audio-slider-row label{
@@ -799,13 +799,13 @@
     font-family:'Space Mono', monospace;
     font-size: 0.625rem;
     color: var(--ink-faint);
-    margin-top: 0.8rem;
+    margin-top: 0.9375rem;
   }
   .nickname-hint{
     font-family:'Space Mono', monospace;
     font-size: 0.625rem;
     color: var(--ink-faint);
-    margin: 0.4rem 0 0;
+    margin: 0.3125rem 0 0;
   }
   /* popup di fine run (nickname): ingrandito x1.25 su desktop, scoped a #finishModal
      per non toccare devSkipModal e gli altri popup che condividono le stesse classi.
@@ -815,12 +815,12 @@
   #finishModal .modal-card h3{ font-size: 1.875rem; margin: 0 0 1.25rem; }
   #finishModal .modal-card p{ font-size: 0.9375rem; margin: 0 0 1.25rem; }
   #finishModal .modal-card input[type="text"]{ font-size: 0.9375rem; padding: 0.625rem; margin-bottom: 1.25rem; }
-  #finishModal .finish-stat{ padding: 0.7969rem 0.9375rem; margin: 0 0 1.25rem; }
+  #finishModal .finish-stat{ padding: 0.9375rem 0.9375rem; margin: 0 0 1.25rem; }
   #finishModal .finish-stat-label{ font-size: 0.625rem; }
   #finishModal .finish-stat-value{ font-size: 1.25rem; }
   #finishModal .finish-input-block{ margin-bottom: 1.25rem; }
-  #finishModal .finish-instruction{ font-size: 0.7969rem; margin: 0 0 0.625rem; }
-  #finishModal .modal-footnotes{ margin-top: 0.9375rem; padding-top: 0.9375rem; gap: 0.4688rem; }
+  #finishModal .finish-instruction{ font-size: 0.9375rem; margin: 0 0 0.625rem; }
+  #finishModal .modal-footnotes{ margin-top: 0.9375rem; padding-top: 0.9375rem; gap: 0.625rem; }
   #finishModal .modal-footnotes p{ font-size: 0.9375rem; }
   #finishModal .modal-buttons{ gap: 0.9375rem; }
   #finishModal .modal-btn{ font-size: 0.9375rem; padding: 0.625rem 1.5625rem; }
@@ -839,21 +839,21 @@
       padding: 0.9375rem;
       box-sizing: border-box;
     }
-    #finishModal .modal-card h3{ font-size: 1.1rem; margin: 0 0 0.6rem; }
-    #finishModal .modal-card p{ font-size: 0.625rem; margin: 0 0 0.6rem; line-height: 1.35; }
-    #finishModal .modal-card input[type="text"]{ font-size: 0.9375rem; padding: 0.5rem; margin-bottom: 0.6rem; }
-    #finishModal .finish-stat{ padding: 0.5rem 0.625rem; margin: 0 0 0.6rem; gap: 0.15rem; }
-    #finishModal .finish-stat-label{ font-size: 0.58rem; }
+    #finishModal .modal-card h3{ font-size: 1.25rem; margin: 0 0 0.625rem; }
+    #finishModal .modal-card p{ font-size: 0.625rem; margin: 0 0 0.625rem; line-height: 1.35; }
+    #finishModal .modal-card input[type="text"]{ font-size: 0.9375rem; padding: 0.625rem; margin-bottom: 0.625rem; }
+    #finishModal .finish-stat{ padding: 0.625rem 0.625rem; margin: 0 0 0.625rem; gap: 0rem; }
+    #finishModal .finish-stat-label{ font-size: 0.625rem; }
     #finishModal .finish-stat-value{ font-size: 0.9375rem; }
-    #finishModal .finish-input-block{ margin-bottom: 0.6rem; }
-    #finishModal .finish-instruction{ font-size: 0.625rem; margin: 0 0 0.4rem; line-height: 1.35; }
-    #finishModal .finish-input-block input[type="text"]{ margin-bottom: 0.3rem; }
-    #finishModal .modal-footnotes{ margin-top: 0.5rem; padding-top: 0.5rem; gap: 0.3rem; }
-    #finishModal .modal-footnotes p{ font-size: 0.56rem; line-height: 1.3; }
-    #finishModal .modal-buttons{ gap: 0.6rem; }
-    #finishModal .modal-btn{ font-size: 0.8rem; padding: 0.5rem 1.1rem; }
-    #finishModal .modal-note{ font-size: 0.6rem; margin-top: 0.4rem; }
-    #finishModal .nickname-hint{ font-size: 0.56rem; margin: 0.3rem 0 0; }
+    #finishModal .finish-input-block{ margin-bottom: 0.625rem; }
+    #finishModal .finish-instruction{ font-size: 0.625rem; margin: 0 0 0.3125rem; line-height: 1.35; }
+    #finishModal .finish-input-block input[type="text"]{ margin-bottom: 0.3125rem; }
+    #finishModal .modal-footnotes{ margin-top: 0.625rem; padding-top: 0.625rem; gap: 0.3125rem; }
+    #finishModal .modal-footnotes p{ font-size: 0.625rem; line-height: 1.3; }
+    #finishModal .modal-buttons{ gap: 0.625rem; }
+    #finishModal .modal-btn{ font-size: 0.9375rem; padding: 0.625rem 1.25rem; }
+    #finishModal .modal-note{ font-size: 0.625rem; margin-top: 0.3125rem; }
+    #finishModal .nickname-hint{ font-size: 0.625rem; margin: 0.3125rem 0 0; }
   }
 </style>
 </head>

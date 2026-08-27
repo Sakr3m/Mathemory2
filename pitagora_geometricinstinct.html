@@ -47,7 +47,7 @@
     align-items:center;
     justify-content:space-between;
     gap: 0.9375rem;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.625rem;
   }
   .title-icon-row h1{ margin: 0; flex: 1; min-width: 0; text-align: center; }
   .icon-btn{
@@ -108,7 +108,7 @@
   }
   @media (max-width: 1100px){
     .level-layout{ grid-template-columns: 1fr; }
-    .rank-callout-space{ height: 20px; margin: 0 0 0.6rem; }
+    .rank-callout-space{ height: 20px; margin: 0 0 0.625rem; }
   }
 
   .board-card{
@@ -129,7 +129,7 @@
     letter-spacing: 0.04em;
   }
   .level-progress-track{
-    margin-top: 0.4rem;
+    margin-top: 0.3125rem;
     height: 5px;
     border-radius: 2px;
     background: var(--bg);
@@ -145,12 +145,12 @@
     background: var(--bg-panel);
     border: 1px solid var(--rule);
     border-radius: 10px;
-    padding: 1.25rem 1.4rem;
+    padding: 1.25rem 1.25rem;
   }
   .side-panel-card h2{
     font-family:'Kalam', cursive;
-    font-size: 1.4rem;
-    margin: 0 0 0.15rem;
+    font-size: 1.25rem;
+    margin: 0 0 0rem;
   }
   .level-sub{
     font-family:'Space Mono', monospace;
@@ -158,14 +158,14 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-dim);
-    margin: 0 0 1.1rem;
+    margin: 0 0 1.25rem;
   }
 
   .measure-row{
     display:flex;
     justify-content:space-between;
     align-items:baseline;
-    padding: 0.55rem 0;
+    padding: 0.625rem 0;
     border-bottom: 1px solid var(--rule);
     font-family:'Space Mono', monospace;
     font-size: 0.9375rem;
@@ -175,15 +175,15 @@
   .measure-target{ font-weight:700; color:var(--ink); }
   .measure-target.unknown{ color: var(--yellow); }
 
-  .precision-block{ margin: 1.1rem 0 0.2rem; }
+  .precision-block{ margin: 1.25rem 0 0.3125rem; }
   .precision-label{
     display:flex; justify-content:space-between;
     font-family:'Space Mono', monospace;
     font-size: 0.625rem; letter-spacing:0.06em; text-transform:uppercase;
-    color: var(--ink-dim); margin-bottom:0.35rem;
+    color: var(--ink-dim); margin-bottom:0.3125rem;
   }
   .precision-track{
-    height: 8px;
+    height: 10px;
     border-radius: 5px;
     background: var(--bg);
     overflow:hidden;
@@ -197,7 +197,7 @@
 
   .check-skip-row{
     display: flex;
-    gap: 0.6rem;
+    gap: 0.625rem;
     margin-top: 0.9375rem;
   }
   .check-btn{
@@ -229,7 +229,7 @@
     color: var(--ink-dim);
     border: 1px solid var(--rule);
     border-radius: 5px;
-    padding: 0.9375rem 1.1rem;
+    padding: 0.9375rem 1.25rem;
     font-size: 0.9375rem;
     letter-spacing: 0.02em;
     text-transform: uppercase;
@@ -238,9 +238,9 @@
   .skip-btn:hover{ color: var(--ink); border-color: var(--ink); }
 
   .feedback{
-    margin-top: 0.8rem;
+    margin-top: 0.9375rem;
     font-family:'Space Mono', monospace;
-    font-size: 0.8rem;
+    font-size: 0.9375rem;
     line-height:1.4;
     min-height: 2.5em;
   }
@@ -250,7 +250,7 @@
   .next-btn{
     display:none;
     width:100%;
-    margin-top: 0.6rem;
+    margin-top: 0.625rem;
     font-family:'Space Mono', monospace;
     font-weight:700;
     border: 1px solid var(--teal);
@@ -258,7 +258,7 @@
     background: transparent;
     color: var(--teal);
     padding: 0.625rem;
-    font-size: 0.78rem;
+    font-size: 0.625rem;
     letter-spacing: 0.02em;
     text-transform: uppercase;
     cursor:pointer;
@@ -340,15 +340,15 @@
       padding: 2vh 0 3vh;
       box-sizing: border-box;
     }
-    .title-icon-row{ gap: 0.5rem; margin-bottom: 0.4rem; width: 100%; }
+    .title-icon-row{ gap: 0.625rem; margin-bottom: 0.3125rem; width: 100%; }
     .title-icon-row h1{ font-size: 0.9375rem; line-height: 1.3; }
     .icon-btn{ width: 45px; height: 45px; }
     .icon-btn svg{ width: 20px; height: 20px; }
     .instructions{ display: none; } /* niente spazio per il paragrafo qui, il titolo basta - stesso criterio di Eratosthenes */
-    .rank-callout-space{ height: 15px; margin: 0 0 0.5rem; }
+    .rank-callout-space{ height: 15px; margin: 0 0 0.625rem; }
 
-    .level-layout{ gap: 0.8rem; }
-    .board-card{ padding: 0.6rem; max-width: 90%; margin: 0.6rem auto 0; }
+    .level-layout{ gap: 0.9375rem; }
+    .board-card{ padding: 0.625rem; max-width: 90%; margin: 0.625rem auto 0; }
 
     /* la presa vera resta la stessa (eventi pointer sull'intero <g>), solo il
        cerchio visibile e il suo alone si ingrandiscono: su desktop un alone di
@@ -357,23 +357,23 @@
     .handle circle:first-child{ r: 30px; } /* alone */
     .handle circle:last-child{ r: 13px; }  /* punto vero */
 
-    .side-panel-card{ padding: 0.6075rem 0.625rem; }
+    .side-panel-card{ padding: 0.625rem 0.625rem; }
     .side-panel-card h2{ font-size: 0.625rem; }
-    .level-sub{ font-size: 0.3915rem; }
-    .measure-row{ font-size: 0.54rem; padding: 0.30375rem 0; }
-    .precision-block{ margin: 0.5rem 0 0.1rem; }
+    .level-sub{ font-size: 0.3125rem; }
+    .measure-row{ font-size: 0.625rem; padding: 0.3125rem 0; }
+    .precision-block{ margin: 0.625rem 0 0rem; }
 
-    .check-btn, .next-btn{ padding: 0.9375rem; font-size: 0.76rem; }
+    .check-btn, .next-btn{ padding: 0.9375rem; font-size: 0.625rem; }
     /* solo su mobile: Skip diventa esattamente metà della riga, non più compatto
        come su desktop */
-    .check-skip-row{ margin-top: 0.6rem; }
+    .check-skip-row{ margin-top: 0.625rem; }
     .check-skip-row .check-btn,
-    .check-skip-row .skip-btn{ flex: 1 1 50%; padding: 0.57375rem 0.3375rem; font-size: 0.513rem; }
+    .check-skip-row .skip-btn{ flex: 1 1 50%; padding: 0.625rem 0.3125rem; font-size: 0.625rem; }
     /* la tabella deve chiudersi appena sotto Check/Skip: tolto lo spazio riservato
        al feedback (min-height fissa per non far "saltare" il layout su desktop) —
        su mobile serve il contrario, il pannello deve finire qui per entrare in una
        sola schermata; il testo, quando compare, spinge semplicemente in basso */
-    .feedback{ margin-top: 0.27rem; min-height: 0; }
+    .feedback{ margin-top: 0.3125rem; min-height: 0; }
   }  /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
   .rotate-lock-overlay{ display: none; }
   @media (orientation: landscape) and (max-width: 900px), (orientation: landscape) and (max-height: 500px){
