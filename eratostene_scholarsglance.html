@@ -85,7 +85,7 @@
   .rank-callout{
     position: relative;
     height: 25px;
-    margin: 0 0 0.9rem;
+    margin: 0 0 0.9375rem;
     display: grid;
     grid-template-columns: 529px 1fr;
   }
@@ -100,7 +100,7 @@
     justify-content: center;
     width: 410px; height: 40px;
     font-family:'Space Mono', monospace;
-    font-size: 0.935rem;
+    font-size: 0.9375rem;
     font-weight:700;
     color: var(--bg);
     background: var(--circle-color, var(--yellow));
@@ -144,7 +144,7 @@
       flex: 1 1 auto;
       min-width: 0;
       text-align: left;
-      font-size: 0.935rem;
+      font-size: 0.9375rem;
       color: var(--ink-dim);
       transform: none;
       grid-column: auto;
@@ -173,7 +173,7 @@
   .grid{
     display:grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 0.6325rem;
+    gap: 0.625rem;
   }
   .cell{
     position:relative;
@@ -274,7 +274,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 0 0.92rem;
+    padding: 0 0.9375rem;
     font-family:'Space Mono', monospace;
     font-weight: 700;
     font-size: clamp(1.1rem, 3.4vw, 1.9rem);
@@ -291,7 +291,7 @@
     color: var(--ink);
     font-family:'Space Mono', monospace;
     font-size: clamp(0.95rem, 2vw, 1.265rem);
-    padding: 0.92rem;
+    padding: 0.9375rem;
     width: 100%;
     box-sizing: border-box;
   }
@@ -314,7 +314,7 @@
     color: var(--bg);
     border:none;
     border-radius: 5px;
-    padding: 0.92rem 1.5625rem;
+    padding: 0.9375rem 1.5625rem;
     cursor:pointer;
   }
   button.check:hover{ background:#f0d488; }
@@ -331,7 +331,7 @@
   }
   button.check.error:hover{ background: var(--red); }
 
-  .feedback{ font-family:'Space Mono', monospace; font-size: 0.9rem; min-height: 1.4rem; margin: 0; }
+  .feedback{ font-family:'Space Mono', monospace; font-size: 0.9375rem; min-height: 1.4rem; margin: 0; }
   .side-panel-wrap{ display:flex; flex-direction:column; position: relative; }
   .skip-sight-row{ display: contents; } /* su desktop non esiste come layout: skip e sight restano indipendenti come prima */
   .dev-skip-btn{
@@ -356,7 +356,7 @@
   .sight-btn{
     font-family:'Space Mono', monospace;
     font-weight:700;
-    font-size: 0.95rem;
+    font-size: 0.9375rem;
     letter-spacing: 0.03em;
     background: transparent;
     color: var(--ink-dim);
@@ -386,9 +386,9 @@
     background: var(--bg-panel);
     border: 1px solid var(--red);
     border-radius: 5px;
-    padding: 1.2rem;
+    padding: 1.25rem;
     color: var(--ink-dim);
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
     line-height:1.6;
   }
   .error-box code{ color: var(--yellow); }
@@ -431,14 +431,14 @@
     display:grid;
     grid-template-columns: 160px minmax(0,1fr) 160px;
     grid-template-areas: "adA content adB";
-    gap: 1.2rem;
+    gap: 1.25rem;
     max-width: 1980px;
     margin: 0 auto;
     align-items:start;
     padding: 0 0.9375rem;
     position: relative;
   }
-  .ad-a{ position: sticky; top: calc(50vh - 300px); width: 160px; height: 600px; border: 1px dashed var(--rule); border-radius: 5px; background: var(--bg-panel); display:flex; align-items:center; justify-content:center; font-family:'Space Mono', monospace; font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; color: var(--ink-dim); grid-area: adA; z-index: 1; }
+  .ad-a{ position: sticky; top: calc(50vh - 300px); width: 160px; height: 600px; border: 1px dashed var(--rule); border-radius: 5px; background: var(--bg-panel); display:flex; align-items:center; justify-content:center; font-family:'Space Mono', monospace; font-size:0.625rem; letter-spacing:0.08em; text-transform:uppercase; color: var(--ink-dim); grid-area: adA; z-index: 1; }
   .ad-b-wrapper{ grid-area: adB; position: relative; align-self: stretch; z-index: 1; }
   .ad-top-rect{
     position: absolute;
@@ -453,7 +453,7 @@
     align-items:center;
     justify-content:center;
     font-family:'Space Mono', monospace;
-    font-size:0.68rem;
+    font-size:0.625rem;
     letter-spacing:0.08em;
     text-transform:uppercase;
     color: var(--ink-dim);
@@ -470,7 +470,7 @@
     align-items:center;
     justify-content:center;
     font-family:'Space Mono', monospace;
-    font-size:0.68rem;
+    font-size:0.625rem;
     letter-spacing:0.08em;
     text-transform:uppercase;
     color: var(--ink-dim);
@@ -552,7 +552,7 @@
     .mobile-icon-btn{
       width: 45px;
       height: 45px;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
     }
     .mobile-icon-btn:active{ background: var(--rule); }
 
@@ -721,9 +721,9 @@
   }
   .modal-card p{
     font-family:'Space Mono', monospace;
-    font-size: 0.95rem;
+    font-size: 0.9375rem;
     color: var(--ink-dim);
-    margin: 0 0 1.2rem;
+    margin: 0 0 1.25rem;
     line-height: 1.5;
   }
   .modal-card input[type="text"]{
@@ -751,7 +751,7 @@
   }
   .finish-stat-label{
     font-family:'Space Mono', monospace;
-    font-size: 0.68rem;
+    font-size: 0.625rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-faint);
@@ -773,7 +773,7 @@
   .finish-input-block input[type="text"]{ margin-bottom: 0.5rem; }
   .modal-footnotes{
     margin-top: 0.9375rem;
-    padding-top: 0.9rem;
+    padding-top: 0.9375rem;
     border-top: 1px solid var(--rule);
     display: flex;
     flex-direction: column;
@@ -781,7 +781,7 @@
   }
   .modal-footnotes p{
     font-family:'Space Mono', monospace;
-    font-size: 0.68rem;
+    font-size: 0.625rem;
     color: var(--ink-faint);
     line-height: 1.4;
     text-align: left;
@@ -812,7 +812,7 @@
   }
   .audio-slider-row label{
     font-family:'Work Sans', sans-serif;
-    font-size: 0.99rem;
+    font-size: 0.9375rem;
     color: var(--ink-dim);
     width: 5.9375rem;
     flex-shrink: 0;
@@ -823,7 +823,7 @@
   }
   .audio-slider-row span{
     font-family:'Space Mono', monospace;
-    font-size: 0.935rem;
+    font-size: 0.9375rem;
     color: var(--ink);
     width: 3.125rem;
     flex-shrink: 0;
@@ -858,19 +858,19 @@
      sotto) e non viene toccato da questa regola */
   #finishModal .modal-card{ max-width: 450px; padding: 1.875rem; }
   #finishModal .modal-card h3{ font-size: 1.875rem; margin: 0 0 1.25rem; }
-  #finishModal .modal-card p{ font-size: 0.8906rem; margin: 0 0 1.125rem; }
-  #finishModal .modal-card input[type="text"]{ font-size: 0.9844rem; padding: 0.6563rem; margin-bottom: 1.25rem; }
-  #finishModal .finish-stat{ padding: 0.7969rem 0.9375rem; margin: 0 0 1.2188rem; }
-  #finishModal .finish-stat-label{ font-size: 0.6375rem; }
+  #finishModal .modal-card p{ font-size: 0.9375rem; margin: 0 0 1.125rem; }
+  #finishModal .modal-card input[type="text"]{ font-size: 0.9375rem; padding: 0.625rem; margin-bottom: 1.25rem; }
+  #finishModal .finish-stat{ padding: 0.7969rem 0.9375rem; margin: 0 0 1.25rem; }
+  #finishModal .finish-stat-label{ font-size: 0.625rem; }
   #finishModal .finish-stat-value{ font-size: 1.25rem; }
-  #finishModal .finish-input-block{ margin-bottom: 1.2188rem; }
+  #finishModal .finish-input-block{ margin-bottom: 1.25rem; }
   #finishModal .finish-instruction{ font-size: 0.7969rem; margin: 0 0 0.75rem; }
   #finishModal .modal-footnotes{ margin-top: 0.9375rem; padding-top: 0.8438rem; gap: 0.4688rem; }
   #finishModal .modal-footnotes p{ font-size: 0.85rem; }
   #finishModal .modal-buttons{ gap: 0.9375rem; }
-  #finishModal .modal-btn{ font-size: 0.9375rem; padding: 0.6563rem 1.5625rem; }
+  #finishModal .modal-btn{ font-size: 0.9375rem; padding: 0.625rem 1.5625rem; }
   #finishModal .modal-note{ font-size: 0.7031rem; margin-top: 0.75rem; }
-  #finishModal .nickname-hint{ font-size: 0.6563rem; margin: 0.3125rem 0 0; }
+  #finishModal .nickname-hint{ font-size: 0.625rem; margin: 0.3125rem 0 0; }
   /* popup di fine run su mobile: dimensione naturale in base al contenuto (non più
      una gabbia fissa tra due percentuali), centrato dall'overlay come fa già di
      default. max-height/overflow-y restano come rete di sicurezza per schermi molto
@@ -891,7 +891,7 @@
     #finishModal .finish-stat-label{ font-size: 0.58rem; }
     #finishModal .finish-stat-value{ font-size: 1.05rem; }
     #finishModal .finish-input-block{ margin-bottom: 0.6rem; }
-    #finishModal .finish-instruction{ font-size: 0.66rem; margin: 0 0 0.4rem; line-height: 1.35; }
+    #finishModal .finish-instruction{ font-size: 0.625rem; margin: 0 0 0.4rem; line-height: 1.35; }
     #finishModal .finish-input-block input[type="text"]{ margin-bottom: 0.3rem; }
     #finishModal .modal-footnotes{ margin-top: 0.5rem; padding-top: 0.5rem; gap: 0.3rem; }
     #finishModal .modal-footnotes p{ font-size: 0.56rem; line-height: 1.3; }
