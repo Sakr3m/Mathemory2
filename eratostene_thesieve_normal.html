@@ -109,7 +109,7 @@
     width: 410px; /* poco sotto il badge, stessa larghezza */
     text-align: center;
     font-family:'Space Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.625rem;
     color: rgba(243,239,228,0.5);
   }
   /* quando non c'è ancora un rango sbloccato, badge e descrizione restano nel DOM
@@ -121,7 +121,7 @@
   }
   .instructions{
     color: var(--ink-dim);
-    font-size: 1.14rem;
+    font-size: 1.25rem;
     line-height:1.5;
     margin: 0 0 30px;
     text-align: center;
@@ -141,7 +141,7 @@
     .rank-callout{
       position: static;
       height: auto;
-      display:flex; align-items:baseline; gap: 0.7rem; flex-wrap: nowrap;
+      display:flex; align-items:baseline; gap: 0.625rem; flex-wrap: nowrap;
     }
     .rank-badge{
       position: static;
@@ -241,7 +241,7 @@
     .side-panel-wrap{ justify-content: center; }
   }
 
-  .answer-row{ display:flex; flex-direction:column; gap: 0.69rem; }
+  .answer-row{ display:flex; flex-direction:column; gap: 0.625rem; }
   .answer-input-wrap{
     position: relative;
     background: var(--bg-panel);
@@ -475,7 +475,7 @@
       width: 100%;
     }
     .title-icon-row h1{
-      font-size: 0.7225rem;
+      font-size: 0.625rem;
       text-align: center;
     }
     .mobile-icon-btn{
@@ -564,7 +564,7 @@
       border-style: dashed;
       color: transparent;
     }
-    input[type="number"]{ font-size: 1.05rem; padding: 0.5rem 0.7rem; width: 100%; box-sizing: border-box; }
+    input[type="number"]{ font-size: 0.9375rem; padding: 0.5rem 0.625rem; width: 100%; box-sizing: border-box; }
   }  /* --- blocco orizzontale: nasconde tutto e mostra un avviso finché il telefono non torna verticale --- */
   .rotate-lock-overlay{ display: none; }
   @media (orientation: landscape) and (max-width: 900px), (orientation: landscape) and (max-height: 500px){
@@ -628,8 +628,8 @@
     border-radius: 5px;
     color: var(--ink);
     font-family:'Space Mono', monospace;
-    font-size: 1.05rem;
-    padding: 0.7rem;
+    font-size: 0.9375rem;
+    padding: 0.625rem;
     margin-bottom: 1.4rem;
   }
   .modal-card input[type="text"]:focus{ outline: 2px solid var(--yellow); outline-offset: 1px; }
@@ -644,7 +644,7 @@
     font-size: 0.9375rem;
     border: none;
     border-radius: 5px;
-    padding: 0.7rem 1.875rem;
+    padding: 0.625rem 1.875rem;
     cursor:pointer;
   }
   .modal-btn.yes{ background: var(--yellow); color: var(--bg); }
